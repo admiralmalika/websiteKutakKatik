@@ -1,0 +1,11 @@
+# Dependencies
+node_modules/
+
+# Environment variables & secret DB connection strings
+.env
+data/db-config.json
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+*.log

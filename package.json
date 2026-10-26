@@ -1,0 +1,21 @@
+{
+  "name": "website-kutak-katik",
+  "version": "1.0.0",
+  "description": "Luxury Architectural Lighting & Design Online Shop with Full Admin Studio Suite (Nightworks / Kutak Katik Theme)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "ecommerce",
+    "online-shop",
+    "lighting",
+    "nightworks",
+    "kutak-katik",
+    "admin-dashboard"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "pg": "^8.23.1"
+  }
+}

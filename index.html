@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nightworks® · Kutak Katik Studio | Architectural Lighting &amp; Design Online Shop</title>
+  <!-- Google Fonts: Cormorant Garamond (Luxury Editorial Serif) & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- ========================================================================
+       TOP UTILITY & QUICK ADMIN / CURRENCY BAR
+       ======================================================================== -->
+  <div class="top-utility-bar">
+    <div class="utility-left">
+      <span id="utilityPromoText">COMPLIMENTARY ARCHITECTURAL COURIER ON ORDERS OVER $1,200 · CODE: WELCOME10</span>
+    </div>
+    <div class="utility-right">
+      <button class="utility-pill" onclick="openOrderTrackerModal()">Track Order</button>
+      <select id="currencySelect" class="currency-switch" onchange="changeCurrency(this.value)" aria-label="Currency">
+        <option value="USD">USD ($)</option>
+        <option value="IDR">IDR (Rp)</option>
+      </select>
+      <button class="utility-pill" id="topBarAccountBtn" onclick="handleAccountButtonClick()">
+        Sign In / Admin
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MAIN STICKY EDITORIAL HEADER (PHOTO 1)
+       ======================================================================== -->
+  <header class="site-header" id="siteHeader">
+    <nav aria-label="Primary Navigation">
+      <ul class="nav-links">
+        <li><a href="#shopCatalogSection">SHOP</a></li>
+        <li><a href="#foundersSection">ABOUT</a></li>
+        <li><a href="#featuredSpacesSection">SPACES</a></li>
+        <li><a href="#journalSection">JOURNAL</a></li>
+        <li><a href="#tradeSpecifiersSection">TRADE</a></li>
+      </ul>
+    </nav>
+
+    <!-- Center Signature Moth / Botanical Emblem (Photo 1 & 5) -->
+    <a href="#" class="brand-moth-logo" aria-label="Nightworks Studio Home">
+      <svg viewBox="0 0 64 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M32 6V38" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M32 14C22 6 8 7 4 15C1 21 11 27 32 24Z" stroke="currentColor" stroke-width="1.3" fill="rgba(161,127,98,0.12)"/>
+        <path d="M32 14C42 6 56 7 60 15C63 21 53 27 32 24Z" stroke="currentColor" stroke-width="1.3" fill="rgba(161,127,98,0.12)"/>
+        <path d="M32 24C21 25 13 31 15 37C17 41 26 36 32 29Z" stroke="currentColor" stroke-width="1.2"/>
+        <path d="M32 24C43 25 51 31 49 37C47 41 38 36 32 29Z" stroke="currentColor" stroke-width="1.2"/>
+        <path d="M28 5C25 2 22 2 20 4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+        <path d="M36 5C39 2 42 2 44 4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+        <circle cx="32" cy="3" r="1.4" fill="currentColor"/>
+      </svg>
+    </a>
+
+    <!-- Right Utility Icons: Search, User/Admin, Wishlist, Cart + Gold Badge -->
+    <div class="header-actions">
+      <button class="admin-Header-btn" id="adminQuickBtn" onclick="openAdminOrLogin()" title="Open Studio Admin Panel">
+        Admin Panel
+      </button>
+
+      <button class="icon-btn" onclick="focusShopSearch()" title="Search Products" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <circle cx="11" cy="11" r="7"></circle>
+          <line x1="20" y1="20" x2="16.2" y2="16.2"></line>
+        </svg>
+      </button>
+
+      <button class="icon-btn" onclick="handleAccountButtonClick()" title="Account &amp; Orders" aria-label="Account">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <circle cx="12" cy="8" r="4"></circle>
+          <path d="M4 20c1.8-4 5-6 8-6s6.2 2 8 6"></path>
+        </svg>
+      </button>
+
+      <button class="icon-btn" onclick="toggleWishlistDrawer(true)" title="Saved Wishlist" aria-label="Wishlist">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M12 20.5s-7.5-4.6-9.3-9C1.5 8.2 3.8 4.5 7.5 4.5c2.1 0 3.6 1.2 4.5 2.6.9-1.4 2.4-2.6 4.5-2.6 3.7 0 6 3.7 4.8 7-1.8 4.4-9.3 9-9.3 9z"></path>
+        </svg>
+        <span id="wishlistDot" class="wishlist-dot" style="display: none;"></span>
+      </button>
+
+      <button class="icon-btn" onclick="toggleCartDrawer(true)" title="Shopping Bag" aria-label="Shopping Bag">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M6 7h12l1 13H5L6 7z"></path>
+          <path d="M9 7V5a3 3 0 0 1 6 0v2"></path>
+        </svg>
+        <span class="cart-count-badge" id="cartCountBadge">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       SECTION 1: HERO & MANIFESTO (PHOTO 1)
+       ======================================================================== -->
+  <main>
+    <section class="hero-section">
+      <div class="hero-visual-wrapper">
+        <!-- Architectural Minimalist Dining Room Image matching Photo 1 -->
+        <img
+          src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=2000&q=85"
+          alt="Minimalist dining interior with sculptural pendant lighting"
+          class="hero-bg-image"
+        />
+
+        <!-- Iconic Double-Arc Catenary Pendant Overlay at Top Center (Photo 1 signature detail) -->
+        <svg class="hero-catenary-overlay" viewBox="0 0 600 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="90" y1="0" x2="90" y2="112" stroke="rgba(90,72,58,0.45)" stroke-width="1"/>
+          <line x1="300" y1="0" x2="300" y2="112" stroke="rgba(90,72,58,0.45)" stroke-width="1"/>
+          <line x1="510" y1="0" x2="510" y2="112" stroke="rgba(90,72,58,0.45)" stroke-width="1"/>
+          <path d="M90 112 Q 195 168 300 112 Q 405 168 510 112" stroke="#9C4A2D" stroke-width="8" stroke-linecap="round" fill="none"/>
+          <path d="M90 116 Q 195 172 300 116 Q 405 172 510 116" stroke="#C49E78" stroke-width="2" stroke-linecap="round" fill="none"/>
+        </svg>
+
+        <!-- Giant Overlapping Serif Wordmark (Photo 1) -->
+        <div class="hero-wordmark-container">
+          <h1 class="hero-wordmark" id="heroWordmarkTitle">
+            Nightworks<sup>®</sup>
+          </h1>
+        </div>
+      </div>
+
+      <!-- Centered Emblem + Manifesto Copy below Hero (Photo 1 bottom) -->
+      <div class="hero-manifesto">
+        <div class="manifesto-ornament">
+          <span class="manifesto-star">✦</span>
+          <span class="micro-label" id="heroSubtitleText">LIGHTING<br/>&amp; DESIGN</span>
+          <span class="manifesto-star">✦</span>
+        </div>
+        <p class="manifesto-statement" id="heroStatementText">
+          WE CREATE CLEVER, SOPHISTICATED PRODUCTS THAT ARE ORIGINAL IN DESIGN AND MADE TO A HIGH STANDARD FROM CAREFULLY CONSIDERED, ENDURING MATERIALS.
+        </p>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SECTION 2: FEATURED PRODUCTS — STAGGERED 3-COLUMN SHOWCASE (PHOTO 2)
+         ====================================================================== -->
+    <section class="featured-staggered-section" aria-labelledby="featuredProductsHeading">
+      <p class="micro-label section-micro-header" id="featuredProductsHeading">FEATURED PRODUCTS</p>
+
+      <div class="staggered-trio-grid" id="staggeredFeaturedGrid">
+        <!-- Populated dynamically by app.js from the 3 featured slot products -->
+      </div>
+
+      <a href="#shopCatalogSection" class="underlined-link">VIEW ALL PRODUCTS</a>
+    </section>
+
+    <!-- ======================================================================
+         SECTION 2B: FULL INTERACTIVE ONLINE SHOP CATALOG
+         ====================================================================== -->
+    <section class="shop-catalog-section" id="shopCatalogSection">
+      <div class="shop-header-row">
+        <div class="shop-title-group">
+          <span class="micro-label">ARCHITECTURAL COLLECTION</span>
+          <h2>Curated Luminaires &amp; Objects</h2>
+        </div>
+        <div id="activeUserBanner" style="font-size: 0.76rem; color: var(--text-bronze-dark);"></div>
+      </div>
+
+      <div class="shop-controls-bar">
+        <div class="category-tabs" id="categoryTabs">
+          <button class="cat-tab active" data-cat="ALL" onclick="setShopCategory('ALL')">All Collections</button>
+          <button class="cat-tab" data-cat="Pendants" onclick="setShopCategory('Pendants')">Pendants</button>
+          <button class="cat-tab" data-cat="Wall Sconces" onclick="setShopCategory('Wall Sconces')">Wall Sconces</button>
+          <button class="cat-tab" data-cat="Table & Floor" onclick="setShopCategory('Table & Floor')">Table &amp; Floor</button>
+          <button class="cat-tab" data-cat="Objects & Candles" onclick="setShopCategory('Objects & Candles')">Objects &amp; Candles</button>
+          <button class="cat-tab" data-cat="Bespoke" onclick="setShopCategory('Bespoke')">Bespoke</button>
+        </div>
+
+        <div class="filter-right-group">
+          <input
+            type="search"
+            id="shopSearchInput"
+            class="shop-search-input"
+            placeholder="Search sconces, pendants, stone..."
+            oninput="renderShopCatalog()"
+          />
+          <select id="shopSortSelect" class="shop-select" onchange="renderShopCatalog()" aria-label="Sort products">
+            <option value="featured">Sort: Featured</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="rating">Highest Rated</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="products-grid" id="shopProductsGrid">
+        <!-- Populated dynamically by app.js -->
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SECTION 3: FEATURED SPACES — MIDNIGHT ARCHWAY SECTION (PHOTO 3)
+         ====================================================================== -->
+    <section class="featured-spaces-section" id="featuredSpacesSection">
+      <div class="spaces-editorial-grid" id="spacesEditorialContainer">
+        <!-- Populated dynamically by app.js (with interactive 01-04 switcher & View Space modal) -->
+      </div>
+    </section>
+
+    <!-- Full-Bleed Architectural Plaster Curve Banner (Bottom Photo 3 / Top Photo 4) -->
+    <div class="architectural-banner-strip">
+      <div class="banner-strip-inner">
+        <img
+          src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=2000&q=85"
+          alt="Curved architectural plaster ceiling and minimalist pendant lights"
+        />
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         SECTION 4: FOUNDERS ASYMMETRIC EDITORIAL SECTION (PHOTO 4)
+         ====================================================================== -->
+    <section class="founders-section" id="foundersSection">
+      <div class="founders-grid">
+        <div class="founders-copy-col">
+          <span class="micro-label">FOUNDERS</span>
+          <h2 class="serif-heading">
+            OUR ORIGINAL DESIGN APPROACH ENSURES YOUR PROJECT WILL STAND OUT FROM THE ORDINARY.
+          </h2>
+          <p>
+            We provide beautiful lighting solutions that are unique, original, designed and engineered to last. Every piece is conceived in our studio with raw brass, architectural stone, and hand-finished patinas.
+          </p>
+          <button class="underlined-link" onclick="openFoundersModal()">READ MORE</button>
+        </div>
+
+        <div class="founders-portrait-col">
+          <div class="founders-portrait-wrap">
+            <img
+              src="https://images.unsplash.com/photo-1556157382-97eda2d62296?auto=format&fit=crop&w=1000&q=85"
+              alt="Studio Founders in sunlit draped architectural workspace"
+            />
+          </div>
+        </div>
+
+        <div class="founders-right-col">
+          <div class="founders-small-photo">
+            <img
+              src="https://images.unsplash.com/photo-1565814329452-e1efa11c5b89?auto=format&fit=crop&w=600&q=80"
+              alt="Brass cross pendant luminaires in front of sheer linen curtains"
+            />
+          </div>
+
+          <!-- Signature Hand + Moth Line-Art Illustration at bottom-right (Photo 4) -->
+          <div class="hand-moth-emblem" aria-hidden="true">
+            <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Moth above hand -->
+              <path d="M42 12V30" stroke="currentColor" stroke-width="1.2"/>
+              <path d="M42 17C34 11 24 12 22 18C20 22 28 26 42 23Z" stroke="currentColor" stroke-width="1.2"/>
+              <path d="M42 17C50 11 60 12 62 18C64 22 56 26 42 23Z" stroke="currentColor" stroke-width="1.2"/>
+              <!-- Open studio hand below -->
+              <path d="M18 54C24 48 33 47 44 50L58 46C61 45 63 48 60 51L45 58C38 61 29 62 22 68" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+              <path d="M28 48L42 42C45 41 47 43 45 46" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SECTION 5: TRADE & DESIGN SPECIFIERS + INSTAGRAM COLLAGE (PHOTO 5)
+         ====================================================================== -->
+    <section class="trade-specifiers-section" id="tradeSpecifiersSection">
+      <div class="trade-split-grid">
+        <div class="trade-visual">
+          <img
+            src="https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=85"
+            alt="Bespoke fluted timber joinery with intersecting solid brass pendant"
+          />
+        </div>
+
+        <div class="trade-copy">
+          <h2 class="serif-heading">
+            TRADE AND DESIGN<br/>INDUSTRY SPECIFIERS
+          </h2>
+          <p>
+            Our trade accounts are exclusive for industry specifiers such as interior designers, architects and builders. By being a trade member, you can receive instant project quotes and order online using your exclusive discounted pricing.
+          </p>
+          <p>
+            Our experienced team can assist with advice, sampling and lead times on our collections.
+          </p>
+          <div class="trade-links-row">
+            <button class="underlined-link" onclick="openAuthModal('register-trade')">SIGN UP</button>
+            <button class="underlined-link" onclick="openAuthModal('login')">LOGIN</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Floating Asymmetric Instagram Gallery (Bottom half of Photo 5) -->
+    <section class="instagram-collage-section">
+      <div class="insta-collage-stage">
+        <!-- Floating Photo 1 (Left mirror sconce) -->
+        <a href="#shopCatalogSection" class="insta-float-card insta-float-1">
+          <img
+            src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=600&q=80"
+            alt="Sculptural vanity mirror flanked by brass sconces"
+          />
+        </a>
+
+        <!-- Floating Photo 2 (Top right bedroom timber table & bronze wall sconce) -->
+        <a href="#shopCatalogSection" class="insta-float-card insta-float-2">
+          <img
+            src="https://images.unsplash.com/photo-1534349762230-e0cadf78f5da?auto=format&fit=crop&w=600&q=80"
+            alt="Bedside oak table with bronze wall light"
+          />
+        </a>
+
+        <!-- Center Moth + Editorial Callout -->
+        <div class="insta-center-content">
+          <div class="moth-mini">
+            <svg width="34" height="24" viewBox="0 0 64 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M32 6V38" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M32 14C22 6 8 7 4 15C1 21 11 27 32 24Z" stroke="currentColor" stroke-width="1.4" fill="rgba(161,127,98,0.2)"/>
+              <path d="M32 14C42 6 56 7 60 15C63 21 53 27 32 24Z" stroke="currentColor" stroke-width="1.4" fill="rgba(161,127,98,0.2)"/>
+            </svg>
+          </div>
+          <h2 class="serif-heading">
+            JOIN US ON INSTAGRAM<br/>
+            TO BE THE FIRST TO SEE<br/>
+            OUR LATEST DESIGN<br/>
+            IDEAS AND INSTALLED<br/>
+            PROJECTS
+          </h2>
+          <a href="#shopCatalogSection" class="underlined-link" id="instaHandleLink">@NIGHTWORKSSTUDIO</a>
+        </div>
+
+        <!-- Floating Photo 3 (Bottom left opal sphere sconces) -->
+        <a href="#shopCatalogSection" class="insta-float-card insta-float-3">
+          <img
+            src="https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=500&q=80"
+            alt="Opal glass sphere bathroom sconces"
+          />
+        </a>
+
+        <!-- Floating Photo 4 (Bottom right raw plaster texture & sconce) -->
+        <a href="#shopCatalogSection" class="insta-float-card insta-float-4">
+          <img
+            src="https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=500&q=80"
+            alt="Textured plaster wall with brass sconce and trailing foliage"
+          />
+        </a>
+
+        <!-- Floating Photo 5 (Far right inset bathroom vanity) -->
+        <a href="#shopCatalogSection" class="insta-float-card insta-float-5">
+          <img
+            src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80"
+            alt="Minimalist architectural bathroom lighting"
+          />
+        </a>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SECTION 6: STUDIO JOURNAL
+         ====================================================================== -->
+    <section class="journal-section" id="journalSection">
+      <span class="micro-label">ARCHITECTURAL NOTES</span>
+      <h2 class="serif-heading" style="font-size: 2.1rem; color: var(--text-dark); margin-top: 6px;">
+        From the Studio Journal
+      </h2>
+      <div class="journal-grid" id="journalGrid">
+        <!-- Populated dynamically by app.js -->
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================================================================
+       FOOTER (MIDNIGHT)
+       ======================================================================== -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="footer-brand-title" id="footerBrandTitle">Nightworks®</div>
+        <p style="font-size: 0.8rem; color: rgba(248,244,239,0.68); max-width: 310px; margin-bottom: 18px;">
+          Architectural lighting and tactile design objects crafted from solid brass, travertine, and enduring natural materials.
+        </p>
+        <form class="newsletter-form" onsubmit="handleNewsletterSubmit(event)">
+          <input type="email" placeholder="Enter your email for studio dispatches..." required />
+          <button type="submit">Join</button>
+        </form>
+      </div>
+
+      <div class="footer-col">
+        <h4>Collections</h4>
+        <ul class="footer-links">
+          <li><a href="#shopCatalogSection" onclick="setShopCategory('Pendants')">Pendant Luminaires</a></li>
+          <li><a href="#shopCatalogSection" onclick="setShopCategory('Wall Sconces')">Architectural Wall Sconces</a></li>
+          <li><a href="#shopCatalogSection" onclick="setShopCategory('Table & Floor')">Table &amp; Floor Lamps</a></li>
+          <li><a href="#shopCatalogSection" onclick="setShopCategory('Objects & Candles')">Stone Objects &amp; Candles</a></li>
+          <li><a href="#shopCatalogSection" onclick="setShopCategory('Bespoke')">Bespoke Chandeliers</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Client Services</h4>
+        <ul class="footer-links">
+          <li><button onclick="openOrderTrackerModal()">Track Your Order</button></li>
+          <li><button onclick="openAuthModal('register-trade')">Trade Specifier Application</button></li>
+          <li><button onclick="toggleCartDrawer(true)">Shopping Bag &amp; Vouchers</button></li>
+          <li><button onclick="openFoundersModal()">Care &amp; Living Patina Guide</button></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Studio &amp; Admin</h4>
+        <ul class="footer-links">
+          <li><button onclick="openAdminOrLogin()" style="color: var(--accent-gold); font-weight: 600;">→ Open Admin Dashboard</button></li>
+          <li><span>Admin Email: admin@kutakkatik.com</span></li>
+          <li><span>Admin Pass: admin123</span></li>
+          <li><span>Showrooms: Christchurch · Melbourne · Jakarta</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 Nightworks® · Kutak Katik Studio. All Rights Reserved.</span>
+      <span>Architectural Lighting E-Commerce &amp; Admin Suite</span>
+    </div>
+  </footer>
+
+  <!-- ========================================================================
+       SHARED BACKDROP OVERLAY
+       ======================================================================== -->
+  <div class="backdrop-overlay" id="backdropOverlay" onclick="closeAllOverlays()"></div>
+
+  <!-- ========================================================================
+       SLIDE-OVER SHOPPING BAG DRAWER
+       ======================================================================== -->
+  <aside class="slide-drawer" id="cartDrawer" aria-label="Shopping Bag">
+    <div class="drawer-header">
+      <h3>Shopping Bag</h3>
+      <button onclick="toggleCartDrawer(false)" aria-label="Close Cart">✕</button>
+    </div>
+    <div class="drawer-body" id="cartDrawerBody">
+      <!-- Populated dynamically -->
+    </div>
+    <div class="drawer-footer" id="cartDrawerFooter">
+      <!-- Populated dynamically -->
+    </div>
+  </aside>
+
+  <!-- ========================================================================
+       SLIDE-OVER WISHLIST DRAWER
+       ======================================================================== -->
+  <aside class="slide-drawer" id="wishlistDrawer" aria-label="Saved Wishlist">
+    <div class="drawer-header">
+      <h3>Saved Specification List</h3>
+      <button onclick="toggleWishlistDrawer(false)" aria-label="Close Wishlist">✕</button>
+    </div>
+    <div class="drawer-body" id="wishlistDrawerBody">
+      <!-- Populated dynamically -->
+    </div>
+  </aside>
+
+  <!-- ========================================================================
+       MODAL: PRODUCT DETAIL / QUICK VIEW + REVIEWS
+       ======================================================================== -->
+  <div class="modal-window" id="productDetailModal" role="dialog" aria-modal="true">
+    <button class="modal-close-btn" onclick="closeAllOverlays()" aria-label="Close">✕</button>
+    <div id="productDetailBody"></div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL: MULTI-STEP CHECKOUT & ORDER CONFIRMATION
+       ======================================================================== -->
+  <div class="modal-window" id="checkoutModal" role="dialog" aria-modal="true">
+    <button class="modal-close-btn" onclick="closeAllOverlays()" aria-label="Close">✕</button>
+    <div id="checkoutModalBody" style="padding: 38px;"></div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL: LOGIN / REGISTER / ACCOUNT PROFILE (ADMIN, TRADE, CUSTOMER)
+       ======================================================================== -->
+  <div class="modal-window narrow" id="authModal" role="dialog" aria-modal="true">
+    <button class="modal-close-btn" onclick="closeAllOverlays()" aria-label="Close">✕</button>
+    <div id="authModalBody" style="padding: 36px;"></div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL: ORDER TRACKER & INVOICE LOOKUP
+       ======================================================================== -->
+  <div class="modal-window narrow" id="orderTrackerModal" role="dialog" aria-modal="true">
+    <button class="modal-close-btn" onclick="closeAllOverlays()" aria-label="Close">✕</button>
+    <div id="orderTrackerBody" style="padding: 36px;"></div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL: GENERIC EDITORIAL MODAL (SPACE STORY / FOUNDERS / JOURNAL)
+       ======================================================================== -->
+  <div class="modal-window" id="editorialModal" role="dialog" aria-modal="true">
+    <button class="modal-close-btn" onclick="closeAllOverlays()" aria-label="Close">✕</button>
+    <div id="editorialModalBody" style="padding: 40px;"></div>
+  </div>
+
+  <!-- ========================================================================
+       FULL-SCREEN STUDIO ADMIN DASHBOARD OVERLAY
+       ======================================================================== -->
+  <section class="admin-dashboard-overlay" id="adminDashboardOverlay" aria-label="Admin Dashboard">
+    <aside class="admin-sidebar">
+      <div>
+        <div class="admin-brand">
+          <span class="micro-label" style="color: var(--accent-gold);">STUDIO BACKOFFICE</span>
+          <h2>Admin Portal</h2>
+          <p id="adminCurrentUserName" style="font-size: 0.74rem; opacity: 0.7; margin-top: 4px;"></p>
+        </div>
+
+        <nav class="admin-nav">
+          <button class="admin-nav-btn active" data-tab="overview" onclick="switchAdminTab('overview')">
+            1. Overview &amp; Analytics
+          </button>
+          <button class="admin-nav-btn" data-tab="products" onclick="switchAdminTab('products')">
+            2. Products Catalog (CRUD)
+          </button>
+          <button class="admin-nav-btn" data-tab="orders" onclick="switchAdminTab('orders')">
+            3. Orders &amp; Fulfillment
+          </button>
+          <button class="admin-nav-btn" data-tab="vouchers" onclick="switchAdminTab('vouchers')">
+            4. Vouchers &amp; Discounts
+          </button>
+          <button class="admin-nav-btn" data-tab="users" onclick="switchAdminTab('users')">
+            5. Accounts &amp; Trade
+          </button>
+          <button class="admin-nav-btn" data-tab="settings" onclick="switchAdminTab('settings')">
+            6. Brand &amp; Store Settings
+          </button>
+        </nav>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 24px;">
+        <button class="btn-outline" style="color: var(--text-light); border-color: rgba(255,255,255,0.3);" onclick="closeAdminDashboard()">
+          ← Back to Storefront
+        </button>
+        <button class="btn-outline" style="color: #ffb3a7; border-color: rgba(255,179,167,0.35);" onclick="logoutUser()">
+          Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <div class="admin-main" id="adminMainContent">
+      <!-- Populated dynamically by app.js -->
+    </div>
+  </section>
+
+  <!-- Toast Notifications -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

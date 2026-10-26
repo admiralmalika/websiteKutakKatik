@@ -1,0 +1,491 @@
+// ============================================================================
+// NIGHTWORKS / KUTAK KATIK STUDIO — INITIAL STORE & CATALOG SEED DATA
+// ============================================================================
+
+window.INITIAL_STORE_DATA = {
+  settings: {
+    brandName: "Nightworks",
+    brandSubtitle: "LIGHTING & DESIGN",
+    heroStatement:
+      "WE CREATE CLEVER, SOPHISTICATED PRODUCTS THAT ARE ORIGINAL IN DESIGN AND MADE TO A HIGH STANDARD FROM CAREFULLY CONSIDERED, ENDURING MATERIALS.",
+    instagramHandle: "@NIGHTWORKSSTUDIO",
+    currency: "USD", // Can be switched between "USD" and "IDR" in navbar or Admin
+    idrRate: 16000,
+    tradeDiscountPercent: 20,
+    freeShippingThreshold: 1200,
+    qrisMerchantName: "KUTAK KATIK STUDIO",
+    qrisMerchantCity: "JAKARTA",
+    qrisNmid: "ID1026000889901",
+    qrisMode: "dynamic", // "dynamic" (auto-encodes nominal) or "static"
+    qrisCustomImage: "", // Optional custom Static QRIS image uploaded by Admin
+    bankAccounts: "BCA 8820-9910-22 a/n Kutak Katik Studio | Mandiri 124-00-9988776-5 a/n Kutak Katik Studio"
+  },
+
+  products: [
+    {
+      id: "prod-offcut-sconce",
+      name: "Offcut Wall Sconce",
+      slug: "offcut-wall-sconce",
+      category: "Wall Sconces",
+      price: 690,
+      compareAtPrice: 780,
+      stock: 18,
+      featured: true,
+      featuredSlot: 1, // Left card in 3-column staggered showcase
+      badge: "Signature",
+      rating: 4.9,
+      reviewCount: 24,
+      finishes: ["Raw Travertine & Chalk", "Aged Brass & Limestone", "Smoked Bronze & Onyx"],
+      dimensions: "Ø 185mm × D 88mm | Integrated 6W Warm Dim LED (2700K)",
+      leadTime: "In Stock — Ships in 3–5 business days",
+      image:
+        "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=1200&q=85",
+      hoverImage:
+        "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=1200&q=85",
+      description:
+        "Sculpted from hand-selected stone offcuts paired with a precision-machined cylindrical diffuser. Every Offcut Wall Sconce celebrates the natural fracture lines of architectural stone, casting a soft, atmospheric halo across textured plaster or timber walls."
+    },
+    {
+      id: "prod-tasman-pendant",
+      name: "Tasman Double Pendant",
+      slug: "tasman-double-pendant",
+      category: "Pendants",
+      price: 2450,
+      compareAtPrice: 2690,
+      stock: 9,
+      featured: true,
+      featuredSlot: 2, // Center tall card in 3-column staggered showcase
+      badge: "Iconic Piece",
+      rating: 5.0,
+      reviewCount: 38,
+      finishes: ["Terracotta Leather & Brushed Brass", "Natural Saddle & Aged Bronze", "Blackened Steel & Espresso"],
+      dimensions: "L 1680mm × H 320mm (Drop adjustable up to 2400mm) | 24V Warm LED",
+      leadTime: "Made to Order — Ships in 10–14 business days",
+      image:
+        "https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=1200&q=85",
+      hoverImage:
+        "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=85",
+      description:
+        "A poised architectural statement defined by twin catenary curves suspended from ultra-fine tension cables. Crafted with supple saddle leather and solid turned brass terminals, the Tasman Double Pendant anchors dining rooms and gallery spaces with effortless calm."
+    },
+    {
+      id: "prod-offcut-candle",
+      name: "Offcut Candle Holder",
+      slug: "offcut-candle-holder",
+      category: "Objects & Candles",
+      price: 240,
+      compareAtPrice: null,
+      stock: 34,
+      featured: true,
+      featuredSlot: 3, // Right card in 3-column staggered showcase
+      badge: "Limited Batch",
+      rating: 4.8,
+      reviewCount: 19,
+      finishes: ["Verde Guatemala Marble & Brass", "Carrara & Brushed Brass", "Travertine & Bronze"],
+      dimensions: "W 130mm × D 110mm × H 45mm (Includes 2 hand-dipped taper candles)",
+      leadTime: "In Stock — Ships in 2–3 business days",
+      image:
+        "https://images.unsplash.com/photo-1602874801007-bd458bb1b8b6?auto=format&fit=crop&w=1200&q=85",
+      hoverImage:
+        "https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&w=1200&q=85",
+      description:
+        "Born from our zero-waste stone workshop initiative, each Offcut Candle Holder pairs an organic fragment of veined marble with a heavy knurled solid brass collar. No two stone bases are ever identical."
+    },
+    {
+      id: "prod-code-cascade",
+      name: "Code Cascade 12-Light Chandelier",
+      slug: "code-cascade-chandelier",
+      category: "Bespoke",
+      price: 6890,
+      compareAtPrice: null,
+      stock: 4,
+      featured: false,
+      featuredSlot: null,
+      badge: "Bespoke Series",
+      rating: 5.0,
+      reviewCount: 11,
+      finishes: ["Brushed Solid Brass & Opal Glass", "Aged Bronze & Frosted Sphere"],
+      dimensions: "Canopy Ø 650mm × Custom Drop up to 6000mm | DALI Dimmable",
+      leadTime: "Bespoke Production — 3–4 weeks",
+      image:
+        "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=85",
+      hoverImage:
+        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85",
+      description:
+        "Designed for double-height voids, grand stairwells, and heritage foyers. Code Cascade orchestrates hand-blown triplex opal glass spheres and linear brass counterweights in a rhythmic vertical composition."
+    },
+    {
+      id: "prod-koura-linear",
+      name: "Koura Cross Linear Pendant",
+      slug: "koura-cross-linear-pendant",
+      category: "Pendants",
+      price: 1890,
+      compareAtPrice: 2100,
+      stock: 12,
+      featured: false,
+      featuredSlot: null,
+      badge: "Best Seller",
+      rating: 4.9,
+      reviewCount: 31,
+      finishes: ["Tumbled Aged Brass", "Raw Brushed Brass", "Blackened Gunmetal"],
+      dimensions: "L 1500mm × H 480mm × D 120mm | Bi-directional Warm LED",
+      leadTime: "In Stock — Ships in 3–5 business days",
+      image:
+        "https://images.unsplash.com/photo-1565814329452-e1efa11c5b89?auto=format&fit=crop&w=1200&q=85",
+      hoverImage:
+        "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=85",
+      description:
+        "Intersecting architectural brass tubes locked by precision machined joinery. Ideal above kitchen islands and long architectural worktables, offering both task downlighting and ambient ceiling wash."
+    },
+    {
+      id: "prod-duomo-sconce",
+      name: "Duomo Piccolo Wall Light",
+      slug: "duomo-piccolo-wall-light",
+      category: "Wall Sconces",
+      price: 540,
+      compareAtPrice: null,
+      stock: 22,
+      featured: false,
+      featuredSlot: null,
+      badge: "New Release",
+      rating: 4.9,
+      reviewCount: 16,
+      finishes: ["Brushed Brass", "Dark Bronze", "Warm Alabaster White"],
+      dimensions: "H 145mm × W 90mm × D 105mm | IP44 Bathroom Rated",
+      leadTime: "In Stock — Ships in 2–4 business days",
+      image:
+        "https://images.unsplash.com/photo-1534349762230-e0cadf78f5da?auto=format&fit=crop&w=1200&q=85",
+      hoverImage:
+        "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1200&q=85",
+      description:
+        "A compact domed wall sconce machined from solid brass billet. Engineered with an IP44 moisture rating, making it equally suited for serene bedside reading or fluted stone bathroom vanities."
+    },
+    {
+      id: "prod-la-diosa-lamp",
+      name: "La Diosa Sculptural Table Lamp",
+      slug: "la-diosa-sculptural-table-lamp",
+      category: "Table & Floor",
+      price: 1120,
+      compareAtPrice: 1250,
+      stock: 7,
+      featured: false,
+      featuredSlot: null,
+      badge: "Editorial Pick",
+      rating: 5.0,
+      reviewCount: 27,
+      finishes: ["Honed Travertine & Warm Linen", "Charcoal Basalt & Smoked Brass"],
+      dimensions: "Ø 320mm × H 490mm | Rotary Brass Dimmer Switch",
+      leadTime: "In Stock — Ships in 3–5 business days",
+      image:
+        "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=1200&q=85",
+      hoverImage:
+        "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=1200&q=85",
+      description:
+        "Combining a monolithic turned travertine base with a tactile spun metal shade and tactile brass rotary dimmer. Designed to bring warm architectural intimacy to sideboards, consoles, and reading nooks."
+    },
+    {
+      id: "prod-amphora-vessel",
+      name: "Terra Amphora Ceramic Vessel",
+      slug: "terra-amphora-ceramic-vessel",
+      category: "Objects & Candles",
+      price: 380,
+      compareAtPrice: null,
+      stock: 14,
+      featured: false,
+      featuredSlot: null,
+      badge: "Artisan Made",
+      rating: 4.8,
+      reviewCount: 14,
+      finishes: ["Raw Terracotta Clay", "Sandstone Chalk Glaze", "Umber Ash"],
+      dimensions: "Ø 260mm × H 390mm | Hand-thrown Stoneware",
+      leadTime: "In Stock — Ships in 2–4 business days",
+      image:
+        "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=1200&q=85",
+      hoverImage:
+        "https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&w=1200&q=85",
+      description:
+        "Wheel-thrown in small batches with twin ear handles inspired by ancient Mediterranean vessels and modern brutalist form. Featured in our dining room editorial atop a carved limestone plinth."
+    }
+  ],
+
+  spaces: [
+    {
+      id: "space-03",
+      number: "03",
+      total: "04",
+      location: "BESPOKE · NEW ZEALAND",
+      title: "CODE CASCADE",
+      summary:
+        "A custom suspension based on our Code Collection for a stunning 6m high lobby in a heritage listed building.",
+      architect: "Fearon Hay & Nightworks Bespoke Studio",
+      year: "2026",
+      featuredProductIds: ["prod-code-cascade", "prod-duomo-sconce"],
+      mainArchImage:
+        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85",
+      leftThumbImage:
+        "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80",
+      rightDetailImage:
+        "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80",
+      story:
+        "Commissioned for a landmark heritage refurbishment in Auckland, the Code Cascade installation spans six vertical meters through an arched stairwell void. Twelve solid brass pendants with hand-blown opal spheres were calibrated to follow the natural sightlines of the timber and steel balustrade."
+    },
+    {
+      id: "space-01",
+      number: "01",
+      total: "04",
+      location: "RESIDENTIAL · MELBOURNE",
+      title: "ARMADALE HOUSE",
+      summary:
+        "Warm travertine surfaces and custom Tasman Double Pendants anchor this serene minimalist family residence.",
+      architect: "Studio Esteta",
+      year: "2026",
+      featuredProductIds: ["prod-tasman-pendant", "prod-offcut-sconce", "prod-amphora-vessel"],
+      mainArchImage:
+        "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=85",
+      leftThumbImage:
+        "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=800&q=80",
+      rightDetailImage:
+        "https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=600&q=80",
+      story:
+        "Soft lime-washed walls and monolithic blackened oak furniture are paired with our signature Tasman Double Pendant in terracotta saddle leather, creating an intimate dining sanctuary."
+    },
+    {
+      id: "space-02",
+      number: "02",
+      total: "04",
+      location: "HOSPITALITY · SYDNEY",
+      title: "OSTERIA CALMA",
+      summary:
+        "Intersecting Koura linear brass pendants and Duomo sconces bathe fluted oak joinery in a golden evening glow.",
+      architect: "Richards Stanisich",
+      year: "2025",
+      featuredProductIds: ["prod-koura-linear", "prod-offcut-candle"],
+      mainArchImage:
+        "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=85",
+      leftThumbImage:
+        "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80",
+      rightDetailImage:
+        "https://images.unsplash.com/photo-1565814329452-e1efa11c5b89?auto=format&fit=crop&w=600&q=80",
+      story:
+        "Every table and sommelier station at Osteria Calma was lit with 2400K warm-dimming brass luminaires that age gracefully alongside the natural timber and marble."
+    },
+    {
+      id: "space-04",
+      number: "04",
+      total: "04",
+      location: "SANCTUARY · QUEENSTOWN",
+      title: "LAKE HAYES PAVILION",
+      summary:
+        "Raw stone Offcut Wall Sconces echo the rugged Otago landscape inside a tranquil alpine retreat.",
+      architect: "Patterson Associates",
+      year: "2026",
+      featuredProductIds: ["prod-offcut-sconce", "prod-la-diosa-lamp"],
+      mainArchImage:
+        "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=85",
+      leftThumbImage:
+        "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=800&q=80",
+      rightDetailImage:
+        "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=600&q=80",
+      story:
+        "Set against schist stone and cedar soffits, the Offcut Wall Sconce and La Diosa Table Lamp bring tactile warmth through the long southern winter evenings."
+    }
+  ],
+
+  journalPosts: [
+    {
+      id: "journal-1",
+      category: "MATERIALITY",
+      date: "OCTOBER 2026",
+      title: "The Beauty of Stone Offcuts: Zero-Waste Architectural Lighting",
+      excerpt:
+        "How discarded fragments of travertine and Verde Guatemala marble became one of our most sought-after sculptural collections.",
+      image:
+        "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=900&q=80",
+      readTime: "4 MIN READ"
+    },
+    {
+      id: "journal-2",
+      category: "STUDIO NOTES",
+      date: "SEPTEMBER 2026",
+      title: "Designing With Catenary Curves: Behind the Tasman Collection",
+      excerpt:
+        "Exploring gravity, tension, and saddle leather craftsmanship with founders Kieren and Jez.",
+      image:
+        "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=900&q=80",
+      readTime: "6 MIN READ"
+    },
+    {
+      id: "journal-3",
+      category: "LIGHTING GUIDE",
+      date: "AUGUST 2026",
+      title: "Layering Warmth: Specifying 2700K Luminaires for Plaster Interiors",
+      excerpt:
+        "A specifier's handbook to balancing architectural task lighting with intimate evening atmosphere.",
+      image:
+        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80",
+      readTime: "5 MIN READ"
+    }
+  ],
+
+  vouchers: [
+    {
+      code: "WELCOME10",
+      discountPercent: 10,
+      description: "10% off your first architectural lighting order",
+      active: true
+    },
+    {
+      code: "TRADE20",
+      discountPercent: 20,
+      description: "20% Trade & Design Specifier privilege discount",
+      active: true
+    },
+    {
+      code: "KUTAKKATIK",
+      discountPercent: 15,
+      description: "15% Exclusive VIP Studio Launch Privilege",
+      active: true
+    }
+  ],
+
+  users: [
+    {
+      id: "usr-admin",
+      name: "Studio Administrator",
+      email: "admin@kutakkatik.com",
+      username: "admin",
+      password: "admin123",
+      role: "admin",
+      company: "Nightworks / Kutak Katik HQ",
+      joinedAt: "2026-01-10"
+    },
+    {
+      id: "usr-trade",
+      name: "Elena Vance (Architect)",
+      email: "trade@kutakkatik.com",
+      username: "trade",
+      password: "trade123",
+      role: "trade",
+      company: "Vance Architectural Studio",
+      joinedAt: "2026-03-18"
+    },
+    {
+      id: "usr-customer",
+      name: "Adrian Pratama",
+      email: "customer@kutakkatik.com",
+      username: "customer",
+      password: "user123",
+      role: "customer",
+      company: "Private Residence",
+      joinedAt: "2026-06-04"
+    }
+  ],
+
+  orders: [
+    {
+      id: "NW-2026-8401",
+      createdAt: "2026-10-24T09:30:00Z",
+      customerName: "Elena Vance",
+      customerEmail: "trade@kutakkatik.com",
+      customerPhone: "+62 812 9400 1122",
+      shippingAddress: "Jl. Senopati No. 88, Kebayoran Baru, Jakarta Selatan 12190",
+      shippingMethod: "White-Glove Architectural Delivery",
+      paymentMethod: "Bank Transfer / Virtual Account",
+      status: "Shipped",
+      paymentStatus: "Verified",
+      paymentSenderName: "Elena Vance",
+      paymentSenderBank: "BCA Prioritas",
+      paymentNotes: "Lunas Invoice NW-2026-8401",
+      paymentUploadedAt: "2026-10-24T10:05:00Z",
+      paymentVerifiedAt: "2026-10-24T10:30:00Z",
+      paymentVerifiedBy: "admin@kutakkatik.com",
+      voucherCode: "TRADE20",
+      subtotal: 3140,
+      discount: 628,
+      shippingCost: 0,
+      total: 2512,
+      items: [
+        {
+          productId: "prod-tasman-pendant",
+          name: "Tasman Double Pendant",
+          finish: "Terracotta Leather & Brushed Brass",
+          price: 2450,
+          quantity: 1,
+          image:
+            "https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=400&q=80"
+        },
+        {
+          productId: "prod-offcut-sconce",
+          name: "Offcut Wall Sconce",
+          finish: "Raw Travertine & Chalk",
+          price: 690,
+          quantity: 1,
+          image:
+            "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=400&q=80"
+        }
+      ]
+    },
+    {
+      id: "NW-2026-8402",
+      createdAt: "2026-10-25T15:45:00Z",
+      customerName: "Adrian Pratama",
+      customerEmail: "customer@kutakkatik.com",
+      customerPhone: "+62 811 3200 8899",
+      shippingAddress: "Canggu Berawa Residence Villa 4, Badung, Bali 80361",
+      shippingMethod: "Standard Insured Courier",
+      paymentMethod: "QRIS (Statis / Dinamis)",
+      status: "Pending",
+      paymentStatus: "Waiting Verification",
+      paymentSenderName: "Adrian Pratama",
+      paymentSenderBank: "QRIS GoPay / BCA Mobile",
+      paymentNotes: "Pembayaran QRIS sesuai nominal tagihan",
+      paymentUploadedAt: "2026-10-25T16:00:00Z",
+      voucherCode: null,
+      subtotal: 1360,
+      discount: 0,
+      shippingCost: 0,
+      total: 1360,
+      items: [
+        {
+          productId: "prod-la-diosa-lamp",
+          name: "La Diosa Sculptural Table Lamp",
+          finish: "Honed Travertine & Warm Linen",
+          price: 1120,
+          quantity: 1,
+          image:
+            "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=400&q=80"
+        },
+        {
+          productId: "prod-offcut-candle",
+          name: "Offcut Candle Holder",
+          finish: "Verde Guatemala Marble & Brass",
+          price: 240,
+          quantity: 1,
+          image:
+            "https://images.unsplash.com/photo-1602874801007-bd458bb1b8b6?auto=format&fit=crop&w=400&q=80"
+        }
+      ]
+    }
+  ],
+
+  reviews: [
+    {
+      id: "rev-1",
+      productId: "prod-tasman-pendant",
+      author: "Clare M. — Interior Architect",
+      rating: 5,
+      date: "2026-10-12",
+      comment:
+        "The catenary drape of the Tasman Double Pendant is extraordinary in person. Our client's dining room feels like a serene gallery."
+    },
+    {
+      id: "rev-2",
+      productId: "prod-offcut-sconce",
+      author: "Hendra W.",
+      rating: 5,
+      date: "2026-10-19",
+      comment:
+        "Ordered three Offcut Wall Sconces for our travertine hallway. Each piece has its own organic stone silhouette and warm glow."
+    }
+  ]
+};
