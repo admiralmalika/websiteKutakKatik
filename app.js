@@ -2,8 +2,8 @@
 // NIGHTWORKS® · KUTAK KATIK STUDIO — E-COMMERCE & ADMIN APPLICATION ENGINE
 // ============================================================================
 
-const STORAGE_KEY = "kutakkatik_edukasi_store_v2";
-const SESSION_KEY = "kutakkatik_edukasi_session_v2";
+const STORAGE_KEY = "kutakkatik_edukasi_store_v3";
+const SESSION_KEY = "kutakkatik_edukasi_session_v3";
 
 let storeState = null;
 let sessionState = {
@@ -150,11 +150,14 @@ function renderBrandSettings() {
   const s = storeState.settings;
   const wordmarkEl = document.getElementById("heroWordmarkTitle");
   if (wordmarkEl) {
-    if (s.brandName.toLowerCase().endsWith(".id")) {
-      const base = s.brandName.slice(0, -3);
+    const heroText = (s.heroWordmark || "Mind Booster").trim();
+    if (heroText.toLowerCase() === "mind booster") {
+      wordmarkEl.innerHTML = `Mind <span class="brand-dot-id">Booster</span>`;
+    } else if (heroText.toLowerCase().endsWith(".id")) {
+      const base = heroText.slice(0, -3);
       wordmarkEl.innerHTML = `${escapeHtml(base)}<span class="brand-dot-id">.id</span>`;
     } else {
-      wordmarkEl.innerHTML = `${escapeHtml(s.brandName)}<sup>®</sup>`;
+      wordmarkEl.innerHTML = escapeHtml(heroText);
     }
   }
   const subEl = document.getElementById("heroSubtitleText");

@@ -5,6 +5,7 @@
 window.INITIAL_STORE_DATA = {
   settings: {
     brandName: "KutakKatik.id",
+    heroWordmark: "Mind Booster",
     brandSubtitle: "EKSPLORASI & TUMBUH KEMBANG",
     heroStatement:
       "Solusi Kreatif & Edukatif Tanpa Gadget: Temukan Ratusan Ide Mainan, Kelas, & Kit Eksplorasi untuk Tumbuh Kembang Anak.",

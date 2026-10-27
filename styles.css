@@ -403,7 +403,7 @@ a {
 
 .hero-wordmark-container {
   position: absolute;
-  bottom: -2.6vw;
+  bottom: 28px;
   left: 0;
   width: 100%;
   text-align: center;
@@ -415,8 +415,8 @@ a {
 .hero-wordmark {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(3.4rem, 11.5vw, 11.2rem);
-  line-height: 0.88;
+  font-size: clamp(3.2rem, 10.5vw, 10.2rem);
+  line-height: 0.95;
   color: var(--bg-cream);
   letter-spacing: -0.01em;
   display: inline-block;
