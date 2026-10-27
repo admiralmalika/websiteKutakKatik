@@ -83,9 +83,9 @@ function getConfiguredDatabaseUrl() {
     } catch (_) {}
   }
   const envUrl =
+    process.env.POSTGRES_URL_NON_POOLING ||
     process.env.DATABASE_URL ||
     process.env.POSTGRES_URL ||
-    process.env.POSTGRES_URL_NON_POOLING ||
     process.env.SUPABASE_DB_URL ||
     "";
   return envUrl.trim();
@@ -143,17 +143,23 @@ async function initPostgresPool(customUrl) {
     }
 
     const useSsl =
-      connStr.includes("sslmode=require") ||
+      connStr.includes("sslmode=") ||
       connStr.includes("neon.tech") ||
       connStr.includes("supabase.co") ||
+      connStr.includes("supabase.com") ||
       connStr.includes("railway.app") ||
       connStr.includes("render.com") ||
       connStr.includes("aivencloud.com");
 
+    // Strip sslmode=require from connectionString so node-postgres uses our ssl: { rejectUnauthorized: false }
+    const cleanConnStr = connStr
+      .replace(/([?&])sslmode=[^&]+(&|$)/i, (match, p1, p2) => (p2 === "&" ? p1 : ""))
+      .replace(/[?&]$/, "");
+
     pgPool = new Pool({
-      connectionString: connStr,
+      connectionString: cleanConnStr,
       ssl: useSsl ? { rejectUnauthorized: false } : false,
-      connectionTimeoutMillis: 6000
+      connectionTimeoutMillis: 10000
     });
 
     const client = await pgPool.connect();
