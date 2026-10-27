@@ -2,8 +2,8 @@
 // NIGHTWORKS® · KUTAK KATIK STUDIO — E-COMMERCE & ADMIN APPLICATION ENGINE
 // ============================================================================
 
-const STORAGE_KEY = "nightworks_kutakkatik_store_v1";
-const SESSION_KEY = "nightworks_kutakkatik_session_v1";
+const STORAGE_KEY = "kutakkatik_edukasi_store_v2";
+const SESSION_KEY = "kutakkatik_edukasi_session_v2";
 
 let storeState = null;
 let sessionState = {
@@ -180,15 +180,15 @@ function renderBrandSettings() {
   if (user) {
     topBtn.textContent = `${user.name} (${user.role.toUpperCase()})`;
     if (user.role === "admin") {
-      banner.innerHTML = `Logged in as <strong>Admin (${escapeHtml(user.email)})</strong> · <button class="underlined-link" onclick="openAdminOrLogin()">Open Admin Dashboard</button>`;
+      banner.innerHTML = `Login sebagai <strong>Admin (${escapeHtml(user.email)})</strong> · <button class="underlined-link" onclick="openAdminOrLogin()">Buka Admin Dashboard</button>`;
     } else if (user.role === "trade") {
-      banner.innerHTML = `✦ <strong>Trade Specifier Active:</strong> ${storeState.settings.tradeDiscountPercent}% Trade Privilege automatically applied to all prices.`;
+      banner.innerHTML = `✦ <strong>Akun Mitra Sekolah / PAUD Aktif:</strong> Diskon otomatis ${storeState.settings.tradeDiscountPercent}% diterapkan pada seluruh katalog.`;
     } else {
-      banner.innerHTML = `Welcome back, <strong>${escapeHtml(user.name)}</strong> · <button class="underlined-link" onclick="handleAccountButtonClick()">My Orders</button>`;
+      banner.innerHTML = `Halo, <strong>${escapeHtml(user.name)}</strong> · <button class="underlined-link" onclick="handleAccountButtonClick()">Pesanan Saya</button>`;
     }
   } else {
-    topBtn.textContent = "Sign In / Admin";
-    banner.innerHTML = `Are you an architect or designer? <button class="underlined-link" onclick="openAuthModal('login')">Trade &amp; Admin Login</button>`;
+    topBtn.textContent = "Masuk / Admin";
+    banner.innerHTML = `Pengelola Sekolah / PAUD atau Orang Tua? <button class="underlined-link" onclick="openAuthModal('login')">Login Akun / Mitra (-20%)</button>`;
   }
 }
 
@@ -433,10 +433,10 @@ function renderFeaturedSpaces() {
         <img src="${escapeHtml(space.rightDetailImage)}" alt="${escapeHtml(space.title)} detail" loading="lazy" />
       </div>
 
-      <span class="micro-label" style="color: var(--accent-gold);">FEATURED SPACES</span>
+      <span class="micro-label" style="color: var(--accent-gold);">RUANG &amp; KELAS EKSPLORASI</span>
       <h2 class="space-title">${escapeHtml(space.title)}</h2>
       <p class="space-summary">${escapeHtml(space.summary)}</p>
-      <button class="underlined-link light" onclick="openSpaceModal('${space.id}')">VIEW SPACE</button>
+      <button class="underlined-link light" onclick="openSpaceModal('${space.id}')">LIHAT DETAIL RUANG &amp; KIT</button>
     </div>
   `;
 }
@@ -460,7 +460,7 @@ function openSpaceModal(spaceId) {
       ${escapeHtml(space.title)}
     </h2>
     <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 22px;">
-      Architecture &amp; Interior Specification: <strong>${escapeHtml(space.architect || "Nightworks Studio")}</strong>
+      Kurator Program &amp; Ruang: <strong>${escapeHtml(space.architect || "Tim Kurator KutakKatik.id")}</strong>
     </p>
     <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; margin-bottom: 24px;">
       <img src="${escapeHtml(space.mainArchImage)}" alt="${escapeHtml(space.title)}" style="height: 320px; width: 100%; object-fit: cover;" />
@@ -469,7 +469,7 @@ function openSpaceModal(spaceId) {
     <p style="font-size: 0.92rem; line-height: 1.8; color: var(--text-dark); margin-bottom: 28px;">
       ${escapeHtml(space.story)}
     </p>
-    <h4 class="micro-label" style="margin-bottom: 14px;">LUMINAIRES SPECIFIED IN THIS PROJECT</h4>
+    <h4 class="micro-label" style="margin-bottom: 14px;">KIT EKSPLORASI &amp; PROGRAM YANG DIGUNAKAN</h4>
     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px;">
       ${featuredProds
         .map(
@@ -479,7 +479,7 @@ function openSpaceModal(spaceId) {
           <div>
             <div style="font-family: var(--font-serif); font-size: 1.05rem;">${escapeHtml(p.name)}</div>
             <div style="font-size: 0.76rem; color: var(--text-bronze-dark); margin-bottom: 6px;">${formatPrice(getEffectiveUnitPrice(p))}</div>
-            <button class="underlined-link" onclick="openProductDetailModal('${p.id}')">View Luminaire</button>
+            <button class="underlined-link" onclick="openProductDetailModal('${p.id}')">Lihat Detail Kit</button>
           </div>
         </div>
       `
@@ -491,35 +491,135 @@ function openSpaceModal(spaceId) {
 }
 
 // ============================================================================
-// SECTION 4 & 6: FOUNDERS & JOURNAL MODALS
+// SECTION 4 & 6: FOUNDERS, KONSULTASI GRATIS & JOURNAL MODALS
 // ============================================================================
 function openFoundersModal() {
   const modalBody = document.getElementById("editorialModalBody");
   modalBody.innerHTML = `
-    <span class="micro-label">STUDIO PHILOSOPHY &amp; FOUNDERS</span>
+    <span class="micro-label">FILOSOFI EDUKASI &amp; TIM KUTAKKATIK.ID</span>
     <h2 class="serif-heading" style="font-size: 2.2rem; color: var(--text-dark); margin: 10px 0 18px;">
-      Crafted to Endure Generations
+      Menghadirkan Eksplorasi Nyata Tanpa Ketergantungan Gadget
     </h2>
     <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 28px; align-items: center; margin-bottom: 22px;">
       <img
         src="https://images.unsplash.com/photo-1556157382-97eda2d62296?auto=format&fit=crop&w=900&q=85"
-        alt="Founders in Studio"
+        alt="Tim Kurator KutakKatik.id"
         style="width: 100%; height: 320px; object-fit: cover;"
       />
       <div>
         <p style="font-size: 0.9rem; line-height: 1.8; margin-bottom: 14px;">
-          Founded with a passion for raw architectural honesty, <strong>${escapeHtml(storeState.settings.brandName)}®</strong> bridges sculptural art and precision engineering.
+          Lahir dari kepedulian terhadap tingginya paparan layar (screen time) pada anak usia dini, <strong>${escapeHtml(storeState.settings.brandName)}®</strong> menghadirkan ratusan ide permainan sensorik, sains, dan motorik yang mudah langsung dipraktikkan di rumah maupun sekolah.
         </p>
         <p style="font-size: 0.9rem; line-height: 1.8; margin-bottom: 14px;">
-          Our solid brass components are machined from billet and tumbled by hand to develop a living patina that deepens over time. Our stone series reclaims offcuts of travertine, marble, and basalt—celebrating natural geological crevices rather than hiding them.
+          Setiap Kit Eksplorasi kami menggunakan kayu lokal pilihan dengan polesan beeswax alami, tanah liat tanpa bakar (air-dry clay), serta bahan sensorik food-grade yang aman bagi tangan kecil anak.
         </p>
-        <p style="font-size: 0.84rem; color: var(--text-bronze-dark);">
-          Every luminaire is assembled and tested to international architectural standards (CE, UL, RCM &amp; SNI compliant).
+        <p style="font-size: 0.84rem; color: var(--text-bronze-dark); margin-bottom: 16px;">
+          Dilengkapi lembar panduan langkah-demi-langkah agar Orang Tua dan Pendidik dapat mendampingi tumbuh kembang anak dengan percaya diri.
         </p>
+        <button class="btn-primary" onclick="openConsultationModal()">Mulai Konsultasi Gratis →</button>
       </div>
     </div>
   `;
   openModalById("editorialModal");
+}
+
+function openConsultationModal() {
+  const modalBody = document.getElementById("editorialModalBody");
+  modalBody.innerHTML = `
+    <span class="micro-label">PENDAMPINGAN ORANG TUA &amp; PENDIDIK</span>
+    <h2 class="serif-heading" style="font-size: 2.15rem; color: var(--text-dark); margin: 6px 0 10px;">
+      Konsultasi Gratis Pilih Program &amp; Kit Eksplorasi Anak
+    </h2>
+    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">
+      Bingung memilih mainan edukatif, sensory kit, atau kelas yang paling pas untuk usia dan minat si kecil? Isi data singkat di bawah ini untuk mendapatkan rekomendasi kurator KutakKatik.id (Gratis).
+    </p>
+
+    <form onsubmit="submitConsultationForm(event)">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nama Orang Tua / Guru *</label>
+          <input type="text" name="parentName" required placeholder="Contoh: Bunda Rania" value="${sessionState.currentUser ? escapeHtml(sessionState.currentUser.name) : ""}" />
+        </div>
+        <div class="form-group">
+          <label>Nomor WhatsApp Aktif *</label>
+          <input type="tel" name="whatsapp" required placeholder="+62 812 xxxx xxxx" />
+        </div>
+        <div class="form-group">
+          <label>Kelompok Usia Anak *</label>
+          <select name="ageGroup" required onchange="updateConsultationRecommendationPreview(this.value)">
+            <option value="1-3">Usia 1–3 Tahun (Sensory Play &amp; Motorik Awal)</option>
+            <option value="3-5" selected>Usia 3–5 Tahun (Pra-Sekolah, Imajinasi &amp; Kemandirian)</option>
+            <option value="5-8">Usia 5–8 Tahun (Eksplorasi Sains, Logika &amp; Konstruksi)</option>
+            <option value="sekolah">Pengadaan Sekolah / PAUD / Daycare / Terapis</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Fokus Tumbuh Kembang Utama *</label>
+          <select name="focusGoal" required>
+            <option value="Mengurangi Ketergantungan Gadget / Screen Time">Mengurangi Ketergantungan Gadget / Screen Time</option>
+            <option value="Melatih Fokus, Motorik Halus & Persiapan Menulis">Melatih Fokus, Motorik Halus &amp; Persiapan Menulis</option>
+            <option value="Eksplorasi Sains, Alam & Kreativitas Seni">Eksplorasi Sains, Alam &amp; Kreativitas Seni</option>
+            <option value="Kurikulum Pojok Bermain Rumah / Sekolah">Kurikulum Pojok Bermain Rumah / Sekolah</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label>Ceritakan Minat atau Tantangan Si Kecil Saat Ini (Opsional)</label>
+          <textarea name="notes" rows="2" placeholder="Contoh: Anak saya usia 4 tahun cepat bosan di rumah dan sering meminta menonton YouTube..."></textarea>
+        </div>
+      </div>
+
+      <div id="consultationRecBox" style="background: var(--bg-cream); border: 1px solid var(--border-subtle); padding: 14px 18px; margin: 14px 0 20px; font-size: 0.8rem;">
+        <span class="micro-label" style="color: var(--text-bronze-dark);">REKOMENDASI INSTAN KURATOR KAMI:</span>
+        <div style="margin-top: 6px;">
+          ★ <strong>Kotak Kutak-Katik Sensory Play &amp; Motorik Lengkap</strong> + <strong>Kit Eksplorasi Sains &amp; Alam Montessori</strong>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 12px; flex-wrap: wrap;">
+        <button type="button" class="btn-outline" onclick="closeAllOverlays()">Tutup</button>
+        <button type="submit" class="btn-primary">Kirim &amp; Dapatkan Rekomendasi Kurator →</button>
+      </div>
+    </form>
+  `;
+  openModalById("editorialModal");
+}
+
+function updateConsultationRecommendationPreview(ageGroup) {
+  const box = document.getElementById("consultationRecBox");
+  if (!box) return;
+  let recText = "★ <strong>Kotak Kutak-Katik Sensory Play &amp; Motorik Lengkap</strong> + <strong>Kit Eksplorasi Sains &amp; Alam Montessori</strong>";
+  if (ageGroup === "1-3") {
+    recText = "★ <strong>Papan Aktivitas Busy Board Eksplorasi Mekanik</strong> + <strong>Kit Meronce, Tenun &amp; Koordinasi Motorik Halus</strong>";
+  } else if (ageGroup === "5-8") {
+    recText = "★ <strong>Kit Eksplorasi Sains &amp; Alam Montessori</strong> + <strong>Balok Kayu Konstruksi &amp; Geometri Natural</strong> + <strong>Kelas Eksperimen Akhir Pekan</strong>";
+  } else if (ageGroup === "sekolah") {
+    recText = "★ <strong>Paket Pojok Eksplorasi &amp; Pojok Baca PAUD / Sekolah</strong> (Termasuk Diskon Mitra 20% dengan kode <code>MITRA20</code>)";
+  }
+  box.innerHTML = `
+    <span class="micro-label" style="color: var(--text-bronze-dark);">REKOMENDASI INSTAN KURATOR KAMI:</span>
+    <div style="margin-top: 6px;">${recText}</div>
+  `;
+}
+
+function submitConsultationForm(e) {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const parentName = fd.get("parentName");
+  const ageGroup = fd.get("ageGroup");
+  const focusGoal = fd.get("focusGoal");
+
+  closeAllOverlays();
+  showToast(`Terima kasih ${parentName}! Rekomendasi Kit (${focusGoal}) telah disiapkan. Gunakan kode KUTAKKATIK10 untuk diskon 10%!`);
+
+  if (ageGroup === "sekolah") {
+    setShopCategory("Paket Sekolah");
+  } else {
+    setShopCategory("ALL");
+  }
+  const catalogEl = document.getElementById("shopCatalogSection");
+  if (catalogEl) {
+    catalogEl.scrollIntoView({ behavior: "smooth" });
+  }
 }
 
 function renderJournal() {
@@ -2027,7 +2127,7 @@ function renderAdminProducts(container) {
           <div class="form-group">
             <label>Category *</label>
             <select name="category" required>
-              ${["Pendants", "Wall Sconces", "Table & Floor", "Objects & Candles", "Bespoke"]
+              ${["Kit Eksplorasi", "Mainan Edukatif", "Sensory Play", "Kelas & Workshop", "Paket Sekolah"]
                 .map(
                   (c) =>
                     `<option value="${c}" ${editingProd && editingProd.category === c ? "selected" : ""}>${c}</option>`
@@ -2739,12 +2839,20 @@ async function saveAndTestPostgresUrl(e) {
 }
 
 function applyBrandPreset(name) {
-  storeState.settings.brandName = name;
-  storeState.settings.instagramHandle =
-    name === "Kutak Katik" ? "@KUTAKKATIKSTUDIO" : "@NIGHTWORKSSTUDIO";
+  if (name === "Kutak Katik") {
+    storeState.settings.brandName = "KutakKatik.id";
+    storeState.settings.brandSubtitle = "EKSPLORASI & TUMBUH KEMBANG";
+    storeState.settings.heroStatement =
+      "Solusi Kreatif & Edukatif Tanpa Gadget: Temukan Ratusan Ide Mainan, Kelas, & Kit Eksplorasi untuk Tumbuh Kembang Anak.";
+    storeState.settings.instagramHandle = "@KUTAKKATIK.ID";
+    storeState.settings.currency = "IDR";
+  } else {
+    storeState.settings.brandName = name;
+    storeState.settings.instagramHandle = "@NIGHTWORKSSTUDIO";
+  }
   saveStoreState();
   renderAll();
-  showToast(`Brand wordmark updated to "${name}®"`);
+  showToast(`Brand wordmark updated to "${storeState.settings.brandName}®"`);
 }
 
 function saveAdminSettings(e) {

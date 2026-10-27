@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nightworks® · Kutak Katik Studio | Architectural Lighting &amp; Design Online Shop</title>
+  <title>KutakKatik.id® | Solusi Kreatif &amp; Edukatif Tanpa Gadget — Mainan, Kelas, &amp; Kit Eksplorasi Anak</title>
   <!-- Google Fonts: Cormorant Garamond (Luxury Editorial Serif) & Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -19,16 +19,17 @@
        ======================================================================== -->
   <div class="top-utility-bar">
     <div class="utility-left">
-      <span id="utilityPromoText">COMPLIMENTARY ARCHITECTURAL COURIER ON ORDERS OVER $1,200 · CODE: WELCOME10</span>
+      <span id="utilityPromoText">GRATIS PANDUAN AKTIVITAS ORANG TUA &amp; VOUCHER DISKON 10% · KODE: KUTAKKATIK10</span>
     </div>
     <div class="utility-right">
-      <button class="utility-pill" onclick="openOrderTrackerModal()">Track Order</button>
+      <button class="utility-pill" onclick="openConsultationModal()">Konsultasi Gratis</button>
+      <button class="utility-pill" onclick="openOrderTrackerModal()">Lacak Pesanan</button>
       <select id="currencySelect" class="currency-switch" onchange="changeCurrency(this.value)" aria-label="Currency">
-        <option value="USD">USD ($)</option>
         <option value="IDR">IDR (Rp)</option>
+        <option value="USD">USD ($)</option>
       </select>
       <button class="utility-pill" id="topBarAccountBtn" onclick="handleAccountButtonClick()">
-        Sign In / Admin
+        Masuk / Admin
       </button>
     </div>
   </div>
@@ -39,11 +40,11 @@
   <header class="site-header" id="siteHeader">
     <nav aria-label="Primary Navigation">
       <ul class="nav-links">
-        <li><a href="#shopCatalogSection">SHOP</a></li>
-        <li><a href="#foundersSection">ABOUT</a></li>
-        <li><a href="#featuredSpacesSection">SPACES</a></li>
-        <li><a href="#journalSection">JOURNAL</a></li>
-        <li><a href="#tradeSpecifiersSection">TRADE</a></li>
+        <li><a href="#shopCatalogSection">PROGRAM &amp; KIT</a></li>
+        <li><a href="#foundersSection">TENTANG KAMI</a></li>
+        <li><a href="#featuredSpacesSection">RUANG &amp; KELAS</a></li>
+        <li><a href="#journalSection">JURNAL PARENTING</a></li>
+        <li><a href="#tradeSpecifiersSection">MITRA SEKOLAH</a></li>
       </ul>
     </nav>
 
@@ -123,21 +124,29 @@
         <!-- Giant Overlapping Serif Wordmark (Photo 1) -->
         <div class="hero-wordmark-container">
           <h1 class="hero-wordmark" id="heroWordmarkTitle">
-            Nightworks<sup>®</sup>
+            KutakKatik.id<sup>®</sup>
           </h1>
         </div>
       </div>
 
-      <!-- Centered Emblem + Manifesto Copy below Hero (Photo 1 bottom) -->
+      <!-- Centered Emblem + Value Proposition Headline + Clear CTA Buttons below Hero -->
       <div class="hero-manifesto">
         <div class="manifesto-ornament">
           <span class="manifesto-star">✦</span>
-          <span class="micro-label" id="heroSubtitleText">LIGHTING<br/>&amp; DESIGN</span>
+          <span class="micro-label" id="heroSubtitleText">EKSPLORASI &amp;<br/>TUMBUH KEMBANG</span>
           <span class="manifesto-star">✦</span>
         </div>
         <p class="manifesto-statement" id="heroStatementText">
-          WE CREATE CLEVER, SOPHISTICATED PRODUCTS THAT ARE ORIGINAL IN DESIGN AND MADE TO A HIGH STANDARD FROM CAREFULLY CONSIDERED, ENDURING MATERIALS.
+          Solusi Kreatif &amp; Edukatif Tanpa Gadget: Temukan Ratusan Ide Mainan, Kelas, &amp; Kit Eksplorasi untuk Tumbuh Kembang Anak.
         </p>
+        <div class="hero-cta-group">
+          <a href="#shopCatalogSection" class="btn-primary hero-cta-btn">
+            Lihat Program / Kit Kami
+          </a>
+          <button type="button" class="btn-outline hero-cta-btn" onclick="openConsultationModal()">
+            Konsultasi Gratis
+          </button>
+        </div>
       </div>
     </section>
 
@@ -145,13 +154,13 @@
          SECTION 2: FEATURED PRODUCTS — STAGGERED 3-COLUMN SHOWCASE (PHOTO 2)
          ====================================================================== -->
     <section class="featured-staggered-section" aria-labelledby="featuredProductsHeading">
-      <p class="micro-label section-micro-header" id="featuredProductsHeading">FEATURED PRODUCTS</p>
+      <p class="micro-label section-micro-header" id="featuredProductsHeading">PROGRAM &amp; KIT EKSPLORASI PILIHAN</p>
 
       <div class="staggered-trio-grid" id="staggeredFeaturedGrid">
         <!-- Populated dynamically by app.js from the 3 featured slot products -->
       </div>
 
-      <a href="#shopCatalogSection" class="underlined-link">VIEW ALL PRODUCTS</a>
+      <a href="#shopCatalogSection" class="underlined-link">LIHAT SEMUA PROGRAM &amp; KIT</a>
     </section>
 
     <!-- ======================================================================
@@ -160,20 +169,20 @@
     <section class="shop-catalog-section" id="shopCatalogSection">
       <div class="shop-header-row">
         <div class="shop-title-group">
-          <span class="micro-label">ARCHITECTURAL COLLECTION</span>
-          <h2>Curated Luminaires &amp; Objects</h2>
+          <span class="micro-label">KATALOG EDUKASI &amp; TUMBUH KEMBANG ANAK</span>
+          <h2>Mainan Edukatif, Kelas, &amp; Kit Eksplorasi</h2>
         </div>
         <div id="activeUserBanner" style="font-size: 0.76rem; color: var(--text-bronze-dark);"></div>
       </div>
 
       <div class="shop-controls-bar">
         <div class="category-tabs" id="categoryTabs">
-          <button class="cat-tab active" data-cat="ALL" onclick="setShopCategory('ALL')">All Collections</button>
-          <button class="cat-tab" data-cat="Pendants" onclick="setShopCategory('Pendants')">Pendants</button>
-          <button class="cat-tab" data-cat="Wall Sconces" onclick="setShopCategory('Wall Sconces')">Wall Sconces</button>
-          <button class="cat-tab" data-cat="Table & Floor" onclick="setShopCategory('Table & Floor')">Table &amp; Floor</button>
-          <button class="cat-tab" data-cat="Objects & Candles" onclick="setShopCategory('Objects & Candles')">Objects &amp; Candles</button>
-          <button class="cat-tab" data-cat="Bespoke" onclick="setShopCategory('Bespoke')">Bespoke</button>
+          <button class="cat-tab active" data-cat="ALL" onclick="setShopCategory('ALL')">Semua Program &amp; Kit</button>
+          <button class="cat-tab" data-cat="Kit Eksplorasi" onclick="setShopCategory('Kit Eksplorasi')">Kit Eksplorasi</button>
+          <button class="cat-tab" data-cat="Mainan Edukatif" onclick="setShopCategory('Mainan Edukatif')">Mainan Edukatif</button>
+          <button class="cat-tab" data-cat="Sensory Play" onclick="setShopCategory('Sensory Play')">Sensory Play</button>
+          <button class="cat-tab" data-cat="Kelas & Workshop" onclick="setShopCategory('Kelas & Workshop')">Kelas &amp; Workshop</button>
+          <button class="cat-tab" data-cat="Paket Sekolah" onclick="setShopCategory('Paket Sekolah')">Paket Sekolah</button>
         </div>
 
         <div class="filter-right-group">
@@ -181,14 +190,14 @@
             type="search"
             id="shopSearchInput"
             class="shop-search-input"
-            placeholder="Search sconces, pendants, stone..."
+            placeholder="Cari kit sains, sensory play, balok kayu, usia..."
             oninput="renderShopCatalog()"
           />
           <select id="shopSortSelect" class="shop-select" onchange="renderShopCatalog()" aria-label="Sort products">
-            <option value="featured">Sort: Featured</option>
-            <option value="price-asc">Price: Low to High</option>
-            <option value="price-desc">Price: High to Low</option>
-            <option value="rating">Highest Rated</option>
+            <option value="featured">Urutkan: Unggulan</option>
+            <option value="price-asc">Harga: Terendah ke Tertinggi</option>
+            <option value="price-desc">Harga: Tertinggi ke Terendah</option>
+            <option value="rating">Rating Tertinggi</option>
           </select>
         </div>
       </div>
@@ -223,14 +232,14 @@
     <section class="founders-section" id="foundersSection">
       <div class="founders-grid">
         <div class="founders-copy-col">
-          <span class="micro-label">FOUNDERS</span>
+          <span class="micro-label">TENTANG KUTAKKATIK.ID</span>
           <h2 class="serif-heading">
-            OUR ORIGINAL DESIGN APPROACH ENSURES YOUR PROJECT WILL STAND OUT FROM THE ORDINARY.
+            PENDEKATAN KREATIF &amp; EDUKATIF KAMI MEMBANTU ANAK TUMBUH AKTIF, MANDIRI, DAN INGIN TAHU TANPA GADGET.
           </h2>
           <p>
-            We provide beautiful lighting solutions that are unique, original, designed and engineered to last. Every piece is conceived in our studio with raw brass, architectural stone, and hand-finished patinas.
+            Kami merancang mainan edukatif, kit eksplorasi sains &amp; sensorik, serta program kelas anak dengan material kayu alami, tanah liat, dan bahan ramah anak yang aman serta teruji mendukung tahap tumbuh kembang usia dini.
           </p>
-          <button class="underlined-link" onclick="openFoundersModal()">READ MORE</button>
+          <button class="underlined-link" onclick="openFoundersModal()">BACA SELENGKAPNYA</button>
         </div>
 
         <div class="founders-portrait-col">
@@ -280,17 +289,18 @@
 
         <div class="trade-copy">
           <h2 class="serif-heading">
-            TRADE AND DESIGN<br/>INDUSTRY SPECIFIERS
+            MITRA SEKOLAH, PAUD &amp;<br/>TERAPIS TUMBUH KEMBANG
           </h2>
           <p>
-            Our trade accounts are exclusive for industry specifiers such as interior designers, architects and builders. By being a trade member, you can receive instant project quotes and order online using your exclusive discounted pricing.
+            Program kemitraan kami dikhususkan bagi sekolah, TK/PAUD, daycare, komunitas parenting, dan terapis tumbuh kembang anak. Sebagai Mitra KutakKatik.id, Anda mendapatkan potongan harga otomatis 20% serta kurasi kurikulum kit eksplorasi untuk kelas Anda.
           </p>
           <p>
-            Our experienced team can assist with advice, sampling and lead times on our collections.
+            Tim kurator edukasi kami siap mendampingi pemilihan kit sesuai kelompok usia dan kebutuhan stimulasi siswa Anda.
           </p>
           <div class="trade-links-row">
-            <button class="underlined-link" onclick="openAuthModal('register-trade')">SIGN UP</button>
-            <button class="underlined-link" onclick="openAuthModal('login')">LOGIN</button>
+            <button class="underlined-link" onclick="openAuthModal('register-trade')">DAFTAR MITRA SEKOLAH</button>
+            <button class="underlined-link" onclick="openAuthModal('login')">LOGIN MITRA</button>
+            <button class="underlined-link" onclick="openConsultationModal()">KONSULTASI GRATIS</button>
           </div>
         </div>
       </div>
@@ -303,15 +313,15 @@
         <a href="#shopCatalogSection" class="insta-float-card insta-float-1">
           <img
             src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=600&q=80"
-            alt="Sculptural vanity mirror flanked by brass sconces"
+            alt="Pojok bermain dan eksplorasi anak KutakKatik.id"
           />
         </a>
 
-        <!-- Floating Photo 2 (Top right bedroom timber table & bronze wall sconce) -->
+        <!-- Floating Photo 2 (Top right bedroom timber table & bronze wall light) -->
         <a href="#shopCatalogSection" class="insta-float-card insta-float-2">
           <img
             src="https://images.unsplash.com/photo-1534349762230-e0cadf78f5da?auto=format&fit=crop&w=600&q=80"
-            alt="Bedside oak table with bronze wall light"
+            alt="Kit meronce dan motorik halus anak"
           />
         </a>
 
@@ -325,13 +335,13 @@
             </svg>
           </div>
           <h2 class="serif-heading">
-            JOIN US ON INSTAGRAM<br/>
-            TO BE THE FIRST TO SEE<br/>
-            OUR LATEST DESIGN<br/>
-            IDEAS AND INSTALLED<br/>
-            PROJECTS
+            IKUTI KAMI DI INSTAGRAM<br/>
+            UNTUK INSPIRASI IDE<br/>
+            BERMAIN TANPA GADGET,<br/>
+            JADWAL KELAS, &amp; KARYA<br/>
+            EKSPLORASI ANAK
           </h2>
-          <a href="#shopCatalogSection" class="underlined-link" id="instaHandleLink">@NIGHTWORKSSTUDIO</a>
+          <a href="#shopCatalogSection" class="underlined-link" id="instaHandleLink">@KUTAKKATIK.ID</a>
         </div>
 
         <!-- Floating Photo 3 (Bottom left opal sphere sconces) -->
@@ -364,9 +374,9 @@
          SECTION 6: STUDIO JOURNAL
          ====================================================================== -->
     <section class="journal-section" id="journalSection">
-      <span class="micro-label">ARCHITECTURAL NOTES</span>
+      <span class="micro-label">CATATAN PARENTING &amp; EDUKASI</span>
       <h2 class="serif-heading" style="font-size: 2.1rem; color: var(--text-dark); margin-top: 6px;">
-        From the Studio Journal
+        Jurnal Tumbuh Kembang &amp; Ide Bermain
       </h2>
       <div class="journal-grid" id="journalGrid">
         <!-- Populated dynamically by app.js -->
@@ -380,51 +390,51 @@
   <footer class="site-footer">
     <div class="footer-grid">
       <div class="footer-col">
-        <div class="footer-brand-title" id="footerBrandTitle">Nightworks®</div>
+        <div class="footer-brand-title" id="footerBrandTitle">KutakKatik.id®</div>
         <p style="font-size: 0.8rem; color: rgba(248,244,239,0.68); max-width: 310px; margin-bottom: 18px;">
-          Architectural lighting and tactile design objects crafted from solid brass, travertine, and enduring natural materials.
+          Solusi kreatif &amp; edukatif tanpa gadget: menghadirkan ratusan ide mainan kayu, kelas anak, dan kit eksplorasi untuk tumbuh kembang optimal.
         </p>
         <form class="newsletter-form" onsubmit="handleNewsletterSubmit(event)">
-          <input type="email" placeholder="Enter your email for studio dispatches..." required />
-          <button type="submit">Join</button>
+          <input type="email" placeholder="Masukkan email untuk ide bermain mingguan..." required />
+          <button type="submit">Gabung</button>
         </form>
       </div>
 
       <div class="footer-col">
-        <h4>Collections</h4>
+        <h4>Program &amp; Kit Kami</h4>
         <ul class="footer-links">
-          <li><a href="#shopCatalogSection" onclick="setShopCategory('Pendants')">Pendant Luminaires</a></li>
-          <li><a href="#shopCatalogSection" onclick="setShopCategory('Wall Sconces')">Architectural Wall Sconces</a></li>
-          <li><a href="#shopCatalogSection" onclick="setShopCategory('Table & Floor')">Table &amp; Floor Lamps</a></li>
-          <li><a href="#shopCatalogSection" onclick="setShopCategory('Objects & Candles')">Stone Objects &amp; Candles</a></li>
-          <li><a href="#shopCatalogSection" onclick="setShopCategory('Bespoke')">Bespoke Chandeliers</a></li>
+          <li><a href="#shopCatalogSection" onclick="setShopCategory('Kit Eksplorasi')">Kit Eksplorasi Sains &amp; Alam</a></li>
+          <li><a href="#shopCatalogSection" onclick="setShopCategory('Mainan Edukatif')">Mainan Edukatif Montessori</a></li>
+          <li><a href="#shopCatalogSection" onclick="setShopCategory('Sensory Play')">Kotak Sensory Play &amp; Kriya</a></li>
+          <li><a href="#shopCatalogSection" onclick="setShopCategory('Kelas & Workshop')">Kelas &amp; Workshop Akhir Pekan</a></li>
+          <li><a href="#shopCatalogSection" onclick="setShopCategory('Paket Sekolah')">Paket Pojok Eksplorasi PAUD/TK</a></li>
         </ul>
       </div>
 
       <div class="footer-col">
-        <h4>Client Services</h4>
+        <h4>Layanan Orang Tua</h4>
         <ul class="footer-links">
-          <li><button onclick="openOrderTrackerModal()">Track Your Order</button></li>
-          <li><button onclick="openAuthModal('register-trade')">Trade Specifier Application</button></li>
-          <li><button onclick="toggleCartDrawer(true)">Shopping Bag &amp; Vouchers</button></li>
-          <li><button onclick="openFoundersModal()">Care &amp; Living Patina Guide</button></li>
+          <li><button onclick="openConsultationModal()">Konsultasi Gratis Pilih Kit</button></li>
+          <li><button onclick="openOrderTrackerModal()">Lacak Pesanan &amp; Upload Bukti</button></li>
+          <li><button onclick="openAuthModal('register-trade')">Pendaftaran Mitra Sekolah</button></li>
+          <li><button onclick="toggleCartDrawer(true)">Keranjang Belanja &amp; Voucher</button></li>
         </ul>
       </div>
 
       <div class="footer-col">
         <h4>Studio &amp; Admin</h4>
         <ul class="footer-links">
-          <li><button onclick="openAdminOrLogin()" style="color: var(--accent-gold); font-weight: 600;">→ Open Admin Dashboard</button></li>
+          <li><button onclick="openAdminOrLogin()" style="color: var(--accent-gold); font-weight: 600;">→ Buka Admin Dashboard</button></li>
           <li><span>Admin Email: admin@kutakkatik.com</span></li>
           <li><span>Admin Pass: admin123</span></li>
-          <li><span>Showrooms: Christchurch · Melbourne · Jakarta</span></li>
+          <li><span>Studio: Jakarta · BSD · Bandung</span></li>
         </ul>
       </div>
     </div>
 
     <div class="footer-bottom">
-      <span>© 2026 Nightworks® · Kutak Katik Studio. All Rights Reserved.</span>
-      <span>Architectural Lighting E-Commerce &amp; Admin Suite</span>
+      <span>© 2026 KutakKatik.id® — Solusi Kreatif &amp; Edukatif Tanpa Gadget. All Rights Reserved.</span>
+      <span>Mainan Edukatif, Kelas, &amp; Kit Eksplorasi Tumbuh Kembang Anak</span>
     </div>
   </footer>
 

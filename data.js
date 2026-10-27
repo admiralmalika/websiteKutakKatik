@@ -1,225 +1,225 @@
 // ============================================================================
-// NIGHTWORKS / KUTAK KATIK STUDIO — INITIAL STORE & CATALOG SEED DATA
+// KUTAKKATIK.ID® — INITIAL STORE, PROGRAM, KELAS & KIT EKSPLORASI ANAK DATA
 // ============================================================================
 
 window.INITIAL_STORE_DATA = {
   settings: {
-    brandName: "Nightworks",
-    brandSubtitle: "LIGHTING & DESIGN",
+    brandName: "KutakKatik.id",
+    brandSubtitle: "EKSPLORASI & TUMBUH KEMBANG",
     heroStatement:
-      "WE CREATE CLEVER, SOPHISTICATED PRODUCTS THAT ARE ORIGINAL IN DESIGN AND MADE TO A HIGH STANDARD FROM CAREFULLY CONSIDERED, ENDURING MATERIALS.",
-    instagramHandle: "@NIGHTWORKSSTUDIO",
-    currency: "USD", // Can be switched between "USD" and "IDR" in navbar or Admin
+      "Solusi Kreatif & Edukatif Tanpa Gadget: Temukan Ratusan Ide Mainan, Kelas, & Kit Eksplorasi untuk Tumbuh Kembang Anak.",
+    instagramHandle: "@KUTAKKATIK.ID",
+    currency: "IDR", // Can be switched between "IDR" and "USD" in navbar or Admin
     idrRate: 16000,
     tradeDiscountPercent: 20,
-    freeShippingThreshold: 1200,
-    qrisMerchantName: "KUTAK KATIK STUDIO",
+    freeShippingThreshold: 25,
+    qrisMerchantName: "KUTAKKATIK.ID EDUKASI",
     qrisMerchantCity: "JAKARTA",
     qrisNmid: "ID1026000889901",
     qrisMode: "dynamic", // "dynamic" (auto-encodes nominal) or "static"
     qrisCustomImage: "", // Optional custom Static QRIS image uploaded by Admin
-    bankAccounts: "BCA 8820-9910-22 a/n Kutak Katik Studio | Mandiri 124-00-9988776-5 a/n Kutak Katik Studio"
+    bankAccounts: "BCA 8820-9910-22 a/n KutakKatik.id | Mandiri 124-00-9988776-5 a/n KutakKatik.id"
   },
 
   products: [
     {
-      id: "prod-offcut-sconce",
-      name: "Offcut Wall Sconce",
-      slug: "offcut-wall-sconce",
-      category: "Wall Sconces",
-      price: 690,
-      compareAtPrice: 780,
-      stock: 18,
+      id: "prod-kit-sains-alam",
+      name: "Kit Eksplorasi Sains & Alam Montessori",
+      slug: "kit-eksplorasi-sains-alam-montessori",
+      category: "Kit Eksplorasi",
+      price: 18, // Rp 288.000
+      compareAtPrice: 22,
+      stock: 25,
       featured: true,
       featuredSlot: 1, // Left card in 3-column staggered showcase
-      badge: "Signature",
+      badge: "Favorit Orang Tua",
       rating: 4.9,
-      reviewCount: 24,
-      finishes: ["Raw Travertine & Chalk", "Aged Brass & Limestone", "Smoked Bronze & Onyx"],
-      dimensions: "Ø 185mm × D 88mm | Integrated 6W Warm Dim LED (2700K)",
-      leadTime: "In Stock — Ships in 3–5 business days",
+      reviewCount: 42,
+      finishes: ["Usia 3–5 Tahun (Pra-Sekolah)", "Usia 5–8 Tahun (Eksplorasi Mandiri)", "Paket Kakak-Adik (2 Set)"],
+      dimensions: "Box Kayu & Karton Edukasi 28×22×8 cm | 12 Proyek Eksperimen + Buku Panduan Orang Tua",
+      leadTime: "Ready Stock — Dikirim dalam 1–2 hari kerja",
       image:
         "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=1200&q=85",
       hoverImage:
         "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=1200&q=85",
       description:
-        "Sculpted from hand-selected stone offcuts paired with a precision-machined cylindrical diffuser. Every Offcut Wall Sconce celebrates the natural fracture lines of architectural stone, casting a soft, atmospheric halo across textured plaster or timber walls."
+        "Dirancang oleh kurator tumbuh kembang anak untuk mengalihkan perhatian anak dari layar gadget melalui 12 eksperimen sains dan eksplorasi alam yang aman di rumah. Lengkap dengan kaca pembesar kayu, spesimen botani, kartu tantangan harian, dan panduan pendampingan orang tua."
     },
     {
-      id: "prod-tasman-pendant",
-      name: "Tasman Double Pendant",
-      slug: "tasman-double-pendant",
-      category: "Pendants",
-      price: 2450,
-      compareAtPrice: 2690,
-      stock: 9,
+      id: "prod-sensory-play-lengkap",
+      name: "Kotak Kutak-Katik Sensory Play & Motorik Lengkap",
+      slug: "kotak-kutak-katik-sensory-play-motorik",
+      category: "Kit Eksplorasi",
+      price: 28, // Rp 448.000
+      compareAtPrice: 34,
+      stock: 16,
       featured: true,
       featuredSlot: 2, // Center tall card in 3-column staggered showcase
-      badge: "Iconic Piece",
+      badge: "Best Seller",
       rating: 5.0,
-      reviewCount: 38,
-      finishes: ["Terracotta Leather & Brushed Brass", "Natural Saddle & Aged Bronze", "Blackened Steel & Espresso"],
-      dimensions: "L 1680mm × H 320mm (Drop adjustable up to 2400mm) | 24V Warm LED",
-      leadTime: "Made to Order — Ships in 10–14 business days",
+      reviewCount: 64,
+      finishes: ["Tema Eksplorasi Hutan & Bumi", "Tema Samudra & Pasir Kinetik", "Tema Konstruksi & Arsitek Cilik"],
+      dimensions: "Baki Kayu Pinus Solid 42×30×7 cm | 30+ Komponen Taktil Alami Non-Toxic (Food Grade)",
+      leadTime: "Ready Stock — Dikirim dalam 1–2 hari kerja",
       image:
         "https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=1200&q=85",
       hoverImage:
         "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=85",
       description:
-        "A poised architectural statement defined by twin catenary curves suspended from ultra-fine tension cables. Crafted with supple saddle leather and solid turned brass terminals, the Tasman Double Pendant anchors dining rooms and gallery spaces with effortless calm."
+        "Program kit eksplorasi andalan KutakKatik.id yang menggabungkan stimulasi 7 indra, koordinasi mata-tangan, dan daya imajinasi terbuka (open-ended play). Setiap kotak berisi baki kayu pinus halus, sendok takar kayu, bahan sensorik food-grade, figur kayu, dan 30 ide permainan tanpa gadget."
     },
     {
-      id: "prod-offcut-candle",
-      name: "Offcut Candle Holder",
-      slug: "offcut-candle-holder",
-      category: "Objects & Candles",
-      price: 240,
+      id: "prod-balok-kayu-konstruksi",
+      name: "Balok Kayu Konstruksi & Geometri Natural",
+      slug: "balok-kayu-konstruksi-geometri-natural",
+      category: "Mainan Edukatif",
+      price: 15, // Rp 240.000
       compareAtPrice: null,
-      stock: 34,
+      stock: 30,
       featured: true,
       featuredSlot: 3, // Right card in 3-column staggered showcase
-      badge: "Limited Batch",
-      rating: 4.8,
-      reviewCount: 19,
-      finishes: ["Verde Guatemala Marble & Brass", "Carrara & Brushed Brass", "Travertine & Bronze"],
-      dimensions: "W 130mm × D 110mm × H 45mm (Includes 2 hand-dipped taper candles)",
-      leadTime: "In Stock — Ships in 2–3 business days",
+      badge: "SNI & Non-Toxic",
+      rating: 4.9,
+      reviewCount: 29,
+      finishes: ["Natural Kayu Sungkai (48 Pcs)", "Earthy Terracotta & Sage (48 Pcs)", "Master Builder Set (80 Pcs)"],
+      dimensions: "Kotak Penyimpanan Kayu 32×26×10 cm | Finishing Beeswax Alami Aman untuk Anak",
+      leadTime: "Ready Stock — Dikirim dalam 1–2 hari kerja",
       image:
         "https://images.unsplash.com/photo-1602874801007-bd458bb1b8b6?auto=format&fit=crop&w=1200&q=85",
       hoverImage:
         "https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&w=1200&q=85",
       description:
-        "Born from our zero-waste stone workshop initiative, each Offcut Candle Holder pairs an organic fragment of veined marble with a heavy knurled solid brass collar. No two stone bases are ever identical."
+        "Set balok arsitektur dan geometri presisi dari kayu solid Indonesia dengan polesan beeswax murni tanpa cat sintetis. Melatih kecerdasan spasial, logika keseimbangan, pemecahan masalah, dan kesabaran anak sejak usia dini."
     },
     {
-      id: "prod-code-cascade",
-      name: "Code Cascade 12-Light Chandelier",
-      slug: "code-cascade-chandelier",
-      category: "Bespoke",
-      price: 6890,
-      compareAtPrice: null,
-      stock: 4,
+      id: "prod-paket-sekolah-paud",
+      name: "Paket Pojok Eksplorasi & Pojok Baca PAUD / Sekolah",
+      slug: "paket-pojok-eksplorasi-paud-sekolah",
+      category: "Paket Sekolah",
+      price: 120, // Rp 1.920.000
+      compareAtPrice: 145,
+      stock: 8,
       featured: false,
       featuredSlot: null,
-      badge: "Bespoke Series",
+      badge: "Kurikulum Merdeka",
       rating: 5.0,
-      reviewCount: 11,
-      finishes: ["Brushed Solid Brass & Opal Glass", "Aged Bronze & Frosted Sphere"],
-      dimensions: "Canopy Ø 650mm × Custom Drop up to 6000mm | DALI Dimmable",
-      leadTime: "Bespoke Production — 3–4 weeks",
+      reviewCount: 15,
+      finishes: ["Paket Kelas Kecil (10–15 Anak)", "Paket Sekolah Lengkap (25–30 Anak)"],
+      dimensions: "12 Kit Eksplorasi + Rak Display Kayu Montessori + Modul Kurikulum Guru",
+      leadTime: "Pre-Order Kurasi Sekolah — 5–7 hari kerja",
       image:
         "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=85",
       hoverImage:
         "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85",
       description:
-        "Designed for double-height voids, grand stairwells, and heritage foyers. Code Cascade orchestrates hand-blown triplex opal glass spheres and linear brass counterweights in a rhythmic vertical composition."
+        "Solusi terpadu untuk TK, PAUD, Daycare, dan ruang bermain ramah anak. Mencakup koleksi lengkap alat peraga Montessori, kit eksperimen grup, modul kurikulum mingguan untuk pengajar, serta sesi pelatihan fasilitator."
     },
     {
-      id: "prod-koura-linear",
-      name: "Koura Cross Linear Pendant",
-      slug: "koura-cross-linear-pendant",
-      category: "Pendants",
-      price: 1890,
-      compareAtPrice: 2100,
-      stock: 12,
+      id: "prod-kelas-kreatif-akhir-pekan",
+      name: "Kelas Eksperimen Sains & Kriya Anak (Sesi Offline / Online)",
+      slug: "kelas-eksperimen-sains-kriya-anak",
+      category: "Kelas & Workshop",
+      price: 12, // Rp 192.000
+      compareAtPrice: 15,
+      stock: 20,
       featured: false,
       featuredSlot: null,
-      badge: "Best Seller",
+      badge: "Termasuk Alat & Bahan",
       rating: 4.9,
-      reviewCount: 31,
-      finishes: ["Tumbled Aged Brass", "Raw Brushed Brass", "Blackened Gunmetal"],
-      dimensions: "L 1500mm × H 480mm × D 120mm | Bi-directional Warm LED",
-      leadTime: "In Stock — Ships in 3–5 business days",
+      reviewCount: 37,
+      finishes: ["Sesi Studio Akhir Pekan (90 Menit)", "Kelas Interaktif Live + Kirim Kit ke Rumah", "Paket Langganan 4 Sesi Bulanan"],
+      dimensions: "Usia 3–9 Tahun | Termasuk Kit Bahan Eksplorasi Lengkap & Sertifikat Anak",
+      leadTime: "Jadwal Setiap Sabtu & Minggu — Konfirmasi Instan",
       image:
         "https://images.unsplash.com/photo-1565814329452-e1efa11c5b89?auto=format&fit=crop&w=1200&q=85",
       hoverImage:
         "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=85",
       description:
-        "Intersecting architectural brass tubes locked by precision machined joinery. Ideal above kitchen islands and long architectural worktables, offering both task downlighting and ambient ceiling wash."
+        "Kelas eksplorasi interaktif yang dipandu fasilitator edukasi KutakKatik.id. Anak diajak merakit proyek mekanika sederhana, eksperimen warna alami, dan prakarya tangan yang menumbuhkan rasa percaya diri serta keingintahuan ilmiah."
     },
     {
-      id: "prod-duomo-sconce",
-      name: "Duomo Piccolo Wall Light",
-      slug: "duomo-piccolo-wall-light",
-      category: "Wall Sconces",
-      price: 540,
+      id: "prod-kit-meronce-motorik",
+      name: "Kit Meronce, Tenun & Koordinasi Motorik Halus",
+      slug: "kit-meronce-tenun-motorik-halus",
+      category: "Sensory Play",
+      price: 11, // Rp 176.000
       compareAtPrice: null,
-      stock: 22,
+      stock: 28,
       featured: false,
       featuredSlot: null,
-      badge: "New Release",
+      badge: "Persiapan Menulis",
       rating: 4.9,
-      reviewCount: 16,
-      finishes: ["Brushed Brass", "Dark Bronze", "Warm Alabaster White"],
-      dimensions: "H 145mm × W 90mm × D 105mm | IP44 Bathroom Rated",
-      leadTime: "In Stock — Ships in 2–4 business days",
+      reviewCount: 22,
+      finishes: ["Manik Kayu Bumi & Tali Katun", "Bingkai Tenun Mini & Benang Wol Alami", "Bundling Meronce + Tenun"],
+      dimensions: "Pouch Linen 24×18 cm | 60 Manik Geometri Kayu + 4 Jarum Kayu Tumpul Aman",
+      leadTime: "Ready Stock — Dikirim dalam 1–2 hari kerja",
       image:
         "https://images.unsplash.com/photo-1534349762230-e0cadf78f5da?auto=format&fit=crop&w=1200&q=85",
       hoverImage:
         "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1200&q=85",
       description:
-        "A compact domed wall sconce machined from solid brass billet. Engineered with an IP44 moisture rating, making it equally suited for serene bedside reading or fluted stone bathroom vanities."
+        "Menguatkan otot jari tangan (pincer grasp) sebagai fondasi utama sebelum anak belajar memegang pensil dan menulis. Melatih konsentrasi, pengenalan pola warna, dan ketekunan dengan material kayu dan katun organik."
     },
     {
-      id: "prod-la-diosa-lamp",
-      name: "La Diosa Sculptural Table Lamp",
-      slug: "la-diosa-sculptural-table-lamp",
-      category: "Table & Floor",
-      price: 1120,
-      compareAtPrice: 1250,
-      stock: 7,
+      id: "prod-busy-board-montessori",
+      name: "Papan Aktivitas Busy Board Eksplorasi Mekanik",
+      slug: "papan-aktivitas-busy-board-montessori",
+      category: "Mainan Edukatif",
+      price: 24, // Rp 384.000
+      compareAtPrice: 28,
+      stock: 11,
       featured: false,
       featuredSlot: null,
-      badge: "Editorial Pick",
+      badge: "Rekomendasi Terapis",
       rating: 5.0,
-      reviewCount: 27,
-      finishes: ["Honed Travertine & Warm Linen", "Charcoal Basalt & Smoked Brass"],
-      dimensions: "Ø 320mm × H 490mm | Rotary Brass Dimmer Switch",
-      leadTime: "In Stock — Ships in 3–5 business days",
+      reviewCount: 33,
+      finishes: ["Edisi Kemandirian Harian (14 Aktivitas)", "Edisi Roda Gigi & Kunci Logika (18 Aktivitas)"],
+      dimensions: "Papan Birch Solid 45×35 cm | Sudut Membulat Halus & Komponen Kuningan Kokoh",
+      leadTime: "Ready Stock — Dikirim dalam 1–3 hari kerja",
       image:
         "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=1200&q=85",
       hoverImage:
         "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=1200&q=85",
       description:
-        "Combining a monolithic turned travertine base with a tactile spun metal shade and tactile brass rotary dimmer. Designed to bring warm architectural intimacy to sideboards, consoles, and reading nooks."
+        "Dirancang untuk memfasilitasi rasa ingin tahu anak terhadap benda-benda di sekitarnya secara aman. Dilengkapi gerendel kuningan, roda gigi kayu, sakelar taktil, tali sepatu, dan labirin logika untuk melatih kemandirian (practical life skills)."
     },
     {
-      id: "prod-amphora-vessel",
-      name: "Terra Amphora Ceramic Vessel",
-      slug: "terra-amphora-ceramic-vessel",
-      category: "Objects & Candles",
-      price: 380,
+      id: "prod-kit-kriya-tanah-liat",
+      name: "Kit Kriya Tanah Liat Alami & Botani Anak",
+      slug: "kit-kriya-tanah-liat-botani-anak",
+      category: "Sensory Play",
+      price: 14, // Rp 224.000
       compareAtPrice: null,
-      stock: 14,
+      stock: 19,
       featured: false,
       featuredSlot: null,
-      badge: "Artisan Made",
+      badge: "Tanpa Oven / Air-Dry",
       rating: 4.8,
-      reviewCount: 14,
-      finishes: ["Raw Terracotta Clay", "Sandstone Chalk Glaze", "Umber Ash"],
-      dimensions: "Ø 260mm × H 390mm | Hand-thrown Stoneware",
-      leadTime: "In Stock — Ships in 2–4 business days",
+      reviewCount: 19,
+      finishes: ["Terracotta Air-Dry Clay Set", "Stoneware Chalk & Botanical Press", "Paket Keluarga (1.5 Kg Clay)"],
+      dimensions: "Box 25×20×9 cm | 1 Kg Air-Dry Clay Alami, Alat Ukir Kayu, & Pigmen Mineral",
+      leadTime: "Ready Stock — Dikirim dalam 1–2 hari kerja",
       image:
         "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=1200&q=85",
       hoverImage:
         "https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&w=1200&q=85",
       description:
-        "Wheel-thrown in small batches with twin ear handles inspired by ancient Mediterranean vessels and modern brutalist form. Featured in our dining room editorial atop a carved limestone plinth."
+        "Mengajak anak merasakan tekstur tanah liat alami yang mengering sendiri tanpa perlu dibakar oven. Anak dapat mencetak jejak daun, membuat mangkuk kecil, dan melukisnya dengan pigmen warna bumi yang aman di kulit."
     }
   ],
 
   spaces: [
     {
       id: "space-03",
-      number: "03",
+      number: "01",
       total: "04",
-      location: "BESPOKE · NEW ZEALAND",
-      title: "CODE CASCADE",
+      location: "RUANG EKSPLORASI · JAKARTA SELATAN",
+      title: "STUDIO BERMAIN TANPA GADGET",
       summary:
-        "A custom suspension based on our Code Collection for a stunning 6m high lobby in a heritage listed building.",
-      architect: "Fearon Hay & Nightworks Bespoke Studio",
+        "Pojok eksplorasi rumah dan studio belajar ramah anak yang dirancang untuk menumbuhkan fokus, imajinasi, dan kemandirian melalui material alami.",
+      architect: "Tim Kurator Edukasi KutakKatik.id",
       year: "2026",
-      featuredProductIds: ["prod-code-cascade", "prod-duomo-sconce"],
+      featuredProductIds: ["prod-sensory-play-lengkap", "prod-kit-sains-alam"],
       mainArchImage:
         "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85",
       leftThumbImage:
@@ -227,19 +227,19 @@ window.INITIAL_STORE_DATA = {
       rightDetailImage:
         "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80",
       story:
-        "Commissioned for a landmark heritage refurbishment in Auckland, the Code Cascade installation spans six vertical meters through an arched stairwell void. Twelve solid brass pendants with hand-blown opal spheres were calibrated to follow the natural sightlines of the timber and steel balustrade."
+        "Dirancang dengan prinsip Montessori dan estetika hangat yang menenangkan sensorik anak (tidak berlebihan warna mencolok yang memicu overstimulasi). Setiap rak rendah memudahkan anak memilih sendiri Kit Eksplorasi Sains, Sensory Play, dan Balok Kayu mereka, lalu merapikannya kembali secara mandiri."
     },
     {
       id: "space-01",
-      number: "01",
+      number: "02",
       total: "04",
-      location: "RESIDENTIAL · MELBOURNE",
-      title: "ARMADALE HOUSE",
+      location: "RUANG KELUARGA · BSD & BINTARO",
+      title: "POJOK KUTAK-KATIK DI RUMAH",
       summary:
-        "Warm travertine surfaces and custom Tasman Double Pendants anchor this serene minimalist family residence.",
-      architect: "Studio Esteta",
+        "Transformasi sudut ruang keluarga menjadi area eksplorasi kreatif yang membuat anak betah beraktivitas berjam-jam tanpa meminta layar gadget.",
+      architect: "Konsultasi Ruang Main KutakKatik.id",
       year: "2026",
-      featuredProductIds: ["prod-tasman-pendant", "prod-offcut-sconce", "prod-amphora-vessel"],
+      featuredProductIds: ["prod-sensory-play-lengkap", "prod-balok-kayu-konstruksi", "prod-kit-kriya-tanah-liat"],
       mainArchImage:
         "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=85",
       leftThumbImage:
@@ -247,19 +247,19 @@ window.INITIAL_STORE_DATA = {
       rightDetailImage:
         "https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=600&q=80",
       story:
-        "Soft lime-washed walls and monolithic blackened oak furniture are paired with our signature Tasman Double Pendant in terracotta saddle leather, creating an intimate dining sanctuary."
+        "Dengan rotasi mainan mingguan menggunakan Kotak Kutak-Katik Sensory Play dan Balok Konstruksi Natural, ruang keluarga tetap rapi dan estetis sekaligus menjadi laboratorium tumbuh kembang yang hangat bagi orang tua dan anak."
     },
     {
       id: "space-02",
-      number: "02",
+      number: "03",
       total: "04",
-      location: "HOSPITALITY · SYDNEY",
-      title: "OSTERIA CALMA",
+      location: "KELAS AKHIR PEKAN · BANDUNG",
+      title: "KELAS KRIYA & SAINS CILIK",
       summary:
-        "Intersecting Koura linear brass pendants and Duomo sconces bathe fluted oak joinery in a golden evening glow.",
-      architect: "Richards Stanisich",
-      year: "2025",
-      featuredProductIds: ["prod-koura-linear", "prod-offcut-candle"],
+        "Sesi bermain terarah bersama fasilitator tumbuh kembang untuk melatih keberanian mencoba, kerja sama tim, dan motorik halus.",
+      architect: "Program Kelas KutakKatik.id",
+      year: "2026",
+      featuredProductIds: ["prod-kelas-kreatif-akhir-pekan", "prod-kit-meronce-motorik"],
       mainArchImage:
         "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=85",
       leftThumbImage:
@@ -267,19 +267,19 @@ window.INITIAL_STORE_DATA = {
       rightDetailImage:
         "https://images.unsplash.com/photo-1565814329452-e1efa11c5b89?auto=format&fit=crop&w=600&q=80",
       story:
-        "Every table and sommelier station at Osteria Calma was lit with 2400K warm-dimming brass luminaires that age gracefully alongside the natural timber and marble."
+        "Setiap akhir pekan, anak-anak berkumpul untuk bereksperimen dengan bahan alam, merakit karya kayu, dan bercerita di depan teman sebaya—membangun kemampuan komunikasi dan kepercayaan diri sejak usia dini."
     },
     {
       id: "space-04",
       number: "04",
       total: "04",
-      location: "SANCTUARY · QUEENSTOWN",
-      title: "LAKE HAYES PAVILION",
+      location: "MITRA SEKOLAH · SURABAYA & BALI",
+      title: "LABORATORIUM EKSPLORASI PAUD",
       summary:
-        "Raw stone Offcut Wall Sconces echo the rugged Otago landscape inside a tranquil alpine retreat.",
-      architect: "Patterson Associates",
+        "Pengadaan kit edukasi terkurasi dan sudut sensorik untuk sekolah, TK/PAUD, serta pusat terapi tumbuh kembang anak.",
+      architect: "Divisi Kemitraan Sekolah KutakKatik.id",
       year: "2026",
-      featuredProductIds: ["prod-offcut-sconce", "prod-la-diosa-lamp"],
+      featuredProductIds: ["prod-paket-sekolah-paud", "prod-busy-board-montessori"],
       mainArchImage:
         "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=85",
       leftThumbImage:
@@ -287,63 +287,63 @@ window.INITIAL_STORE_DATA = {
       rightDetailImage:
         "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=600&q=80",
       story:
-        "Set against schist stone and cedar soffits, the Offcut Wall Sconce and La Diosa Table Lamp bring tactile warmth through the long southern winter evenings."
+        "Mendukung sekolah dan pendidik menghadirkan pembelajaran berbasis eksplorasi nyata (hands-on learning) yang selaras dengan tahap perkembangan sensorik dan motorik anak."
     }
   ],
 
   journalPosts: [
     {
       id: "journal-1",
-      category: "MATERIALITY",
-      date: "OCTOBER 2026",
-      title: "The Beauty of Stone Offcuts: Zero-Waste Architectural Lighting",
+      category: "TUMBUH KEMBANG",
+      date: "OKTOBER 2026",
+      title: "Mengapa Permainan Sensorik Tanpa Gadget Meningkatkan Fokus & Regulasi Emosi Anak",
       excerpt:
-        "How discarded fragments of travertine and Verde Guatemala marble became one of our most sought-after sculptural collections.",
+        "Bagaimana aktivitas meraba tekstur tanah liat, meronce kayu, dan menuang biji-bijian membantu perkembangan saraf sensorik serta ketenangan anak.",
       image:
         "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=900&q=80",
-      readTime: "4 MIN READ"
+      readTime: "4 MENIT BACA"
     },
     {
       id: "journal-2",
-      category: "STUDIO NOTES",
+      category: "PANDUAN ORANG TUA",
       date: "SEPTEMBER 2026",
-      title: "Designing With Catenary Curves: Behind the Tasman Collection",
+      title: "Cara Menata Pojok Eksplorasi Montessori di Rumah agar Anak Mandiri",
       excerpt:
-        "Exploring gravity, tension, and saddle leather craftsmanship with founders Kieren and Jez.",
+        "Tips praktis memilih 4–5 kit eksplorasi di rak terbuka agar anak mudah memilih aktivitas sendiri tanpa cepat bosan.",
       image:
         "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=900&q=80",
-      readTime: "6 MIN READ"
+      readTime: "5 MENIT BACA"
     },
     {
       id: "journal-3",
-      category: "LIGHTING GUIDE",
-      date: "AUGUST 2026",
-      title: "Layering Warmth: Specifying 2700K Luminaires for Plaster Interiors",
+      category: "IDE BERMAIN HARIAN",
+      date: "AGUSTUS 2026",
+      title: "5 Eksperimen Sains & Alam Sederhana untuk Akhir Pekan Bersama Si Kecil",
       excerpt:
-        "A specifier's handbook to balancing architectural task lighting with intimate evening atmosphere.",
+        "Kumpulan ide aktivitas 20 menit yang seru untuk memantik rasa ingin tahu ilmiah dan mempererat ikatan orang tua dan anak.",
       image:
         "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80",
-      readTime: "5 MIN READ"
+      readTime: "5 MENIT BACA"
     }
   ],
 
   vouchers: [
     {
+      code: "KUTAKKATIK10",
+      discountPercent: 10,
+      description: "Diskon 10% untuk pembelian pertama Kit Eksplorasi & Mainan Edukatif",
+      active: true
+    },
+    {
+      code: "MITRA20",
+      discountPercent: 20,
+      description: "Diskon 20% khusus Mitra Sekolah, PAUD, Daycare & Terapis Tumbuh Kembang",
+      active: true
+    },
+    {
       code: "WELCOME10",
       discountPercent: 10,
-      description: "10% off your first architectural lighting order",
-      active: true
-    },
-    {
-      code: "TRADE20",
-      discountPercent: 20,
-      description: "20% Trade & Design Specifier privilege discount",
-      active: true
-    },
-    {
-      code: "KUTAKKATIK",
-      discountPercent: 15,
-      description: "15% Exclusive VIP Studio Launch Privilege",
+      description: "Diskon 10% Sambutan Keluarga Baru KutakKatik.id",
       active: true
     }
   ],
@@ -351,74 +351,74 @@ window.INITIAL_STORE_DATA = {
   users: [
     {
       id: "usr-admin",
-      name: "Studio Administrator",
+      name: "Admin KutakKatik.id",
       email: "admin@kutakkatik.com",
       username: "admin",
       password: "admin123",
       role: "admin",
-      company: "Nightworks / Kutak Katik HQ",
+      company: "KutakKatik.id HQ",
       joinedAt: "2026-01-10"
     },
     {
       id: "usr-trade",
-      name: "Elena Vance (Architect)",
+      name: "Ibu Nadia Putri (Kepala Sekolah PAUD)",
       email: "trade@kutakkatik.com",
       username: "trade",
       password: "trade123",
       role: "trade",
-      company: "Vance Architectural Studio",
+      company: "Taman Eksplorasi Anak Ceria",
       joinedAt: "2026-03-18"
     },
     {
       id: "usr-customer",
-      name: "Adrian Pratama",
+      name: "Bunda Rania & Adrian",
       email: "customer@kutakkatik.com",
       username: "customer",
       password: "user123",
       role: "customer",
-      company: "Private Residence",
+      company: "Keluarga KutakKatik",
       joinedAt: "2026-06-04"
     }
   ],
 
   orders: [
     {
-      id: "NW-2026-8401",
+      id: "KK-2026-8401",
       createdAt: "2026-10-24T09:30:00Z",
-      customerName: "Elena Vance",
+      customerName: "Ibu Nadia Putri",
       customerEmail: "trade@kutakkatik.com",
       customerPhone: "+62 812 9400 1122",
       shippingAddress: "Jl. Senopati No. 88, Kebayoran Baru, Jakarta Selatan 12190",
-      shippingMethod: "White-Glove Architectural Delivery",
+      shippingMethod: "Pengiriman Kurir Reguler Terasuransi",
       paymentMethod: "Bank Transfer / Virtual Account",
       status: "Shipped",
       paymentStatus: "Verified",
-      paymentSenderName: "Elena Vance",
-      paymentSenderBank: "BCA Prioritas",
-      paymentNotes: "Lunas Invoice NW-2026-8401",
+      paymentSenderName: "Nadia Putri",
+      paymentSenderBank: "BCA",
+      paymentNotes: "Lunas Pengadaan Kit Eksplorasi PAUD KK-2026-8401",
       paymentUploadedAt: "2026-10-24T10:05:00Z",
       paymentVerifiedAt: "2026-10-24T10:30:00Z",
       paymentVerifiedBy: "admin@kutakkatik.com",
-      voucherCode: "TRADE20",
-      subtotal: 3140,
-      discount: 628,
+      voucherCode: "MITRA20",
+      subtotal: 46,
+      discount: 9,
       shippingCost: 0,
-      total: 2512,
+      total: 37,
       items: [
         {
-          productId: "prod-tasman-pendant",
-          name: "Tasman Double Pendant",
-          finish: "Terracotta Leather & Brushed Brass",
-          price: 2450,
+          productId: "prod-sensory-play-lengkap",
+          name: "Kotak Kutak-Katik Sensory Play & Motorik Lengkap",
+          finish: "Tema Eksplorasi Hutan & Bumi",
+          price: 28,
           quantity: 1,
           image:
             "https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=400&q=80"
         },
         {
-          productId: "prod-offcut-sconce",
-          name: "Offcut Wall Sconce",
-          finish: "Raw Travertine & Chalk",
-          price: 690,
+          productId: "prod-kit-sains-alam",
+          name: "Kit Eksplorasi Sains & Alam Montessori",
+          finish: "Usia 3–5 Tahun (Pra-Sekolah)",
+          price: 18,
           quantity: 1,
           image:
             "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=400&q=80"
@@ -426,40 +426,40 @@ window.INITIAL_STORE_DATA = {
       ]
     },
     {
-      id: "NW-2026-8402",
+      id: "KK-2026-8402",
       createdAt: "2026-10-25T15:45:00Z",
-      customerName: "Adrian Pratama",
+      customerName: "Bunda Rania & Adrian",
       customerEmail: "customer@kutakkatik.com",
       customerPhone: "+62 811 3200 8899",
-      shippingAddress: "Canggu Berawa Residence Villa 4, Badung, Bali 80361",
-      shippingMethod: "Standard Insured Courier",
+      shippingAddress: "Jl. Bintaro Utama Sektor 9 No. 14, Tangerang Selatan 15229",
+      shippingMethod: "Kurir Instan / Same Day",
       paymentMethod: "QRIS (Statis / Dinamis)",
       status: "Pending",
       paymentStatus: "Waiting Verification",
-      paymentSenderName: "Adrian Pratama",
+      paymentSenderName: "Rania Pratama",
       paymentSenderBank: "QRIS GoPay / BCA Mobile",
-      paymentNotes: "Pembayaran QRIS sesuai nominal tagihan",
+      paymentNotes: "Pembayaran QRIS untuk Busy Board & Balok Kayu",
       paymentUploadedAt: "2026-10-25T16:00:00Z",
       voucherCode: null,
-      subtotal: 1360,
+      subtotal: 39,
       discount: 0,
       shippingCost: 0,
-      total: 1360,
+      total: 39,
       items: [
         {
-          productId: "prod-la-diosa-lamp",
-          name: "La Diosa Sculptural Table Lamp",
-          finish: "Honed Travertine & Warm Linen",
-          price: 1120,
+          productId: "prod-busy-board-montessori",
+          name: "Papan Aktivitas Busy Board Eksplorasi Mekanik",
+          finish: "Edisi Kemandirian Harian (14 Aktivitas)",
+          price: 24,
           quantity: 1,
           image:
             "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=400&q=80"
         },
         {
-          productId: "prod-offcut-candle",
-          name: "Offcut Candle Holder",
-          finish: "Verde Guatemala Marble & Brass",
-          price: 240,
+          productId: "prod-balok-kayu-konstruksi",
+          name: "Balok Kayu Konstruksi & Geometri Natural",
+          finish: "Natural Kayu Sungkai (48 Pcs)",
+          price: 15,
           quantity: 1,
           image:
             "https://images.unsplash.com/photo-1602874801007-bd458bb1b8b6?auto=format&fit=crop&w=400&q=80"
@@ -471,21 +471,21 @@ window.INITIAL_STORE_DATA = {
   reviews: [
     {
       id: "rev-1",
-      productId: "prod-tasman-pendant",
-      author: "Clare M. — Interior Architect",
+      productId: "prod-sensory-play-lengkap",
+      author: "Bunda Dinda — Ibu 2 Anak (Usia 3 & 6 Tahun)",
       rating: 5,
       date: "2026-10-12",
       comment:
-        "The catenary drape of the Tasman Double Pendant is extraordinary in person. Our client's dining room feels like a serene gallery."
+        "Sejak ada Kotak Kutak-Katik Sensory Play ini di rumah, anak-anak pulang sekolah langsung sibuk bereksplorasi tanpa minta HP lagi. Panduan aktivitasnya sangat membantu orang tua!"
     },
     {
       id: "rev-2",
-      productId: "prod-offcut-sconce",
-      author: "Hendra W.",
+      productId: "prod-kit-sains-alam",
+      author: "Pak Hendra W. — Ayah & Pendidik",
       rating: 5,
       date: "2026-10-19",
       comment:
-        "Ordered three Offcut Wall Sconces for our travertine hallway. Each piece has its own organic stone silhouette and warm glow."
+        "Kualitas material kayunya sangat halus dan eksperimen sainsnya mudah dipraktikkan bersama anak di akhir pekan."
     }
   ]
 };
