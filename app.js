@@ -150,7 +150,12 @@ function renderBrandSettings() {
   const s = storeState.settings;
   const wordmarkEl = document.getElementById("heroWordmarkTitle");
   if (wordmarkEl) {
-    wordmarkEl.innerHTML = `${escapeHtml(s.brandName)}<sup>®</sup>`;
+    if (s.brandName.toLowerCase().endsWith(".id")) {
+      const base = s.brandName.slice(0, -3);
+      wordmarkEl.innerHTML = `${escapeHtml(base)}<span class="brand-dot-id">.id</span>`;
+    } else {
+      wordmarkEl.innerHTML = `${escapeHtml(s.brandName)}<sup>®</sup>`;
+    }
   }
   const subEl = document.getElementById("heroSubtitleText");
   if (subEl) {
