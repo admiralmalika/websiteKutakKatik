@@ -17,7 +17,11 @@ const ENV_FILE = path.join(ROOT_DIR, ".env");
 const SCHEMA_FILE = path.join(ROOT_DIR, "schema.sql");
 
 if (!fs.existsSync(DATA_DIR)) {
-  fs.mkdirSync(DATA_DIR, { recursive: true });
+  try {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+  } catch (_) {
+    // Ignore on read-only serverless filesystems (e.g., Vercel)
+  }
 }
 
 // Simple .env loader (no external dotenv dependency needed)
@@ -78,20 +82,38 @@ function getConfiguredDatabaseUrl() {
       }
     } catch (_) {}
   }
-  return process.env.DATABASE_URL ? process.env.DATABASE_URL.trim() : "";
+  const envUrl =
+    process.env.DATABASE_URL ||
+    process.env.POSTGRES_URL ||
+    process.env.POSTGRES_URL_NON_POOLING ||
+    process.env.SUPABASE_DB_URL ||
+    "";
+  return envUrl.trim();
 }
 
 function saveConfiguredDatabaseUrl(databaseUrl) {
-  fs.writeFileSync(
-    DB_CONFIG_FILE,
-    JSON.stringify({ databaseUrl: (databaseUrl || "").trim(), updatedAt: new Date().toISOString() }, null, 2),
-    "utf8"
-  );
-  // Also write/update .env so CLI tools see DATABASE_URL
+  const cleaned = (databaseUrl || "").trim();
+  if (cleaned) {
+    process.env.DATABASE_URL = cleaned;
+  }
   try {
-    const envContent = `PORT=${process.env.PORT || 3000}\nDATABASE_URL=${(databaseUrl || "").trim()}\n`;
+    fs.writeFileSync(
+      DB_CONFIG_FILE,
+      JSON.stringify({ databaseUrl: cleaned, updatedAt: new Date().toISOString() }, null, 2),
+      "utf8"
+    );
+  } catch (_) {}
+  // Also write/update .env so CLI tools see DATABASE_URL locally
+  try {
+    const envContent = `PORT=${process.env.PORT || 3000}\nDATABASE_URL=${cleaned}\n`;
     fs.writeFileSync(ENV_FILE, envContent, "utf8");
   } catch (_) {}
+}
+
+async function ensurePostgresConnected() {
+  if (!dbState.connected && getConfiguredDatabaseUrl()) {
+    await initPostgresPool();
+  }
 }
 
 async function initPostgresPool(customUrl) {
@@ -137,7 +159,18 @@ async function initPostgresPool(customUrl) {
     const client = await pgPool.connect();
     try {
       const verRes = await client.query("SELECT version()");
-      const schemaSql = fs.readFileSync(SCHEMA_FILE, "utf8");
+      let schemaSql = "";
+      if (fs.existsSync(SCHEMA_FILE)) {
+        schemaSql = fs.readFileSync(SCHEMA_FILE, "utf8");
+      } else {
+        schemaSql = `
+          CREATE TABLE IF NOT EXISTS store_kv (key VARCHAR(100) PRIMARY KEY, payload JSONB NOT NULL, updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW());
+          CREATE TABLE IF NOT EXISTS products (id VARCHAR(100) PRIMARY KEY, name VARCHAR(255) NOT NULL, slug VARCHAR(255) NOT NULL, category VARCHAR(120) NOT NULL, price NUMERIC(12, 2) NOT NULL DEFAULT 0, compare_at_price NUMERIC(12, 2), stock INTEGER NOT NULL DEFAULT 0, featured BOOLEAN NOT NULL DEFAULT FALSE, featured_slot INTEGER, badge VARCHAR(100), rating NUMERIC(3, 2) DEFAULT 5.0, review_count INTEGER DEFAULT 0, finishes JSONB DEFAULT '[]'::jsonb, dimensions TEXT, lead_time TEXT, image TEXT, hover_image TEXT, description TEXT, updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW());
+          CREATE TABLE IF NOT EXISTS users (id VARCHAR(100) PRIMARY KEY, name VARCHAR(255) NOT NULL, email VARCHAR(255) UNIQUE NOT NULL, username VARCHAR(120), password VARCHAR(255) NOT NULL, role VARCHAR(50) NOT NULL DEFAULT 'customer', company VARCHAR(255), joined_at VARCHAR(40), created_at TIMESTAMPTZ NOT NULL DEFAULT NOW());
+          CREATE TABLE IF NOT EXISTS orders (id VARCHAR(100) PRIMARY KEY, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), customer_name VARCHAR(255) NOT NULL, customer_email VARCHAR(255) NOT NULL, customer_phone VARCHAR(100), shipping_address TEXT NOT NULL, shipping_method VARCHAR(255), payment_method VARCHAR(255), status VARCHAR(60) NOT NULL DEFAULT 'Pending', payment_status VARCHAR(60) NOT NULL DEFAULT 'Unpaid', payment_proof_url TEXT, payment_sender_name VARCHAR(255), payment_sender_bank VARCHAR(120), payment_notes TEXT, payment_uploaded_at TIMESTAMPTZ, payment_verified_at TIMESTAMPTZ, payment_verified_by VARCHAR(255), voucher_code VARCHAR(100), subtotal NUMERIC(12, 2) NOT NULL DEFAULT 0, discount NUMERIC(12, 2) NOT NULL DEFAULT 0, shipping_cost NUMERIC(12, 2) NOT NULL DEFAULT 0, total NUMERIC(12, 2) NOT NULL DEFAULT 0, items JSONB NOT NULL DEFAULT '[]'::jsonb);
+          CREATE TABLE IF NOT EXISTS vouchers (code VARCHAR(100) PRIMARY KEY, discount_percent NUMERIC(5, 2) NOT NULL, description TEXT, active BOOLEAN NOT NULL DEFAULT TRUE);
+        `;
+      }
       await client.query(schemaSql);
 
       dbState = {
@@ -352,6 +385,7 @@ async function syncStoreToPostgres(storeData) {
 }
 
 async function readStore() {
+  await ensurePostgresConnected();
   // 1. Try PostgreSQL first if connected
   if (pgPool && dbState.connected) {
     try {
@@ -376,11 +410,12 @@ async function readStore() {
 }
 
 async function writeStore(data) {
-  // Always keep local backup in data/store.json
+  await ensurePostgresConnected();
+  // Keep local backup in data/store.json when running locally
   try {
     fs.writeFileSync(STORE_FILE, JSON.stringify(data, null, 2), "utf8");
-  } catch (err) {
-    console.error("Error writing store.json:", err.message);
+  } catch (_) {
+    // Ignore on read-only serverless environment (Vercel)
   }
 
   // If PostgreSQL is active, sync to relational tables + store_kv
@@ -408,6 +443,7 @@ function getDbStatus() {
 
 module.exports = {
   initPostgresPool,
+  ensurePostgresConnected,
   readStore,
   writeStore,
   configureAndTestPostgres,

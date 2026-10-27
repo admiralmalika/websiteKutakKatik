@@ -13,7 +13,11 @@ const ROOT_DIR = __dirname;
 const UPLOADS_DIR = path.join(ROOT_DIR, "uploads");
 
 if (!fs.existsSync(UPLOADS_DIR)) {
-  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+  try {
+    fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+  } catch (_) {
+    // Ignore on read-only serverless environment (Vercel)
+  }
 }
 
 const MIME_TYPES = {
@@ -55,8 +59,8 @@ function sendJson(res, statusCode, payload) {
   res.end(JSON.stringify(payload));
 }
 
-const server = http.createServer(async (req, res) => {
-  const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
+const requestHandler = async (req, res) => {
+  const parsedUrl = new URL(req.url, `http://${req.headers.host || "localhost"}`);
   const pathname = parsedUrl.pathname;
 
   // 1. API: GET or POST /api/state (Store & PostgreSQL Persistence)
@@ -79,6 +83,7 @@ const server = http.createServer(async (req, res) => {
 
   // 2. API: GET /api/db-status (PostgreSQL Connection Status)
   if (pathname === "/api/db-status" && req.method === "GET") {
+    await db.ensurePostgresConnected();
     return sendJson(res, 200, db.getDbStatus());
   }
 
@@ -93,7 +98,7 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
-  // 4. API: POST /api/upload-proof (Save Bukti Transfer Image to /uploads)
+  // 4. API: POST /api/upload-proof (Save Bukti Transfer Image to /uploads or fallback to Supabase Data URL on Vercel)
   if (pathname === "/api/upload-proof" && req.method === "POST") {
     try {
       const { orderId, imageDataUrl } = await readJsonBody(req);
@@ -109,8 +114,13 @@ const server = http.createServer(async (req, res) => {
       const safeOrder = String(orderId || "order").replace(/[^a-zA-Z0-9_-]/g, "");
       const fileName = `proof-${safeOrder}-${Date.now()}.${ext}`;
       const filePath = path.join(UPLOADS_DIR, fileName);
-      fs.writeFileSync(filePath, buffer);
-      return sendJson(res, 200, { ok: true, proofUrl: `/uploads/${fileName}` });
+      try {
+        fs.writeFileSync(filePath, buffer);
+        return sendJson(res, 200, { ok: true, proofUrl: `/uploads/${fileName}` });
+      } catch (_) {
+        // On Vercel Serverless (read-only disk), store compressed Data URL directly in Supabase PostgreSQL
+        return sendJson(res, 200, { ok: true, proofUrl: imageDataUrl });
+      }
     } catch (err) {
       return sendJson(res, 500, { error: err.message });
     }
@@ -154,17 +164,24 @@ const server = http.createServer(async (req, res) => {
       res.end(content);
     });
   });
-});
+};
 
-// Initialize PostgreSQL on boot (if DATABASE_URL is present) and start HTTP server
-db.initPostgresPool().finally(() => {
-  server.listen(PORT, () => {
-    const status = db.getDbStatus();
-    console.log("==================================================================");
-    console.log(`  Nightworks® · Kutak Katik Online Shop & Admin Server Running!`);
-    console.log(`  Storefront URL : http://localhost:${PORT}`);
-    console.log(`  Database Mode  : ${status.connected ? "PostgreSQL (" + status.pgVersion + ")" : "Local JSON Fallback (Set DATABASE_URL to connect PostgreSQL)"}`);
-    console.log(`  Admin Login    : admin@kutakkatik.com / admin123`);
-    console.log("==================================================================");
+const server = http.createServer(requestHandler);
+
+// Export handler for Vercel Serverless deployment
+module.exports = requestHandler;
+
+// Initialize PostgreSQL on boot and start HTTP server when running directly (`node server.js`)
+if (require.main === module) {
+  db.initPostgresPool().finally(() => {
+    server.listen(PORT, () => {
+      const status = db.getDbStatus();
+      console.log("==================================================================");
+      console.log(`  Nightworks® · Kutak Katik Online Shop & Admin Server Running!`);
+      console.log(`  Storefront URL : http://localhost:${PORT}`);
+      console.log(`  Database Mode  : ${status.connected ? "PostgreSQL (" + status.pgVersion + ")" : "Local JSON Fallback (Set DATABASE_URL to connect PostgreSQL)"}`);
+      console.log(`  Admin Login    : admin@kutakkatik.com / admin123`);
+      console.log("==================================================================");
+    });
   });
-});
+}
