@@ -1978,6 +1978,61 @@ a {
 }
 
 /* ============================================================================
+   SPECIFIC PHOTO LABELS / BADGES ACROSS ALL WEBSITE IMAGES
+   ============================================================================ */
+.photo-labeled-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.photo-spec-label {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(54, 27, 12, 0.86);
+  backdrop-filter: blur(6px);
+  color: var(--text-light);
+  border: 1px solid rgba(245, 184, 46, 0.45);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-family: var(--font-sans);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1.3;
+  box-shadow: 0 6px 18px rgba(30, 12, 4, 0.25);
+  pointer-events: none;
+  max-width: calc(100% - 28px);
+}
+
+.photo-spec-label::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-gold);
+  flex-shrink: 0;
+}
+
+.photo-spec-label.bottom-left {
+  top: auto;
+  bottom: 14px;
+  left: 14px;
+}
+
+.photo-spec-label.hero-label {
+  top: 22px;
+  left: 28px;
+  padding: 7px 16px;
+  font-size: 0.68rem;
+}
+
+/* ============================================================================
    RESPONSIVE BREAKPOINTS
    ============================================================================ */
 @media (max-width: 1024px) {

@@ -233,11 +233,15 @@ function renderStaggeredFeatured() {
   ].filter((x) => x.product);
 
   container.innerHTML = trio
-    .map(({ product, cls }) => {
+    .map(({ product, cls }, idx) => {
       const effectivePrice = getEffectiveUnitPrice(product);
+      const specLabel = `UNGGULAN 0${idx + 1} · ${product.category.toUpperCase()} · ${product.badge || "PILIHAN KURATOR"}`;
       return `
         <article class="staggered-card ${cls}" onclick="openProductDetailModal('${product.id}')">
-          <img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" loading="lazy" />
+          <div class="photo-labeled-wrap">
+            <span class="photo-spec-label">${escapeHtml(specLabel)}</span>
+            <img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" loading="lazy" />
+          </div>
           <div class="staggered-card-caption">
             <h3 class="staggered-card-title">${escapeHtml(product.name)}</h3>
             <span class="staggered-card-price">${formatPrice(effectivePrice)}</span>
@@ -311,7 +315,8 @@ function renderShopCatalog() {
       const effectivePrice = getEffectiveUnitPrice(p);
       const isWishlisted = sessionState.wishlist.includes(p.id);
       const outOfStock = Number(p.stock) <= 0;
-      const defaultFinish = (p.finishes && p.finishes[0]) || "Standard Studio Finish";
+      const defaultFinish = (p.finishes && p.finishes[0]) || "Paket Standar";
+      const photoSpec = `${p.category} · ${defaultFinish}`;
 
       return `
         <article class="product-card">
@@ -323,10 +328,11 @@ function renderShopCatalog() {
                 ? `<span class="product-badge">${escapeHtml(p.badge)}</span>`
                 : ""
             }
+            <span class="photo-spec-label bottom-left" style="bottom: 52px;">${escapeHtml(photoSpec)}</span>
             <button
               class="wishlist-card-btn ${isWishlisted ? "active" : ""}"
               onclick="toggleWishlistItem('${p.id}', event)"
-              title="Save to Specification List"
+              title="Simpan ke Wishlist"
               aria-label="Wishlist"
             >
               ${isWishlisted ? "♥" : "♡"}
@@ -421,7 +427,8 @@ function renderFeaturedSpaces() {
         </div>
       </div>
 
-      <div class="space-left-thumb">
+      <div class="space-left-thumb photo-labeled-wrap">
+        <span class="photo-spec-label bottom-left">SUDUT EKSPLORASI · ${escapeHtml(space.title)}</span>
         <img src="${escapeHtml(space.leftThumbImage)}" alt="${escapeHtml(space.title)} overview" loading="lazy" />
       </div>
 
@@ -430,14 +437,16 @@ function renderFeaturedSpaces() {
 
     <!-- Center Column: Tall Arched Photo (Photo 3 Signature Archway) -->
     <div class="spaces-center-arch">
-      <div class="arch-frame" onclick="openSpaceModal('${space.id}')" style="cursor: pointer;">
+      <div class="arch-frame photo-labeled-wrap" onclick="openSpaceModal('${space.id}')" style="cursor: pointer;">
+        <span class="photo-spec-label bottom-left">RUANG UTAMA ${escapeHtml(space.number)} · ${escapeHtml(space.location)}</span>
         <img src="${escapeHtml(space.mainArchImage)}" alt="${escapeHtml(space.title)}" loading="lazy" />
       </div>
     </div>
 
     <!-- Right Column: Top-Right Square Detail + Title + Description + View Space -->
     <div class="spaces-right-col">
-      <div class="space-right-detail-thumb">
+      <div class="space-right-detail-thumb photo-labeled-wrap">
+        <span class="photo-spec-label bottom-left">DETAIL MODUL · ${escapeHtml(space.architect || "KUTAKKATIK.ID")}</span>
         <img src="${escapeHtml(space.rightDetailImage)}" alt="${escapeHtml(space.title)} detail" loading="lazy" />
       </div>
 
@@ -636,9 +645,10 @@ function renderJournal() {
 
   grid.innerHTML = storeState.journalPosts
     .map(
-      (post) => `
+      (post, idx) => `
       <article class="journal-card" onclick="openJournalModal('${post.id}')">
-        <div class="journal-img-wrap">
+        <div class="journal-img-wrap photo-labeled-wrap">
+          <span class="photo-spec-label bottom-left">JURNAL 0${idx + 1} · ${escapeHtml(post.category)} (${escapeHtml(post.readTime)})</span>
           <img src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}" loading="lazy" />
         </div>
         <span class="micro-label">${escapeHtml(post.category)} · ${escapeHtml(post.date)}</span>
@@ -701,7 +711,8 @@ function renderProductDetailModalContent() {
   const container = document.getElementById("productDetailBody");
   container.innerHTML = `
     <div class="product-detail-layout">
-      <div class="product-detail-gallery">
+      <div class="product-detail-gallery photo-labeled-wrap">
+        <span class="photo-spec-label bottom-left">${escapeHtml(p.category)} · ${escapeHtml(currentSelectedFinish)}</span>
         <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" id="detailMainImg" />
       </div>
 
