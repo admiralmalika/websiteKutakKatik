@@ -22,6 +22,8 @@
     <div class="utility-left"></div>
     <div class="utility-right">
       <button class="utility-pill" onclick="openConsultationModal()">Konsultasi Gratis</button>
+      <button class="utility-pill" onclick="openFaqModal()">FAQ &amp; Material</button>
+      <button class="utility-pill" onclick="openReturnPolicyModal()">Garansi &amp; Pengembalian</button>
       <button class="utility-pill" onclick="openOrderTrackerModal()">Lacak Pesanan</button>
       <select id="currencySelect" class="currency-switch" onchange="changeCurrency(this.value)" aria-label="Currency">
         <option value="IDR">IDR (Rp)</option>
@@ -41,6 +43,7 @@
       <ul class="nav-links">
         <li><a href="#shopCatalogSection">PROGRAM &amp; KIT</a></li>
         <li><a href="#foundersSection">TENTANG KAMI</a></li>
+        <li><a href="#trustSignalsSection">FAQ &amp; GARANSI</a></li>
         <li><a href="#featuredSpacesSection">RUANG &amp; KELAS</a></li>
         <li><a href="#journalSection">JURNAL PARENTING</a></li>
         <li><a href="#tradeSpecifiersSection">MITRA SEKOLAH</a></li>
@@ -226,14 +229,21 @@
     <section class="founders-section" id="foundersSection">
       <div class="founders-grid">
         <div class="founders-copy-col">
-          <span class="micro-label">TENTANG KUTAKKATIK.ID</span>
+          <span class="micro-label">TENTANG KAMI (ABOUT US) · VISI &amp; NILAI KUTAKKATIK.ID</span>
           <h2 class="serif-heading">
-            PENDEKATAN KREATIF &amp; EDUKATIF KAMI MEMBANTU ANAK TUMBUH AKTIF, MANDIRI, DAN INGIN TAHU TANPA GADGET.
+            VISI KAMI: MENGHADIRKAN MASA KECIL YANG KAYA EKSPLORASI NYATA, AMAN, DAN BERMAKNA TANPA KETERGANTUNGAN GADGET.
           </h2>
           <p>
-            Kami merancang mainan edukatif, kit eksplorasi sains &amp; sensorik, serta program kelas anak dengan material kayu alami, tanah liat, dan bahan ramah anak yang aman serta teruji mendukung tahap tumbuh kembang usia dini.
+            Lahir dari kepedulian pendidik dan orang tua terhadap tingginya paparan layar (<em>screen time</em>) pada anak usia dini, <strong>KutakKatik.id®</strong> hadir dengan nilai utama bahwa setiap mainan harus memiliki tujuan tumbuh kembang yang jelas—melatih motorik halus, kognitif, kemampuan <em>problem-solving</em>, serta logika dasar (STEM).
           </p>
-          <button class="underlined-link" onclick="openFoundersModal()">BACA SELENGKAPNYA</button>
+          <p style="margin-top: 10px;">
+            Kami hanya menggunakan kayu solid lokal pilihan dengan <em>finishing beeswax</em> murni &amp; cat <em>water-based non-toxic</em>, plastik ABS <em>non-toxic</em>, serta material sensorik <em>food-grade</em> yang melewati inspeksi kehalusan sudut secara ketat demi keamanan buah hati Anda.
+          </p>
+          <div style="display: flex; gap: 18px; flex-wrap: wrap; margin-top: 14px;">
+            <button class="underlined-link" onclick="openFoundersModal()">VISI &amp; CERITA LENGKAP KAMI</button>
+            <button class="underlined-link" onclick="openFaqModal()">STANDAR MATERIAL &amp; FAQ</button>
+            <button class="underlined-link" onclick="openReturnPolicyModal()">GARANSI 100% PRODUK AMAN</button>
+          </div>
         </div>
 
         <div class="founders-portrait-col">
@@ -383,6 +393,131 @@
         <!-- Populated dynamically by app.js -->
       </div>
     </section>
+
+    <!-- ======================================================================
+         SECTION 7: TRUST SIGNALS — FAQ, MATERIAL, PENGIRIMAN & KEBIJAKAN PENGEMBALIAN
+         ====================================================================== -->
+    <section class="journal-section" id="trustSignalsSection" style="padding-top: 20px; padding-bottom: 90px; border-top: 1px solid var(--border-subtle);">
+      <div style="max-width: 1380px; margin: 0 auto;">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 18px; margin-bottom: 34px;">
+          <div>
+            <span class="micro-label">JAMINAN KEAMANAN BELANJA ORANG TUA (TRUST &amp; SAFETY GUARANTEE)</span>
+            <h2 class="serif-heading" style="font-size: 2.15rem; color: var(--text-dark); margin-top: 6px;">
+              FAQ, Standar Material, &amp; Kebijakan Pengembalian 100% Aman
+            </h2>
+          </div>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <button type="button" class="btn-outline" onclick="openFoundersModal()">Tentang Kami (Visi &amp; Nilai)</button>
+            <button type="button" class="btn-outline" onclick="openFaqModal()">Buka Halaman FAQ Lengkap</button>
+            <button type="button" class="btn-primary" onclick="openReturnPolicyModal()">Kebijakan Pengembalian (Return/Refund)</button>
+          </div>
+        </div>
+
+        <!-- 4 Pilar Jaminan Kepercayaan Orang Tua -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; margin-bottom: 38px;">
+          <div style="background: var(--bg-cream-light); border: 1px solid var(--border-subtle); padding: 22px 24px;">
+            <span class="micro-label" style="color: var(--text-bronze-dark);">01 · MATERIAL NON-TOXIC &amp; SNI</span>
+            <h3 class="serif-heading" style="font-size: 1.3rem; margin: 8px 0;">Kayu Solid &amp; Cat Water-Based Aman</h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.68;">
+              Seluruh mainan menggunakan kayu solid lokal dengan <em>finishing beeswax</em> alami &amp; cat <em>water-based non-toxic</em> (bebas BPA, timbal, dan ftalat), plastik ABS <em>non-toxic</em>, serta sudut tumpul (<em>rounded corners</em>) yang ramah tangan anak.
+            </p>
+          </div>
+
+          <div style="background: var(--bg-cream-light); border: 1px solid var(--border-subtle); padding: 22px 24px;">
+            <span class="micro-label" style="color: var(--text-bronze-dark);">02 · PENGEMASAN &amp; PENGIRIMAN AMAN</span>
+            <h3 class="serif-heading" style="font-size: 1.3rem; margin: 8px 0;">Kemasan Berlapis Tahan Benturan</h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.68;">
+              Setiap baki kayu dan kit eksplorasi melewati <em>Quality Control</em> 3 tahap, dikemas dengan pelindung <em>honeycomb</em> ramah lingkungan + dus tebal ganda, dan dikirim dalam 1–2 hari kerja ke seluruh Indonesia.
+            </p>
+          </div>
+
+          <div style="background: var(--bg-cream-light); border: 1px solid var(--border-subtle); padding: 22px 24px;">
+            <span class="micro-label" style="color: var(--text-bronze-dark);">03 · RETURN &amp; REFUND POLICY</span>
+            <h3 class="serif-heading" style="font-size: 1.3rem; margin: 8px 0;">Garansi 100% Ganti Baru / Refund</h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.68;">
+              Jika produk diterima dalam keadaan cacat produksi, rusak akibat pengiriman, atau komponen kurang, kami mengganti dengan unit baru <strong>100% Gratis Ongkir</strong> atau <em>refund</em> dana penuh dalam 1×24 jam.
+            </p>
+          </div>
+
+          <div style="background: var(--bg-cream-light); border: 1px solid var(--border-subtle); padding: 22px 24px;">
+            <span class="micro-label" style="color: var(--text-bronze-dark);">04 · VISI &amp; KURASI EDUKASI</span>
+            <h3 class="serif-heading" style="font-size: 1.3rem; margin: 8px 0;">Dirancang Praktisi Tumbuh Kembang</h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.68;">
+              Setiap kit dirancang bersama kurator pendidikan anak usia dini untuk menstimulasi motorik halus, kognitif, serta logika dasar (STEM) lengkap dengan buku panduan pendampingan orang tua.
+            </p>
+          </div>
+        </div>
+
+        <!-- Grid 2 Kolom: FAQ Interaktif & Ringkasan Kebijakan Pengembalian -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 28px; align-items: start;">
+          <!-- Kolom Kiri: Pertanyaan yang Sering Diajukan (FAQ) -->
+          <div style="background: #fff; border: 1px solid var(--border-subtle); padding: 28px;">
+            <span class="micro-label" style="color: var(--text-bronze-dark);">PERTANYAAN YANG SERING DIAJUKAN (FAQ)</span>
+            <h3 class="serif-heading" style="font-size: 1.6rem; margin: 6px 0 18px;">
+              Seputar Material, Pengemasan, &amp; Pengiriman
+            </h3>
+
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              <details open style="border-bottom: 1px solid var(--border-subtle); padding-bottom: 12px;">
+                <summary style="font-weight: 600; font-size: 0.86rem; cursor: pointer; color: var(--text-dark);">
+                  1. Apakah material kayu, cat, dan komponen mainan aman untuk anak usia dini?
+                </summary>
+                <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.68; margin-top: 8px;">
+                  Sangat aman. Seluruh produk kayu kami menggunakan kayu solid (Pinus &amp; Sungkai) yang diamplas halus bebas serpihan (<em>splinter-free</em>) dengan pelapis <em>beeswax food-grade</em> dan cat <em>water-based non-toxic</em>. Komponen plastik menggunakan ABS <em>non-toxic</em> tebal bebas BPA, dan kartu belajar menggunakan laminasi bersudut tumpul (<em>rounded corners</em>).
+                </p>
+              </details>
+
+              <details style="border-bottom: 1px solid var(--border-subtle); padding-bottom: 12px;">
+                <summary style="font-weight: 600; font-size: 0.86rem; cursor: pointer; color: var(--text-dark);">
+                  2. Bagaimana standar pengemasan (packaging) agar baki kayu tidak rusak saat dikirim?
+                </summary>
+                <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.68; margin-top: 8px;">
+                  Setiap pesanan dikemas menggunakan kotak kayu/karton penyimpanan edukasi, dilapisi pelindung tahan benturan berlapis (<em>bubble/honeycomb wrap</em> tebal), pelindung sudut (<em>corner protector</em>), dan kardus luar bersegel. Anda juga dapat meminta kartu ucapan gratis untuk kado ulang tahun anak.
+                </p>
+              </details>
+
+              <details style="border-bottom: 1px solid var(--border-subtle); padding-bottom: 12px;">
+                <summary style="font-weight: 600; font-size: 0.86rem; cursor: pointer; color: var(--text-dark);">
+                  3. Berapa lama jadwal pengiriman &amp; ekspedisi apa saja yang tersedia?
+                </summary>
+                <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.68; margin-top: 8px;">
+                  Produk <em>Ready Stock</em> dikirim dalam 1–2 hari kerja dari studio kami. Tersedia pengiriman Instan/Same-Day (Jabodetabek &amp; Bandung), Reguler Terasuransi (2–4 hari kerja ke seluruh Indonesia), serta Kargo khusus untuk pengadaan Paket Sekolah/PAUD. Gratis ongkir otomatis untuk pesanan di atas Rp 400.000.
+                </p>
+              </details>
+
+              <details style="padding-bottom: 4px;">
+                <summary style="font-weight: 600; font-size: 0.86rem; cursor: pointer; color: var(--text-dark);">
+                  4. Bagaimana cara memilih kit yang tepat sesuai usia anak saya?
+                </summary>
+                <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.68; margin-top: 8px;">
+                  Setiap halaman produk mencantumkan rekomendasi usia eksplisit (misal: Usia 3–5 Tahun Pra-Sekolah atau 5–8 Tahun) beserta peringatan keamanan komponen kecil. Anda juga dapat menekan tombol <strong>Konsultasi Gratis</strong> untuk berdiskusi langsung dengan kurator tumbuh kembang kami.
+                </p>
+              </details>
+            </div>
+          </div>
+
+          <!-- Kolom Kanan: Kebijakan Pengembalian (Return/Refund Policy) & Tentang Kami -->
+          <div style="background: var(--bg-cream); border: 1px solid var(--border-subtle); border-left: 4px solid var(--text-bronze-dark); padding: 28px;">
+            <span class="micro-label" style="color: var(--text-bronze-dark);">KEBIJAKAN PENGEMBALIAN (RETURN &amp; REFUND POLICY)</span>
+            <h3 class="serif-heading" style="font-size: 1.6rem; margin: 6px 0 12px;">
+              Garansi 100% Jika Barang Diterima Cacat atau Kurang
+            </h3>
+            <p style="font-size: 0.82rem; color: var(--text-dark); line-height: 1.7; margin-bottom: 14px;">
+              Keamanan dan kepuasan orang tua adalah prioritas utama <strong>KutakKatik.id®</strong>. Apabila pesanan yang Anda terima mengalami cacat produksi, kerusakan kayu/kartu akibat pengiriman, atau terdapat komponen yang kurang, Anda dilindungi oleh <strong>Garansi Tukar Baru &amp; Refund 7 Hari</strong>:
+            </p>
+            <ul style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.7; padding-left: 18px; margin-bottom: 18px; display: flex; flex-direction: column; gap: 6px;">
+              <li><strong>1. Lapor Mudah (Maks. 7 Hari):</strong> Kirimkan foto atau video singkat bagian produk yang cacat/rusak beserta nomor pesanan ke WhatsApp Layanan Orang Tua (<strong>0812-1881-490</strong>) atau email <strong>admin@kutakkatik.id</strong>.</li>
+              <li><strong>2. Bebas Biaya Ongkos Kirim (100% Ditanggung Kami):</strong> Seluruh biaya penjemputan barang retur dan pengiriman unit pengganti baru ditanggung sepenuhnya oleh KutakKatik.id.</li>
+              <li><strong>3. Opsi Tukar Unit Baru atau Refund 100%:</strong> Anda bebas memilih pengiriman produk baru di hari kerja berikutnya atau pengembalian dana (<em>full refund</em>) 100% ke rekening/metode pembayaran asal dalam waktu 1×24 jam.</li>
+            </ul>
+            <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+              <button type="button" class="underlined-link" onclick="openReturnPolicyModal()">BACA DETAIL PROSEDUR KLAim GARANSI →</button>
+              <button type="button" class="underlined-link" onclick="openFoundersModal()">TENTANG VISI &amp; NILAI KAMI →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <!-- ========================================================================
@@ -413,12 +548,14 @@
       </div>
 
       <div class="footer-col">
-        <h4>Layanan Orang Tua</h4>
+        <h4>Layanan &amp; Kepercayaan Orang Tua</h4>
         <ul class="footer-links">
+          <li><button onclick="openFoundersModal()">Tentang Kami (Visi &amp; Nilai Edukasi)</button></li>
+          <li><button onclick="openFaqModal()">FAQ (Material, Pengemasan &amp; Pengiriman)</button></li>
+          <li><button onclick="openReturnPolicyModal()">Kebijakan Pengembalian (Return/Refund)</button></li>
           <li><button onclick="openConsultationModal()">Konsultasi Gratis Pilih Kit</button></li>
           <li><button onclick="openOrderTrackerModal()">Lacak Pesanan &amp; Upload Bukti</button></li>
           <li><button onclick="openAuthModal('register-trade')">Pendaftaran Mitra Sekolah</button></li>
-          <li><button onclick="toggleCartDrawer(true)">Keranjang Belanja &amp; Voucher</button></li>
         </ul>
       </div>
 

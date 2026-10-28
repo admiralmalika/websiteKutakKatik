@@ -383,36 +383,42 @@ window.INITIAL_STORE_DATA = {
   journalPosts: [
     {
       id: "journal-1",
-      category: "TUMBUH KEMBANG",
+      category: "TUMBUH KEMBANG & STEM",
       date: "OKTOBER 2026",
-      title: "Mengapa Permainan Sensorik Tanpa Gadget Meningkatkan Fokus & Regulasi Emosi Anak",
+      title: "Mengapa Permainan Sensorik & Montessori 3-Part Cards Meningkatkan Fokus, Motorik Halus & Logika Anak",
       excerpt:
-        "Bagaimana aktivitas meraba tekstur tanah liat, meronce kayu, dan menuang biji-bijian membantu perkembangan saraf sensorik serta ketenangan anak.",
+        "Bagaimana aktivitas menata kartu 3-Part Cards pada baki kayu, meraba tekstur tanah liat, dan meronce membantu perkembangan saraf sensorik, kesiapan menulis, serta logika problem-solving (STEM).",
+      content:
+        "Pada usia emas (golden age 2–6 tahun), otak anak menyerap informasi paling efektif melalui pengalaman konkret tangan dan indra (hands-on learning). Aktivitas seperti mencocokkan kartu Montessori 3-Part Cards pada baki kayu 3 kompartemen, memindahkan biji-bijian dengan sendok kayu, hingga menyusun balok geometri secara langsung melatih otot motorik halus (pincer grasp) yang menjadi fondasi menulis, sekaligus menumbuhkan logika klasifikasi dan problem-solving (STEM) tanpa ketergantungan layar gadget.",
       image:
-        "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=900&q=80",
+        "/uploads/kit-eksplorasi-3-5-tahun-2.jpg",
       readTime: "4 MENIT BACA"
     },
     {
       id: "journal-2",
-      category: "PANDUAN ORANG TUA",
-      date: "SEPTEMBER 2026",
-      title: "Cara Menata Pojok Eksplorasi Montessori di Rumah agar Anak Mandiri",
+      category: "KEAMANAN & GARANSI BELANJA",
+      date: "OKTOBER 2026",
+      title: "Standar Material Non-Toxic, Pengemasan Tahan Benturan, & Garansi 100% Pengembalian (Return/Refund Policy)",
       excerpt:
-        "Tips praktis memilih 4–5 kit eksplorasi di rak terbuka agar anak mudah memilih aktivitas sendiri tanpa cepat bosan.",
+        "Panduan lengkap FAQ orang tua seputar keamanan kayu water-based non-toxic, standar pengemasan berlapis, serta jaminan 100% tukar baru / refund jika barang diterima cacat.",
+      content:
+        "Kepercayaan orang tua adalah prioritas utama KutakKatik.id. Seluruh mainan kami menggunakan kayu solid lokal berpelapis beeswax alami & cat water-based non-toxic (bebas BPA, timbal & ftalat), plastik ABS non-toxic, serta kartu bersudut tumpul (rounded corners). Setiap paket dikemas berlapis tahan benturan dan dilindungi Kebijakan Pengembalian (Return/Refund Policy) 7 Hari: apabila produk diterima dalam keadaan cacat atau kurang komponen, kami mengganti dengan unit baru 100% Gratis Ongkir atau pengembalian dana penuh dalam 1×24 jam.",
       image:
-        "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=900&q=80",
-      readTime: "5 MENIT BACA"
+        "/uploads/kit-eksplorasi-3-5-tahun-1.jpg",
+      readTime: "FAQ & GARANSI"
     },
     {
       id: "journal-3",
-      category: "IDE BERMAIN HARIAN",
-      date: "AGUSTUS 2026",
-      title: "5 Eksperimen Sains & Alam Sederhana untuk Akhir Pekan Bersama Si Kecil",
+      category: "TENTANG KAMI & VISI EDUKASI",
+      date: "SEPTEMBER 2026",
+      title: "Visi KutakKatik.id: Menghadirkan Pojok Eksplorasi Berkualitas di Rumah & Sekolah Tanpa Ketergantungan Gadget",
       excerpt:
-        "Kumpulan ide aktivitas 20 menit yang seru untuk memantik rasa ingin tahu ilmiah dan mempererat ikatan orang tua dan anak.",
+        "Cerita di balik kurasi mainan edukatif kami bersama pendidik dan praktisi tumbuh kembang untuk melatih kemandirian, imajinasi, dan keingintahuan ilmiah si kecil.",
+      content:
+        "KutakKatik.id lahir dari visi sederhana namun kuat: setiap anak berhak menikmati masa kecil yang kaya eksplorasi nyata bersama orang tua, bukan sekadar menatap layar pasif. Karena itu, setiap kit kami dirancang tidak hanya indah secara estetika di ruang keluarga, tetapi memiliki tujuan tumbuh kembang yang terukur—mulai dari stimulasi sensorik, motorik halus, kosakata dwibahasa, hingga pengenalan sains dan rekayasa dasar.",
       image:
         "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80",
-      readTime: "5 MENIT BACA"
+      readTime: "TENTANG KAMI"
     }
   ],
 
