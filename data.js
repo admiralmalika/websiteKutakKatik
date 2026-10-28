@@ -97,9 +97,9 @@ window.INITIAL_STORE_DATA = {
         "Bahan: Kayu Pinus Water-Based Non-Toxic & Bahan Sensorik Food-Grade | Usia: Aman 3+ Tahun | Peringatan: Memuat komponen kecil, wajib pendampingan orang tua",
       leadTime: "Ready Stock — Dikirim dalam 1–2 hari kerja",
       image:
-        "https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=1200&q=85",
+        "/uploads/sensory-play-motorik-1.jpg",
       hoverImage:
-        "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=85",
+        "/uploads/sensory-play-motorik-2.jpg",
       description:
         "Program eksplorasi sensorik terpadu yang dirancang untuk menstimulasi 7 indra anak, memperkuat otot motorik halus (koordinasi mata-tangan saat menuang dan menjepit), serta menjadi pijakan awal pengenalan konsep volume, sebab-akibat, dan problem-solving (STEM). Membantu anak membangun rentang fokus yang panjang dan regulasi emosi yang tenang tanpa ketergantungan gadget.\n\n• Bahan Mainan (Safety & Material): Baki kayu pinus halus dengan finishing water-based non-toxic, alat takar kayu, serta tekstur sensorik food-grade yang aman di kulit.\n• Kategori Usia: Aman untuk usia 3 tahun ke atas.\n• Peringatan Keamanan: Terdapat komponen kecil (figur mini & butiran taktil) yang berisiko tertelan—gunakan selalu dengan pengawasan orang tua."
     },
@@ -137,9 +137,9 @@ window.INITIAL_STORE_DATA = {
         "Bahan: Kayu Sungkai Solid + Cat Water-Based & Beeswax Non-Toxic (SNI) | Usia: Aman 3+ Tahun | Keamanan: Sudut tumpul bebas serpihan & ukuran aman anti-telan",
       leadTime: "Ready Stock — Dikirim dalam 1–2 hari kerja",
       image:
-        "https://images.unsplash.com/photo-1602874801007-bd458bb1b8b6?auto=format&fit=crop&w=1200&q=85",
+        "/uploads/balok-kayu-konstruksi-1.jpg",
       hoverImage:
-        "https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&w=1200&q=85",
+        "/uploads/balok-kayu-konstruksi-2.jpg",
       description:
         "Menjadi pijakan awal terbaik untuk mengenalkan konsep rekayasa, arsitektur, dan logika dasar (STEM) pada anak usia dini. Saat menyusun dan menyeimbangkan balok geometri, anak secara aktif melatih kecerdasan spasial, koordinasi motorik halus, kemampuan problem-solving, serta ketangguhan mental ketika bereksperimen membangun struktur baru.\n\n• Bahan Mainan (Safety & Material): Kayu sungkai solid pilihan dengan polesan beeswax murni dan cat water-based non-toxic berstandar SNI.\n• Kategori Usia: Aman untuk usia 3 tahun ke atas.\n• Peringatan Keamanan: Ukuran balok dirancang aman (tidak berisiko tertelan), dengan tepian halus bebas serpihan kayu."
     },

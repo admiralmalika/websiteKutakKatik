@@ -2,7 +2,7 @@
 // NIGHTWORKS® · KUTAK KATIK STUDIO — E-COMMERCE & ADMIN APPLICATION ENGINE
 // ============================================================================
 
-const STORAGE_KEY = "kutakkatik_edukasi_store_v7";
+const STORAGE_KEY = "kutakkatik_edukasi_store_v8";
 const SESSION_KEY = "kutakkatik_edukasi_session_v3";
 
 let storeState = null;
@@ -339,7 +339,7 @@ function renderShopCatalog() {
                 ? `<span class="product-badge">${escapeHtml(p.badge)}</span>`
                 : ""
             }
-            <span class="photo-spec-label bottom-left" style="bottom: 52px;">${escapeHtml(photoSpec)}</span>
+            <span class="photo-spec-label bottom-left" style="bottom: 66px;">${escapeHtml(photoSpec)}</span>
             <button
               class="wishlist-card-btn ${isWishlisted ? "active" : ""}"
               onclick="toggleWishlistItem('${p.id}', event)"
