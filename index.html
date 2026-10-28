@@ -126,11 +126,12 @@
   <main>
     <section class="hero-section">
       <div class="hero-visual-wrapper">
-        <span class="photo-spec-label hero-label">
+        <span class="photo-spec-label hero-label" id="heroPhotoLabelEl">
           FOTO UTAMA · RUANG EKSPLORASI KELUARGA &amp; AKTIVITAS TANPA GADGET (USIA 2–8 TAHUN)
         </span>
         <!-- Architectural Minimalist Dining Room Image matching Photo 1 -->
         <img
+          id="heroBgImageEl"
           src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=2000&q=85"
           alt="Minimalist dining interior with sculptural pendant lighting"
           class="hero-bg-image"
@@ -243,10 +244,11 @@
     <!-- Full-Bleed Architectural Plaster Curve Banner (Bottom Photo 3 / Top Photo 4) -->
     <div class="architectural-banner-strip">
       <div class="banner-strip-inner photo-labeled-wrap">
-        <span class="photo-spec-label bottom-left">
+        <span class="photo-spec-label bottom-left" id="bannerStripLabelEl">
           SUASANA RUANG · DESAIN STUDIO BELAJAR &amp; EKSPLORASI SENSORIK KUTAKKATIK.ID
         </span>
         <img
+          id="bannerStripImgEl"
           src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=2000&q=85"
           alt="Curved architectural plaster ceiling and minimalist pendant lights"
         />
@@ -260,13 +262,13 @@
       <div class="founders-grid">
         <div class="founders-copy-col">
           <span class="micro-label">TENTANG KAMI (ABOUT US) · VISI &amp; NILAI KUTAKKATIK.ID</span>
-          <h2 class="serif-heading">
+          <h2 class="serif-heading" id="foundersHeadingEl">
             VISI KAMI: MENGHADIRKAN MASA KECIL YANG KAYA EKSPLORASI NYATA, AMAN, DAN BERMAKNA TANPA KETERGANTUNGAN GADGET.
           </h2>
-          <p>
+          <p id="foundersPara1El">
             Lahir dari kepedulian pendidik dan orang tua terhadap tingginya paparan layar (<em>screen time</em>) pada anak usia dini, <strong>KutakKatik.id®</strong> hadir dengan nilai utama bahwa setiap mainan harus memiliki tujuan tumbuh kembang yang jelas—melatih motorik halus, kognitif, kemampuan <em>problem-solving</em>, serta logika dasar (STEM).
           </p>
-          <p style="margin-top: 10px;">
+          <p id="foundersPara2El" style="margin-top: 10px;">
             Kami hanya menggunakan kayu solid lokal pilihan dengan <em>finishing beeswax</em> murni &amp; cat <em>water-based non-toxic</em>, plastik ABS <em>non-toxic</em>, serta material sensorik <em>food-grade</em> yang melewati inspeksi kehalusan sudut secara ketat demi keamanan buah hati Anda.
           </p>
           <div style="display: flex; gap: 18px; flex-wrap: wrap; margin-top: 14px;">
@@ -282,6 +284,7 @@
               TIM KURATOR · PENDIDIK &amp; PERANCANG MODUL TUMBUH KEMBANG ANAK
             </span>
             <img
+              id="foundersMainImgEl"
               src="https://images.unsplash.com/photo-1556157382-97eda2d62296?auto=format&fit=crop&w=1000&q=85"
               alt="Studio Founders in sunlit draped architectural workspace"
             />
@@ -294,6 +297,7 @@
               STUDIO RISET · MATERIAL KAYU ALAMI &amp; KOMPONEN SENSORIK AMAN
             </span>
             <img
+              id="foundersSecondImgEl"
               src="https://images.unsplash.com/photo-1565814329452-e1efa11c5b89?auto=format&fit=crop&w=600&q=80"
               alt="Brass cross pendant luminaires in front of sheer linen curtains"
             />
@@ -325,19 +329,20 @@
             MITRA PENDIDIKAN · POJOK EKSPLORASI &amp; KURIKULUM PAUD / SEKOLAH DASAR
           </span>
           <img
+            id="tradeMainImgEl"
             src="https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=85"
             alt="Bespoke fluted timber joinery with intersecting solid brass pendant"
           />
         </div>
 
         <div class="trade-copy">
-          <h2 class="serif-heading">
+          <h2 class="serif-heading" id="tradeHeadingEl">
             MITRA SEKOLAH, PAUD &amp;<br/>TERAPIS TUMBUH KEMBANG
           </h2>
-          <p>
+          <p id="tradePara1El">
             Program kemitraan kami dikhususkan bagi sekolah, TK/PAUD, daycare, komunitas parenting, dan terapis tumbuh kembang anak. Sebagai Mitra KutakKatik.id, Anda mendapatkan potongan harga otomatis 20% serta kurasi kurikulum kit eksplorasi untuk kelas Anda.
           </p>
-          <p>
+          <p id="tradePara2El">
             Tim kurator edukasi kami siap mendampingi pemilihan kit sesuai kelompok usia dan kebutuhan stimulasi siswa Anda.
           </p>
           <div class="trade-links-row">
@@ -694,22 +699,25 @@
 
         <nav class="admin-nav">
           <button class="admin-nav-btn active" data-tab="overview" onclick="switchAdminTab('overview')">
-            1. Overview &amp; Analytics
+            1. Ringkasan &amp; Analitik
           </button>
           <button class="admin-nav-btn" data-tab="products" onclick="switchAdminTab('products')">
-            2. Products Catalog (CRUD)
+            2. Katalog Produk &amp; Upload Foto
+          </button>
+          <button class="admin-nav-btn" data-tab="pages" onclick="switchAdminTab('pages')">
+            3. Edit Halaman &amp; Gambar Website
           </button>
           <button class="admin-nav-btn" data-tab="orders" onclick="switchAdminTab('orders')">
-            3. Orders &amp; Fulfillment
+            4. Pesanan &amp; Bukti Transfer
           </button>
           <button class="admin-nav-btn" data-tab="vouchers" onclick="switchAdminTab('vouchers')">
-            4. Vouchers &amp; Discounts
+            5. Voucher &amp; Diskon
           </button>
           <button class="admin-nav-btn" data-tab="users" onclick="switchAdminTab('users')">
-            5. Accounts &amp; Trade
+            6. Akun &amp; Mitra Sekolah
           </button>
           <button class="admin-nav-btn" data-tab="settings" onclick="switchAdminTab('settings')">
-            6. Brand &amp; Store Settings
+            7. Pengaturan Brand, QRIS &amp; DB
           </button>
         </nav>
       </div>

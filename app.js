@@ -181,6 +181,46 @@ function renderBrandSettings() {
     currSelect.value = s.currency || "USD";
   }
 
+  // Dynamic Website Page Content & Images (Editable from Admin Panel Tab 3)
+  const heroBgImgEl = document.getElementById("heroBgImageEl");
+  if (heroBgImgEl && s.heroImage) heroBgImgEl.src = s.heroImage;
+
+  const heroPhotoLabelEl = document.getElementById("heroPhotoLabelEl");
+  if (heroPhotoLabelEl && s.heroPhotoLabel) heroPhotoLabelEl.textContent = s.heroPhotoLabel;
+
+  const bannerStripImgEl = document.getElementById("bannerStripImgEl");
+  if (bannerStripImgEl && s.bannerStripImage) bannerStripImgEl.src = s.bannerStripImage;
+
+  const bannerStripLabelEl = document.getElementById("bannerStripLabelEl");
+  if (bannerStripLabelEl && s.bannerStripLabel) bannerStripLabelEl.textContent = s.bannerStripLabel;
+
+  const foundersHeadingEl = document.getElementById("foundersHeadingEl");
+  if (foundersHeadingEl && s.aboutTitle) foundersHeadingEl.textContent = s.aboutTitle;
+
+  const foundersPara1El = document.getElementById("foundersPara1El");
+  if (foundersPara1El && s.aboutPara1) foundersPara1El.textContent = s.aboutPara1;
+
+  const foundersPara2El = document.getElementById("foundersPara2El");
+  if (foundersPara2El && s.aboutPara2) foundersPara2El.textContent = s.aboutPara2;
+
+  const foundersMainImgEl = document.getElementById("foundersMainImgEl");
+  if (foundersMainImgEl && s.aboutMainImage) foundersMainImgEl.src = s.aboutMainImage;
+
+  const foundersSecondImgEl = document.getElementById("foundersSecondImgEl");
+  if (foundersSecondImgEl && s.aboutSecondImage) foundersSecondImgEl.src = s.aboutSecondImage;
+
+  const tradeHeadingEl = document.getElementById("tradeHeadingEl");
+  if (tradeHeadingEl && s.tradeTitle) tradeHeadingEl.textContent = s.tradeTitle;
+
+  const tradePara1El = document.getElementById("tradePara1El");
+  if (tradePara1El && s.tradePara1) tradePara1El.textContent = s.tradePara1;
+
+  const tradePara2El = document.getElementById("tradePara2El");
+  if (tradePara2El && s.tradePara2) tradePara2El.textContent = s.tradePara2;
+
+  const tradeMainImgEl = document.getElementById("tradeMainImgEl");
+  if (tradeMainImgEl && s.tradeMainImage) tradeMainImgEl.src = s.tradeMainImage;
+
   // Update top account button & user banner
   const topBtn = document.getElementById("topBarAccountBtn");
   const banner = document.getElementById("activeUserBanner");
@@ -2335,6 +2375,8 @@ function renderAdminDashboard() {
     renderAdminOverview(main);
   } else if (tab === "products") {
     renderAdminProducts(main);
+  } else if (tab === "pages") {
+    renderAdminPages(main);
   } else if (tab === "orders") {
     renderAdminOrders(main);
   } else if (tab === "vouchers") {
@@ -2343,6 +2385,40 @@ function renderAdminDashboard() {
     renderAdminUsers(main);
   } else if (tab === "settings") {
     renderAdminSettings(main);
+  }
+}
+
+// Helper: Upload image from Admin file input -> compress + optional server save -> set target input & preview
+async function handleAdminImageFileUpload(event, targetInputId, previewImgId, prefix = "cms") {
+  const file = event.target.files?.[0];
+  if (!file) return;
+  try {
+    showToast("Memproses & mengunggah gambar...");
+    const dataUrl = await compressImageFileToDataUrl(file, 1100, 0.84);
+    let finalUrl = dataUrl;
+    if (window.location.protocol.startsWith("http")) {
+      try {
+        const res = await fetch("/api/upload-image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prefix, imageDataUrl: dataUrl })
+        });
+        if (res.ok) {
+          const out = await res.json();
+          if (out.imageUrl) finalUrl = out.imageUrl;
+        }
+      } catch (_) {}
+    }
+    const inputEl = document.getElementById(targetInputId);
+    if (inputEl) inputEl.value = finalUrl;
+    const prevEl = document.getElementById(previewImgId);
+    if (prevEl) {
+      prevEl.src = finalUrl;
+      prevEl.style.display = "block";
+    }
+    showToast("Gambar berhasil dimuat! Klik tombol Simpan untuk menerapkan ke website.");
+  } catch (err) {
+    showToast("Gagal memproses file gambar.");
   }
 }
 
@@ -2356,52 +2432,53 @@ function renderAdminOverview(container) {
   container.innerHTML = `
     <div class="admin-header-bar">
       <div>
-        <span class="micro-label">STUDIO PERFORMANCE</span>
-        <h1 class="serif-heading" style="font-size: 2.2rem; color: var(--text-dark);">Executive Overview</h1>
+        <span class="micro-label">STUDIO PERFORMANCE &amp; CMS</span>
+        <h1 class="serif-heading" style="font-size: 2.2rem; color: var(--text-dark);">Dashboard Utama Admin KutakKatik.id</h1>
       </div>
-      <div style="display: flex; gap: 10px;">
-        <button class="btn-outline" onclick="switchAdminTab('products')">+ Add New Luminaire</button>
-        <button class="btn-primary" onclick="closeAdminDashboard()">View Live Storefront</button>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button class="btn-outline" onclick="switchAdminTab('products')">+ Tambah / Edit Produk &amp; Foto</button>
+        <button class="btn-outline" onclick="switchAdminTab('pages')">✎ Edit Halaman &amp; Gambar Website</button>
+        <button class="btn-primary" onclick="closeAdminDashboard()">Lihat Website Live</button>
       </div>
     </div>
 
     <div class="kpi-grid">
       <div class="kpi-card">
-        <span class="micro-label">TOTAL STUDIO REVENUE</span>
+        <span class="micro-label">TOTAL PENDAPATAN</span>
         <div class="kpi-value">${formatPrice(totalRevenue)}</div>
-        <div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 4px;">Across ${validOrders.length} active orders</div>
+        <div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 4px;">Dari ${validOrders.length} pesanan aktif</div>
       </div>
       <div class="kpi-card">
-        <span class="micro-label">CATALOG LUMINAIRES</span>
+        <span class="micro-label">TOTAL PRODUK &amp; KIT</span>
         <div class="kpi-value">${storeState.products.length}</div>
-        <div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 4px;">${lowStockProducts.length} low-stock alerts</div>
+        <div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 4px;">${lowStockProducts.length} produk stok menipis</div>
       </div>
       <div class="kpi-card">
-        <span class="micro-label">TRADE SPECIFIERS</span>
+        <span class="micro-label">MITRA SEKOLAH / PAUD</span>
         <div class="kpi-value">${tradeUsers.length}</div>
-        <div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 4px;">${storeState.users.length} total registered accounts</div>
+        <div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 4px;">Total ${storeState.users.length} akun terdaftar</div>
       </div>
       <div class="kpi-card">
-        <span class="micro-label">ACTIVE VOUCHERS</span>
+        <span class="micro-label">VOUCHER AKTIF</span>
         <div class="kpi-value">${storeState.vouchers.filter((v) => v.active).length}</div>
-        <div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 4px;">WELCOME10 · TRADE20 · KUTAKKATIK</div>
+        <div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 4px;">KUTAKKATIK10 · MITRA20 · WELCOME10</div>
       </div>
     </div>
 
     <h3 class="serif-heading" style="font-size: 1.5rem; color: var(--text-dark); margin-bottom: 14px;">
-      Recent Client &amp; Trade Orders
+      Pesanan Terbaru Pelanggan &amp; Sekolah
     </h3>
     <div class="admin-table-wrap">
       <table class="admin-table">
         <thead>
           <tr>
             <th>Order ID</th>
-            <th>Date</th>
-            <th>Client</th>
-            <th>Items</th>
+            <th>Tanggal</th>
+            <th>Pelanggan</th>
+            <th>Jumlah</th>
             <th>Total</th>
             <th>Status</th>
-            <th>Action</th>
+            <th>Aksi</th>
           </tr>
         </thead>
         <tbody>
@@ -2416,7 +2493,7 @@ function renderAdminOverview(container) {
               <td>${o.items.reduce((s, i) => s + i.quantity, 0)} pcs</td>
               <td><strong>${formatPrice(o.total)}</strong></td>
               <td><span class="status-pill ${escapeHtml(o.status)}">${escapeHtml(o.status)}</span></td>
-              <td><button class="underlined-link" onclick="switchAdminTab('orders')">Manage</button></td>
+              <td><button class="underlined-link" onclick="switchAdminTab('orders')">Kelola</button></td>
             </tr>
           `
             )
@@ -2427,34 +2504,36 @@ function renderAdminOverview(container) {
   `;
 }
 
-// 2. ADMIN PRODUCTS CRUD
+// 2. ADMIN PRODUCTS CRUD + DIRECT IMAGE UPLOAD (FOTO UTAMA & FOTO HOVER)
 function renderAdminProducts(container) {
   const editingProd = sessionState.editingProductId
     ? storeState.products.find((p) => p.id === sessionState.editingProductId)
     : null;
+  const rate = Number(storeState?.settings?.idrRate || 16000);
+  const currentIdrPrice = editingProd ? Math.round(Number(editingProd.price) * rate) : 288000;
 
   container.innerHTML = `
     <div class="admin-header-bar">
       <div>
-        <span class="micro-label">INVENTORY &amp; EDITORIAL SHOWCASE</span>
-        <h1 class="serif-heading" style="font-size: 2.1rem; color: var(--text-dark);">Products Catalog Management</h1>
+        <span class="micro-label">MANAJEMEN KATALOG, GAMBAR, EDUKASI &amp; KEAMANAN PRODUK</span>
+        <h1 class="serif-heading" style="font-size: 2.1rem; color: var(--text-dark);">Kelola Produk &amp; Upload Gambar</h1>
       </div>
     </div>
 
     <!-- Product Create / Edit Form -->
     <div style="background: #fff; border: 1px solid var(--border-subtle); padding: 26px; margin-bottom: 32px;">
       <h3 class="serif-heading" style="font-size: 1.45rem; color: var(--text-dark); margin-bottom: 16px;">
-        ${editingProd ? `Edit Luminaire: ${escapeHtml(editingProd.name)}` : "Add New Luminaire / Object"}
+        ${editingProd ? `Edit Produk: ${escapeHtml(editingProd.name)}` : "+ Tambah Produk / Kit Eksplorasi Baru"}
       </h3>
       <form onsubmit="saveAdminProduct(event)">
         <input type="hidden" name="id" value="${editingProd ? escapeHtml(editingProd.id) : ""}" />
         <div class="form-grid">
           <div class="form-group">
-            <label>Product Name *</label>
-            <input type="text" name="name" required value="${editingProd ? escapeHtml(editingProd.name) : ""}" placeholder="e.g. Tasman Double Pendant" />
+            <label>Nama Produk / Kit *</label>
+            <input type="text" name="name" required value="${editingProd ? escapeHtml(editingProd.name) : ""}" placeholder="Contoh: Kit Eksplorasi Montessori 3-Part Cards" />
           </div>
           <div class="form-group">
-            <label>Category *</label>
+            <label>Kategori *</label>
             <select name="category" required>
               ${["Kit Eksplorasi", "Mainan Edukatif", "Sensory Play", "Kelas & Workshop", "Paket Sekolah"]
                 .map(
@@ -2465,50 +2544,146 @@ function renderAdminProducts(container) {
             </select>
           </div>
           <div class="form-group">
-            <label>Base Price (USD) *</label>
-            <input type="number" name="price" required min="1" value="${editingProd ? editingProd.price : ""}" placeholder="690" />
+            <label>Harga Produk dalam Rupiah (IDR) *</label>
+            <input
+              type="number"
+              name="priceIdr"
+              required
+              min="1000"
+              step="1000"
+              value="${currentIdrPrice}"
+              placeholder="288000"
+            />
           </div>
           <div class="form-group">
-            <label>Stock Quantity *</label>
-            <input type="number" name="stock" required min="0" value="${editingProd ? editingProd.stock : "10"}" />
+            <label>Jumlah Stok Tersedia *</label>
+            <input type="number" name="stock" required min="0" value="${editingProd ? editingProd.stock : "20"}" />
           </div>
           <div class="form-group">
-            <label>Badge Label (Optional)</label>
-            <input type="text" name="badge" value="${editingProd?.badge ? escapeHtml(editingProd.badge) : ""}" placeholder="Signature / Iconic Piece / New" />
+            <label>Label Badge (Pojok Kiri Atas Kartu)</label>
+            <input type="text" name="badge" value="${editingProd?.badge ? escapeHtml(editingProd.badge) : ""}" placeholder="Favorit Orang Tua / Best Seller / SNI & Non-Toxic" />
           </div>
           <div class="form-group">
-            <label>Hero Staggered Trio Slot (Photo 2)</label>
+            <label>Posisi 3 Kartu Unggulan Atas (Staggered Showcase)</label>
             <select name="featuredSlot">
-              <option value="">None (Standard Catalog)</option>
-              <option value="1" ${editingProd?.featuredSlot === 1 ? "selected" : ""}>Slot 1 — Left Card (e.g. Offcut Sconce)</option>
-              <option value="2" ${editingProd?.featuredSlot === 2 ? "selected" : ""}>Slot 2 — Center Tall Card (e.g. Tasman Pendant)</option>
-              <option value="3" ${editingProd?.featuredSlot === 3 ? "selected" : ""}>Slot 3 — Right Card (e.g. Offcut Candle)</option>
+              <option value="">Tidak Ditampilkan di 3 Unggulan Atas (Katalog Biasa)</option>
+              <option value="1" ${editingProd?.featuredSlot === 1 ? "selected" : ""}>Slot 1 — Kartu Kiri</option>
+              <option value="2" ${editingProd?.featuredSlot === 2 ? "selected" : ""}>Slot 2 — Kartu Tengah Tinggi</option>
+              <option value="3" ${editingProd?.featuredSlot === 3 ? "selected" : ""}>Slot 3 — Kartu Kanan</option>
             </select>
           </div>
+
+          <!-- UPLOAD GAMBAR UTAMA (FOTO 1) -->
+          <div class="form-group" style="background: var(--bg-cream); padding: 14px; border: 1px solid var(--border-subtle);">
+            <label>Gambar Utama Produk (Foto 1) *</label>
+            <input
+              type="text"
+              id="adminProdMainImgInput"
+              name="image"
+              required
+              value="${editingProd ? escapeHtml(editingProd.image) : "/uploads/kit-eksplorasi-3-5-tahun-1.jpg"}"
+              placeholder="Pilih file di bawah atau tempel URL gambar..."
+              oninput="document.getElementById('adminProdMainImgPreview').src = this.value"
+            />
+            <div style="margin-top: 8px; display: flex; gap: 12px; align-items: center;">
+              <img
+                id="adminProdMainImgPreview"
+                src="${editingProd ? escapeHtml(editingProd.image) : "/uploads/kit-eksplorasi-3-5-tahun-1.jpg"}"
+                alt="Preview Foto 1"
+                style="width: 72px; height: 72px; object-fit: cover; border: 1px solid var(--border-subtle); background: #fff;"
+              />
+              <div style="flex: 1;">
+                <label style="display: inline-block; cursor: pointer; background: var(--bg-midnight); color: #fff; padding: 7px 12px; font-size: 0.65rem; border-radius: 4px;">
+                  📁 Upload Foto 1 dari Komputer / HP
+                  <input
+                    type="file"
+                    accept="image/*"
+                    style="display: none;"
+                    onchange="handleAdminImageFileUpload(event, 'adminProdMainImgInput', 'adminProdMainImgPreview', 'prod-main')"
+                  />
+                </label>
+                <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 4px;">
+                  Mendukung JPG, PNG, WebP. Otomatis dikompres &amp; disimpan ke database.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- UPLOAD GAMBAR KEDUA / HOVER (FOTO 2) -->
+          <div class="form-group" style="background: var(--bg-cream); padding: 14px; border: 1px solid var(--border-subtle);">
+            <label>Gambar Kedua / Hover &amp; Galeri (Foto 2)</label>
+            <input
+              type="text"
+              id="adminProdHoverImgInput"
+              name="hoverImage"
+              value="${editingProd ? escapeHtml(editingProd.hoverImage || editingProd.image) : "/uploads/kit-eksplorasi-3-5-tahun-2.jpg"}"
+              placeholder="Pilih file di bawah atau tempel URL gambar kedua..."
+              oninput="document.getElementById('adminProdHoverImgPreview').src = this.value"
+            />
+            <div style="margin-top: 8px; display: flex; gap: 12px; align-items: center;">
+              <img
+                id="adminProdHoverImgPreview"
+                src="${editingProd ? escapeHtml(editingProd.hoverImage || editingProd.image) : "/uploads/kit-eksplorasi-3-5-tahun-2.jpg"}"
+                alt="Preview Foto 2"
+                style="width: 72px; height: 72px; object-fit: cover; border: 1px solid var(--border-subtle); background: #fff;"
+              />
+              <div style="flex: 1;">
+                <label style="display: inline-block; cursor: pointer; background: var(--bg-midnight); color: #fff; padding: 7px 12px; font-size: 0.65rem; border-radius: 4px;">
+                  📁 Upload Foto 2 dari Komputer / HP
+                  <input
+                    type="file"
+                    accept="image/*"
+                    style="display: none;"
+                    onchange="handleAdminImageFileUpload(event, 'adminProdHoverImgInput', 'adminProdHoverImgPreview', 'prod-hover')"
+                  />
+                </label>
+                <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 4px;">
+                  Tampil saat kursor diarahkan ke kartu produk &amp; di galeri detail produk.
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="form-group">
-            <label>Primary Image URL *</label>
-            <input type="url" name="image" required value="${editingProd ? escapeHtml(editingProd.image) : "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=1200&q=85"}" />
+            <label>Pilihan Varian / Usia (Pisahkan dengan koma) *</label>
+            <input type="text" name="finishes" required value="${editingProd?.finishes ? escapeHtml(editingProd.finishes.join(", ")) : "Usia 3–5 Tahun (Pra-Sekolah), Usia 5–8 Tahun (Eksplorasi Mandiri)"}" />
           </div>
           <div class="form-group">
-            <label>Finishes (Comma separated)</label>
-            <input type="text" name="finishes" value="${editingProd?.finishes ? escapeHtml(editingProd.finishes.join(", ")) : "Brushed Brass, Aged Bronze, Raw Travertine"}" />
+            <label>Kategori Usia yang Disarankan (Safety) *</label>
+            <input type="text" name="recommendedAge" required value="${editingProd?.recommendedAge ? escapeHtml(editingProd.recommendedAge) : "Aman untuk usia 3 tahun ke atas (3–5 Tahun / Pra-Sekolah)"}" />
+          </div>
+          <div class="form-group">
+            <label>Bahan Mainan (Safety &amp; Material) *</label>
+            <input type="text" name="safetyMaterial" required value="${editingProd?.safetyMaterial ? escapeHtml(editingProd.safetyMaterial) : "Kayu solid lokal dengan finishing beeswax alami & cat water-based non-toxic."}" />
+          </div>
+          <div class="form-group">
+            <label>Peringatan Keamanan (Safety Warning) *</label>
+            <input type="text" name="safetyWarning" required value="${editingProd?.safetyWarning ? escapeHtml(editingProd.safetyWarning) : "Gunakan dengan pendampingan orang tua. Perhatikan komponen kecil untuk anak di bawah 3 tahun."}" />
           </div>
           <div class="form-group full">
-            <label>Dimensions &amp; Technical Spec</label>
-            <input type="text" name="dimensions" value="${editingProd?.dimensions ? escapeHtml(editingProd.dimensions) : "Ø 200mm × H 320mm | Integrated 2700K Warm LED"}" />
+            <label>Deskripsi Edukasi &amp; Tumbuh Kembang Anak (Motorik, Kognitif &amp; STEM) *</label>
+            <textarea name="description" rows="3" required>${editingProd ? escapeHtml(editingProd.description) : ""}</textarea>
           </div>
           <div class="form-group full">
-            <label>Editorial Description *</label>
-            <textarea name="description" rows="2" required>${editingProd ? escapeHtml(editingProd.description) : ""}</textarea>
+            <label>Poin Manfaat Tumbuh Kembang (1 baris per poin manfaat)</label>
+            <textarea name="educationalBenefits" rows="3" placeholder="Motorik Halus: Melatih otot jari...\nKognitif: Mengenal kosakata...\nSTEM: Problem-solving & logika dasar...">${editingProd?.educationalBenefits ? escapeHtml(editingProd.educationalBenefits.join("\n")) : ""}</textarea>
+          </div>
+          <div class="form-group">
+            <label>SEO Meta Title (Google)</label>
+            <input type="text" name="seoTitle" value="${editingProd?.seoTitle ? escapeHtml(editingProd.seoTitle) : ""}" placeholder="Otomatis jika dikosongkan" />
+          </div>
+          <div class="form-group">
+            <label>SEO Meta Description (Google)</label>
+            <input type="text" name="seoDescription" value="${editingProd?.seoDescription ? escapeHtml(editingProd.seoDescription) : ""}" placeholder="Ringkasan kata kunci Mainan Edukasi Anak & Motorik Balita" />
           </div>
         </div>
-        <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <div style="display: flex; gap: 10px; margin-top: 12px;">
           <button type="submit" class="btn-primary">
-            ${editingProd ? "Save Changes" : "+ Create Product"}
+            ${editingProd ? "💾 Simpan Perubahan Produk & Gambar" : "+ Tambah Produk Baru"}
           </button>
           ${
             editingProd
-              ? `<button type="button" class="btn-outline" onclick="cancelEditProduct()">Cancel Edit</button>`
+              ? `<button type="button" class="btn-outline" onclick="cancelEditProduct()">Batal Edit</button>`
               : ""
           }
         </div>
@@ -2520,13 +2695,13 @@ function renderAdminProducts(container) {
       <table class="admin-table">
         <thead>
           <tr>
-            <th>Image</th>
-            <th>Product Name</th>
-            <th>Category</th>
-            <th>Price</th>
-            <th>Stock</th>
-            <th>Hero Slot</th>
-            <th>Actions</th>
+            <th>Foto 1 &amp; 2</th>
+            <th>Nama Produk</th>
+            <th>Kategori &amp; Usia</th>
+            <th>Harga</th>
+            <th>Stok</th>
+            <th>Slot Unggulan</th>
+            <th>Aksi</th>
           </tr>
         </thead>
         <tbody>
@@ -2534,15 +2709,20 @@ function renderAdminProducts(container) {
             .map(
               (p) => `
             <tr>
-              <td><img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" style="width: 48px; height: 56px; object-fit: cover;" /></td>
+              <td>
+                <div style="display: flex; gap: 4px;">
+                  <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" style="width: 44px; height: 52px; object-fit: cover; border: 1px solid var(--border-subtle);" />
+                  <img src="${escapeHtml(p.hoverImage || p.image)}" alt="${escapeHtml(p.name)} 2" style="width: 44px; height: 52px; object-fit: cover; border: 1px solid var(--border-subtle);" />
+                </div>
+              </td>
               <td><strong>${escapeHtml(p.name)}</strong><br/><small style="color:var(--text-muted);">${escapeHtml(p.badge || "")}</small></td>
-              <td>${escapeHtml(p.category)}</td>
+              <td>${escapeHtml(p.category)}<br/><small style="color:var(--text-bronze-dark);">${escapeHtml(p.recommendedAge || "")}</small></td>
               <td>${formatPrice(p.price)}</td>
-              <td>${p.stock <= 5 ? `<strong style="color:var(--accent-terracotta);">${p.stock} left</strong>` : p.stock}</td>
+              <td>${p.stock <= 5 ? `<strong style="color:var(--accent-terracotta);">${p.stock} tersisa</strong>` : p.stock}</td>
               <td>${p.featuredSlot ? `Slot #${p.featuredSlot}` : "—"}</td>
               <td>
-                <button class="underlined-link" style="margin-right: 12px;" onclick="startEditProduct('${p.id}')">Edit</button>
-                <button class="underlined-link" style="color: var(--accent-terracotta); border-color: var(--accent-terracotta);" onclick="deleteAdminProduct('${p.id}')">Delete</button>
+                <button class="btn-primary" style="padding: 6px 12px; font-size: 0.64rem; margin-right: 6px;" onclick="startEditProduct('${p.id}')">Edit / Ganti Foto</button>
+                <button class="underlined-link" style="color: var(--accent-terracotta); border-color: var(--accent-terracotta);" onclick="deleteAdminProduct('${p.id}')">Hapus</button>
               </td>
             </tr>
           `
@@ -2570,6 +2750,9 @@ function saveAdminProduct(e) {
   const fd = new FormData(e.target);
   const id = fd.get("id") || "prod-" + Date.now();
   const slotVal = fd.get("featuredSlot") ? Number(fd.get("featuredSlot")) : null;
+  const rate = Number(storeState?.settings?.idrRate || 16000);
+  const priceIdr = Number(fd.get("priceIdr") || 288000);
+  const priceUsd = Math.max(1, Math.round((priceIdr / rate) * 100) / 100);
 
   // If assigning a featuredSlot (1, 2, or 3), clear that slot from other products first
   if (slotVal) {
@@ -2578,28 +2761,42 @@ function saveAdminProduct(e) {
     });
   }
 
+  const nameClean = fd.get("name").trim();
+  const mainImg = fd.get("image").trim();
+  const hoverImg = (fd.get("hoverImage") || "").trim() || mainImg;
+  const benefitsList = (fd.get("educationalBenefits") || "")
+    .split(/\r?\n/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+
   const productData = {
     id,
-    name: fd.get("name").trim(),
-    slug: fd.get("name").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+    name: nameClean,
+    slug: nameClean.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
     category: fd.get("category"),
-    price: Number(fd.get("price")),
+    price: priceUsd,
     compareAtPrice: null,
     stock: Number(fd.get("stock")),
     featured: Boolean(slotVal),
     featuredSlot: slotVal,
     badge: fd.get("badge").trim() || null,
     rating: 5.0,
-    reviewCount: 1,
+    reviewCount: 12,
     finishes: fd
       .get("finishes")
       .split(",")
       .map((s) => s.trim())
       .filter(Boolean),
-    dimensions: fd.get("dimensions").trim(),
-    leadTime: "In Stock — Ships in 3–5 business days",
-    image: fd.get("image").trim(),
-    hoverImage: fd.get("image").trim(),
+    recommendedAge: (fd.get("recommendedAge") || "").trim() || "Aman untuk usia 3 tahun ke atas",
+    safetyMaterial: (fd.get("safetyMaterial") || "").trim(),
+    safetyWarning: (fd.get("safetyWarning") || "").trim(),
+    educationalBenefits: benefitsList,
+    seoTitle: (fd.get("seoTitle") || "").trim() || `${nameClean} | Mainan Edukasi Anak & Motorik Balita — KutakKatik.id`,
+    seoDescription: (fd.get("seoDescription") || "").trim() || (fd.get("description") || "").trim().slice(0, 160),
+    dimensions: `Bahan: ${(fd.get("safetyMaterial") || "Kayu Solid Non-Toxic").trim()} | Usia: ${(fd.get("recommendedAge") || "3+ Tahun").trim()}`,
+    leadTime: "Ready Stock — Dikirim dalam 1–2 hari kerja · Kemasan Aman Berlapis · Garansi 100% Tukar Baru / Refund Jika Cacat",
+    image: mainImg,
+    hoverImage: hoverImg,
     description: fd.get("description").trim()
   };
 
@@ -2609,10 +2806,10 @@ function saveAdminProduct(e) {
       ...storeState.products[existingIdx],
       ...productData
     };
-    showToast(`Updated "${productData.name}"`);
+    showToast(`Produk "${productData.name}" berhasil diperbarui!`);
   } else {
     storeState.products.unshift(productData);
-    showToast(`Added "${productData.name}" to catalog!`);
+    showToast(`Produk "${productData.name}" berhasil ditambahkan ke katalog!`);
   }
 
   sessionState.editingProductId = null;
@@ -2626,7 +2823,339 @@ function deleteAdminProduct(productId) {
   storeState.products = storeState.products.filter((p) => p.id !== productId);
   saveStoreState();
   renderAll();
-  showToast(`Deleted "${prod.name}".`);
+  showToast(`Produk "${prod.name}" telah dihapus.`);
+}
+
+// 2B. ADMIN WEBSITE PAGES, SECTIONS, SPACES & JOURNAL CMS EDITOR (TAB 3)
+function renderAdminPages(container) {
+  const s = storeState.settings;
+  const heroImg = s.heroImage || "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=2000&q=85";
+  const bannerImg = s.bannerStripImage || "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=2000&q=85";
+  const aboutImg1 = s.aboutMainImage || "https://images.unsplash.com/photo-1556157382-97eda2d62296?auto=format&fit=crop&w=1000&q=85";
+  const aboutImg2 = s.aboutSecondImage || "https://images.unsplash.com/photo-1565814329452-e1efa11c5b89?auto=format&fit=crop&w=600&q=80";
+  const tradeImg = s.tradeMainImage || "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=85";
+
+  container.innerHTML = `
+    <div class="admin-header-bar">
+      <div>
+        <span class="micro-label">WEBSITE VISUAL &amp; CONTENT EDITOR (CMS)</span>
+        <h1 class="serif-heading" style="font-size: 2.1rem; color: var(--text-dark);">
+          Edit Halaman, Teks, &amp; Gambar Website
+        </h1>
+      </div>
+      <button class="btn-primary" onclick="closeAdminDashboard()">Lihat Hasil di Website</button>
+    </div>
+
+    <!-- BAGIAN 1: EDIT HALAMAN UTAMA (HERO, TENTANG KAMI, BANNER, MITRA SEKOLAH) -->
+    <div style="background: #fff; border: 1px solid var(--border-subtle); padding: 26px; margin-bottom: 28px;">
+      <h3 class="serif-heading" style="font-size: 1.5rem; color: var(--text-dark); margin-bottom: 6px;">
+        1. Edit Halaman Depan (Hero Utama, Tentang Kami, Banner &amp; Mitra Sekolah)
+      </h3>
+      <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 18px;">
+        Ubah teks judul, paragraf, maupun unggah gambar baru dari komputer/HP Anda untuk setiap bagian halaman depan website.
+      </p>
+
+      <form onsubmit="saveAdminPageContent(event)">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Judul Besar Hero (Wordmark Tengah) *</label>
+            <input type="text" name="heroWordmark" required value="${escapeHtml(s.heroWordmark || "Mind Booster")}" />
+          </div>
+          <div class="form-group">
+            <label>Subjudul Hero *</label>
+            <input type="text" name="brandSubtitle" required value="${escapeHtml(s.brandSubtitle || "EKSPLORASI & TUMBUH KEMBANG")}" />
+          </div>
+          <div class="form-group full">
+            <label>Kalimat Utama Hero (Headline Manifesto) *</label>
+            <textarea name="heroStatement" rows="2" required>${escapeHtml(s.heroStatement || "")}</textarea>
+          </div>
+          <div class="form-group">
+            <label>Label Keterangan Foto Hero</label>
+            <input type="text" name="heroPhotoLabel" value="${escapeHtml(s.heroPhotoLabel || "FOTO UTAMA · RUANG EKSPLORASI KELUARGA & AKTIVITAS TANPA GADGET (USIA 2–8 TAHUN)")}" />
+          </div>
+
+          <!-- Upload Gambar Hero Utama -->
+          <div class="form-group" style="background: var(--bg-cream); padding: 12px; border: 1px solid var(--border-subtle);">
+            <label>Gambar Background Hero Utama</label>
+            <input type="text" id="cmsHeroImgInput" name="heroImage" value="${escapeHtml(heroImg)}" oninput="document.getElementById('cmsHeroImgPrev').src = this.value" />
+            <div style="margin-top: 8px; display: flex; gap: 10px; align-items: center;">
+              <img id="cmsHeroImgPrev" src="${escapeHtml(heroImg)}" alt="Hero" style="width: 84px; height: 56px; object-fit: cover; border: 1px solid var(--border-subtle);" />
+              <label style="cursor: pointer; background: var(--bg-midnight); color: #fff; padding: 7px 12px; font-size: 0.64rem; border-radius: 4px;">
+                📁 Upload Gambar Hero Baru
+                <input type="file" accept="image/*" style="display: none;" onchange="handleAdminImageFileUpload(event, 'cmsHeroImgInput', 'cmsHeroImgPrev', 'hero')" />
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group full" style="margin-top: 8px; padding-top: 12px; border-top: 1px solid var(--border-subtle);">
+            <span class="micro-label">BAGIAN TENTANG KAMI (ABOUT US) &amp; BANNER TENGAH</span>
+          </div>
+
+          <div class="form-group full">
+            <label>Judul Bagian Tentang Kami (About Us)</label>
+            <input type="text" name="aboutTitle" value="${escapeHtml(s.aboutTitle || "VISI KAMI: MENGHADIRKAN MASA KECIL YANG KAYA EKSPLORASI NYATA, AMAN, DAN BERMAKNA TANPA KETERGANTUNGAN GADGET.")}" />
+          </div>
+          <div class="form-group">
+            <label>Paragraf 1 Tentang Kami</label>
+            <textarea name="aboutPara1" rows="3">${escapeHtml(s.aboutPara1 || "Lahir dari kepedulian pendidik dan orang tua terhadap tingginya paparan layar (screen time) pada anak usia dini, KutakKatik.id® hadir dengan nilai utama bahwa setiap mainan harus memiliki tujuan tumbuh kembang yang jelas—melatih motorik halus, kognitif, kemampuan problem-solving, serta logika dasar (STEM).")}</textarea>
+          </div>
+          <div class="form-group">
+            <label>Paragraf 2 Tentang Kami</label>
+            <textarea name="aboutPara2" rows="3">${escapeHtml(s.aboutPara2 || "Kami hanya menggunakan kayu solid lokal pilihan dengan finishing beeswax murni & cat water-based non-toxic, plastik ABS non-toxic, serta material sensorik food-grade yang melewati inspeksi kehalusan sudut secara ketat demi keamanan buah hati Anda.")}</textarea>
+          </div>
+
+          <!-- Upload Foto 1 Tentang Kami -->
+          <div class="form-group" style="background: var(--bg-cream); padding: 12px; border: 1px solid var(--border-subtle);">
+            <label>Foto Utama Tentang Kami (Tim Kurator)</label>
+            <input type="text" id="cmsAboutImg1Input" name="aboutMainImage" value="${escapeHtml(aboutImg1)}" oninput="document.getElementById('cmsAboutImg1Prev').src = this.value" />
+            <div style="margin-top: 8px; display: flex; gap: 10px; align-items: center;">
+              <img id="cmsAboutImg1Prev" src="${escapeHtml(aboutImg1)}" alt="About 1" style="width: 72px; height: 64px; object-fit: cover; border: 1px solid var(--border-subtle);" />
+              <label style="cursor: pointer; background: var(--bg-midnight); color: #fff; padding: 7px 12px; font-size: 0.64rem; border-radius: 4px;">
+                📁 Upload Foto Tim Kurator
+                <input type="file" accept="image/*" style="display: none;" onchange="handleAdminImageFileUpload(event, 'cmsAboutImg1Input', 'cmsAboutImg1Prev', 'about1')" />
+              </label>
+            </div>
+          </div>
+
+          <!-- Upload Foto 2 Tentang Kami -->
+          <div class="form-group" style="background: var(--bg-cream); padding: 12px; border: 1px solid var(--border-subtle);">
+            <label>Foto Kedua Tentang Kami (Studio Riset)</label>
+            <input type="text" id="cmsAboutImg2Input" name="aboutSecondImage" value="${escapeHtml(aboutImg2)}" oninput="document.getElementById('cmsAboutImg2Prev').src = this.value" />
+            <div style="margin-top: 8px; display: flex; gap: 10px; align-items: center;">
+              <img id="cmsAboutImg2Prev" src="${escapeHtml(aboutImg2)}" alt="About 2" style="width: 72px; height: 64px; object-fit: cover; border: 1px solid var(--border-subtle);" />
+              <label style="cursor: pointer; background: var(--bg-midnight); color: #fff; padding: 7px 12px; font-size: 0.64rem; border-radius: 4px;">
+                📁 Upload Foto Studio Riset
+                <input type="file" accept="image/*" style="display: none;" onchange="handleAdminImageFileUpload(event, 'cmsAboutImg2Input', 'cmsAboutImg2Prev', 'about2')" />
+              </label>
+            </div>
+          </div>
+
+          <!-- Upload Banner Strip -->
+          <div class="form-group" style="background: var(--bg-cream); padding: 12px; border: 1px solid var(--border-subtle);">
+            <label>Gambar Banner Lebar Tengah (Suasana Studio)</label>
+            <input type="text" id="cmsBannerImgInput" name="bannerStripImage" value="${escapeHtml(bannerImg)}" oninput="document.getElementById('cmsBannerImgPrev').src = this.value" />
+            <div style="margin-top: 8px; display: flex; gap: 10px; align-items: center;">
+              <img id="cmsBannerImgPrev" src="${escapeHtml(bannerImg)}" alt="Banner" style="width: 84px; height: 54px; object-fit: cover; border: 1px solid var(--border-subtle);" />
+              <label style="cursor: pointer; background: var(--bg-midnight); color: #fff; padding: 7px 12px; font-size: 0.64rem; border-radius: 4px;">
+                📁 Upload Gambar Banner
+                <input type="file" accept="image/*" style="display: none;" onchange="handleAdminImageFileUpload(event, 'cmsBannerImgInput', 'cmsBannerImgPrev', 'banner')" />
+              </label>
+            </div>
+          </div>
+
+          <!-- Upload Foto Mitra Sekolah -->
+          <div class="form-group" style="background: var(--bg-cream); padding: 12px; border: 1px solid var(--border-subtle);">
+            <label>Gambar Bagian Mitra Sekolah / PAUD</label>
+            <input type="text" id="cmsTradeImgInput" name="tradeMainImage" value="${escapeHtml(tradeImg)}" oninput="document.getElementById('cmsTradeImgPrev').src = this.value" />
+            <div style="margin-top: 8px; display: flex; gap: 10px; align-items: center;">
+              <img id="cmsTradeImgPrev" src="${escapeHtml(tradeImg)}" alt="Mitra" style="width: 84px; height: 54px; object-fit: cover; border: 1px solid var(--border-subtle);" />
+              <label style="cursor: pointer; background: var(--bg-midnight); color: #fff; padding: 7px 12px; font-size: 0.64rem; border-radius: 4px;">
+                📁 Upload Gambar Mitra Sekolah
+                <input type="file" accept="image/*" style="display: none;" onchange="handleAdminImageFileUpload(event, 'cmsTradeImgInput', 'cmsTradeImgPrev', 'trade')" />
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Judul Bagian Mitra Sekolah / PAUD</label>
+            <input type="text" name="tradeTitle" value="${escapeHtml(s.tradeTitle || "MITRA SEKOLAH, PAUD & TERAPIS TUMBUH KEMBANG")}" />
+          </div>
+          <div class="form-group">
+            <label>Deskripsi Mitra Sekolah / PAUD</label>
+            <textarea name="tradePara1" rows="2">${escapeHtml(s.tradePara1 || "Program kemitraan kami dikhususkan bagi sekolah, TK/PAUD, daycare, komunitas parenting, dan terapis tumbuh kembang anak. Sebagai Mitra KutakKatik.id, Anda mendapatkan potongan harga otomatis 20% serta kurasi kurikulum kit eksplorasi untuk kelas Anda.")}</textarea>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary" style="margin-top: 12px;">
+          💾 Simpan Perubahan Halaman Depan &amp; Gambar
+        </button>
+      </form>
+    </div>
+
+    <!-- BAGIAN 2: EDIT RUANG & KELAS EKSPLORASI (SPACES 01-04) -->
+    <div style="background: #fff; border: 1px solid var(--border-subtle); padding: 26px; margin-bottom: 28px;">
+      <h3 class="serif-heading" style="font-size: 1.5rem; color: var(--text-dark); margin-bottom: 6px;">
+        2. Edit Bagian Ruang &amp; Kelas Eksplorasi (Galeri Ruang 01–04)
+      </h3>
+      <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 18px;">
+        Ubah judul, lokasi, cerita ruang, dan ketiga foto untuk setiap slide Ruang &amp; Kelas Eksplorasi.
+      </p>
+
+      <div style="display: flex; flex-direction: column; gap: 18px;">
+        ${(storeState.spaces || [])
+          .map(
+            (sp, idx) => `
+          <form onsubmit="saveAdminSpaceItem(event, ${idx})" style="background: var(--bg-cream); border: 1px solid var(--border-subtle); padding: 18px;">
+            <div style="font-weight: 700; font-size: 0.85rem; margin-bottom: 12px; color: var(--text-bronze-dark);">
+              RUANG #${escapeHtml(sp.number)} — ${escapeHtml(sp.title)}
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Judul Ruang *</label>
+                <input type="text" name="title" required value="${escapeHtml(sp.title)}" />
+              </div>
+              <div class="form-group">
+                <label>Lokasi / Kategori Ruang *</label>
+                <input type="text" name="location" required value="${escapeHtml(sp.location)}" />
+              </div>
+              <div class="form-group full">
+                <label>Ringkasan Singkat *</label>
+                <input type="text" name="summary" required value="${escapeHtml(sp.summary)}" />
+              </div>
+              <div class="form-group full">
+                <label>Cerita Lengkap Ruang</label>
+                <textarea name="story" rows="2">${escapeHtml(sp.story || "")}</textarea>
+              </div>
+              <div class="form-group">
+                <label>Foto Tengah Melengkung (Main Arch Image)</label>
+                <input type="text" id="spaceMainImg_${idx}" name="mainArchImage" value="${escapeHtml(sp.mainArchImage)}" />
+                <label style="display: inline-block; margin-top: 6px; cursor: pointer; background: var(--bg-midnight); color: #fff; padding: 6px 10px; font-size: 0.62rem; border-radius: 4px;">
+                  📁 Upload Foto Tengah
+                  <input type="file" accept="image/*" style="display: none;" onchange="handleAdminImageFileUpload(event, 'spaceMainImg_${idx}', 'spaceMainPrev_${idx}', 'space-main')" />
+                </label>
+                <img id="spaceMainPrev_${idx}" src="${escapeHtml(sp.mainArchImage)}" alt="" style="width: 56px; height: 56px; object-fit: cover; margin-top: 6px; display: block;" />
+              </div>
+              <div class="form-group">
+                <label>Foto Kiri &amp; Kanan (Left &amp; Right Detail)</label>
+                <input type="text" id="spaceLeftImg_${idx}" name="leftThumbImage" value="${escapeHtml(sp.leftThumbImage)}" placeholder="Foto Kiri" style="margin-bottom: 6px;" />
+                <input type="text" id="spaceRightImg_${idx}" name="rightDetailImage" value="${escapeHtml(sp.rightDetailImage)}" placeholder="Foto Kanan" />
+                <div style="display: flex; gap: 8px; margin-top: 6px;">
+                  <label style="cursor: pointer; background: var(--bg-midnight); color: #fff; padding: 6px 10px; font-size: 0.62rem; border-radius: 4px;">
+                    📁 Upload Foto Kiri
+                    <input type="file" accept="image/*" style="display: none;" onchange="handleAdminImageFileUpload(event, 'spaceLeftImg_${idx}', 'spaceMainPrev_${idx}', 'space-left')" />
+                  </label>
+                  <label style="cursor: pointer; background: var(--bg-midnight); color: #fff; padding: 6px 10px; font-size: 0.62rem; border-radius: 4px;">
+                    📁 Upload Foto Kanan
+                    <input type="file" accept="image/*" style="display: none;" onchange="handleAdminImageFileUpload(event, 'spaceRightImg_${idx}', 'spaceMainPrev_${idx}', 'space-right')" />
+                  </label>
+                </div>
+              </div>
+            </div>
+            <button type="submit" class="btn-primary" style="margin-top: 8px; padding: 8px 16px; font-size: 0.66rem;">
+              💾 Simpan Ruang #${escapeHtml(sp.number)}
+            </button>
+          </form>
+        `
+          )
+          .join("")}
+      </div>
+    </div>
+
+    <!-- BAGIAN 3: EDIT JURNAL PARENTING & EDUKASI -->
+    <div style="background: #fff; border: 1px solid var(--border-subtle); padding: 26px;">
+      <h3 class="serif-heading" style="font-size: 1.5rem; color: var(--text-dark); margin-bottom: 6px;">
+        3. Edit Artikel Jurnal Parenting &amp; Edukasi
+      </h3>
+      <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 18px;">
+        Ubah judul, ringkasan, isi artikel, serta foto sampul untuk setiap kartu Jurnal Tumbuh Kembang.
+      </p>
+
+      <div style="display: flex; flex-direction: column; gap: 18px;">
+        ${(storeState.journalPosts || [])
+          .map(
+            (post, idx) => `
+          <form onsubmit="saveAdminJournalItem(event, ${idx})" style="background: var(--bg-cream); border: 1px solid var(--border-subtle); padding: 18px;">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Judul Artikel Jurnal *</label>
+                <input type="text" name="title" required value="${escapeHtml(post.title)}" />
+              </div>
+              <div class="form-group">
+                <label>Kategori &amp; Tanggal *</label>
+                <div style="display: flex; gap: 8px;">
+                  <input type="text" name="category" required value="${escapeHtml(post.category)}" style="flex: 1;" />
+                  <input type="text" name="date" required value="${escapeHtml(post.date)}" style="width: 140px;" />
+                </div>
+              </div>
+              <div class="form-group full">
+                <label>Ringkasan Kartu (Excerpt) *</label>
+                <input type="text" name="excerpt" required value="${escapeHtml(post.excerpt)}" />
+              </div>
+              <div class="form-group">
+                <label>Isi Lengkap Artikel (Saat Dibuka)</label>
+                <textarea name="content" rows="3">${escapeHtml(post.content || post.excerpt)}</textarea>
+              </div>
+              <div class="form-group">
+                <label>Gambar Sampul Jurnal</label>
+                <input type="text" id="journalImg_${idx}" name="image" value="${escapeHtml(post.image)}" oninput="document.getElementById('journalPrev_${idx}').src = this.value" />
+                <div style="display: flex; gap: 10px; align-items: center; margin-top: 6px;">
+                  <img id="journalPrev_${idx}" src="${escapeHtml(post.image)}" alt="" style="width: 64px; height: 48px; object-fit: cover; border: 1px solid var(--border-subtle);" />
+                  <label style="cursor: pointer; background: var(--bg-midnight); color: #fff; padding: 6px 10px; font-size: 0.62rem; border-radius: 4px;">
+                    📁 Upload Gambar Jurnal
+                    <input type="file" accept="image/*" style="display: none;" onchange="handleAdminImageFileUpload(event, 'journalImg_${idx}', 'journalPrev_${idx}', 'journal')" />
+                  </label>
+                </div>
+              </div>
+            </div>
+            <button type="submit" class="btn-primary" style="margin-top: 8px; padding: 8px 16px; font-size: 0.66rem;">
+              💾 Simpan Artikel Jurnal #${idx + 1}
+            </button>
+          </form>
+        `
+          )
+          .join("")}
+      </div>
+    </div>
+  `;
+}
+
+function saveAdminPageContent(e) {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const s = storeState.settings;
+  s.heroWordmark = fd.get("heroWordmark").trim();
+  s.brandSubtitle = fd.get("brandSubtitle").trim();
+  s.heroStatement = fd.get("heroStatement").trim();
+  s.heroPhotoLabel = fd.get("heroPhotoLabel").trim();
+  s.heroImage = fd.get("heroImage").trim();
+  s.aboutTitle = fd.get("aboutTitle").trim();
+  s.aboutPara1 = fd.get("aboutPara1").trim();
+  s.aboutPara2 = fd.get("aboutPara2").trim();
+  s.aboutMainImage = fd.get("aboutMainImage").trim();
+  s.aboutSecondImage = fd.get("aboutSecondImage").trim();
+  s.bannerStripImage = fd.get("bannerStripImage").trim();
+  s.tradeMainImage = fd.get("tradeMainImage").trim();
+  s.tradeTitle = fd.get("tradeTitle").trim();
+  s.tradePara1 = fd.get("tradePara1").trim();
+
+  saveStoreState();
+  renderAll();
+  showToast("Halaman depan & gambar website berhasil diperbarui dan disinkronkan ke database!");
+}
+
+function saveAdminSpaceItem(e, idx) {
+  e.preventDefault();
+  const sp = storeState.spaces?.[idx];
+  if (!sp) return;
+  const fd = new FormData(e.target);
+  sp.title = fd.get("title").trim();
+  sp.location = fd.get("location").trim();
+  sp.summary = fd.get("summary").trim();
+  sp.story = fd.get("story").trim();
+  sp.mainArchImage = fd.get("mainArchImage").trim();
+  sp.leftThumbImage = fd.get("leftThumbImage").trim();
+  sp.rightDetailImage = fd.get("rightDetailImage").trim();
+
+  saveStoreState();
+  renderAll();
+  showToast(`Ruang #${sp.number} (${sp.title}) berhasil diperbarui!`);
+}
+
+function saveAdminJournalItem(e, idx) {
+  e.preventDefault();
+  const post = storeState.journalPosts?.[idx];
+  if (!post) return;
+  const fd = new FormData(e.target);
+  post.title = fd.get("title").trim();
+  post.category = fd.get("category").trim();
+  post.date = fd.get("date").trim();
+  post.excerpt = fd.get("excerpt").trim();
+  post.content = fd.get("content").trim();
+  post.image = fd.get("image").trim();
+
+  saveStoreState();
+  renderAll();
+  showToast(`Artikel Jurnal "${post.title}" berhasil diperbarui!`);
 }
 
 // 3. ADMIN ORDERS & FULFILLMENT + PAYMENT PROOF VERIFICATION

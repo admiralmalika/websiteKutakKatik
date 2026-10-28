@@ -126,6 +126,31 @@ const requestHandler = async (req, res) => {
     }
   }
 
+  // 4B. API: POST /api/upload-image (General Admin Image Upload for Products & Website Pages)
+  if (pathname === "/api/upload-image" && req.method === "POST") {
+    try {
+      const { prefix, imageDataUrl } = await readJsonBody(req);
+      if (!imageDataUrl || !imageDataUrl.startsWith("data:image/")) {
+        return sendJson(res, 400, { error: "Invalid image data URL" });
+      }
+      const matches = imageDataUrl.match(/^data:image\/([a-zA-Z0-9+]+);base64,(.+)$/);
+      if (matches) {
+        const ext = matches[1] === "jpeg" ? "jpg" : matches[1];
+        const buffer = Buffer.from(matches[2], "base64");
+        const safePrefix = String(prefix || "img").replace(/[^a-zA-Z0-9_-]/g, "");
+        const fileName = `${safePrefix}-${Date.now()}.${ext}`;
+        const filePath = path.join(UPLOADS_DIR, fileName);
+        try {
+          fs.writeFileSync(filePath, buffer);
+        } catch (_) {}
+      }
+      // Return Data URL so it persists seamlessly in both local store.json and Vercel/Supabase PostgreSQL
+      return sendJson(res, 200, { ok: true, imageUrl: imageDataUrl });
+    } catch (err) {
+      return sendJson(res, 500, { error: err.message });
+    }
+  }
+
   // 5. Serve Static Files (including /uploads/*)
   let safePath = pathname === "/" ? "/index.html" : pathname;
   safePath = path.normalize(safePath).replace(/^(\.\.[\/\\])+/, "");
