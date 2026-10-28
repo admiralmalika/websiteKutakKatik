@@ -2,7 +2,7 @@
 // NIGHTWORKS® · KUTAK KATIK STUDIO — E-COMMERCE & ADMIN APPLICATION ENGINE
 // ============================================================================
 
-const STORAGE_KEY = "kutakkatik_edukasi_store_v6";
+const STORAGE_KEY = "kutakkatik_edukasi_store_v7";
 const SESSION_KEY = "kutakkatik_edukasi_session_v3";
 
 let storeState = null;
@@ -235,16 +235,43 @@ function renderStaggeredFeatured() {
   container.innerHTML = trio
     .map(({ product, cls }, idx) => {
       const effectivePrice = getEffectiveUnitPrice(product);
+      const defaultFinish = (product.finishes && product.finishes[0]) || "Usia 3–5 Tahun (Pra-Sekolah)";
       const specLabel = `UNGGULAN 0${idx + 1} · ${product.category.toUpperCase()} · ${product.badge || "PILIHAN KURATOR"}`;
       return `
-        <article class="staggered-card ${cls}" onclick="openProductDetailModal('${product.id}')">
-          <div class="photo-labeled-wrap">
+        <article class="staggered-card ${cls}">
+          <div class="photo-labeled-wrap" onclick="openProductDetailModal('${product.id}')" style="cursor: pointer;">
             <span class="photo-spec-label">${escapeHtml(specLabel)}</span>
-            <img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" loading="lazy" />
+            <img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.seoTitle || product.name)}" loading="lazy" />
           </div>
-          <div class="staggered-card-caption">
+          <div class="staggered-card-caption" onclick="openProductDetailModal('${product.id}')" style="cursor: pointer;">
             <h3 class="staggered-card-title">${escapeHtml(product.name)}</h3>
             <span class="staggered-card-price">${formatPrice(effectivePrice)}</span>
+          </div>
+          <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px;">
+            <button
+              type="button"
+              class="btn-primary"
+              style="flex: 1; padding: 8px 10px; font-size: 0.64rem;"
+              onclick="buyNowProduct('${product.id}', '${escapeJs(defaultFinish)}', 1)"
+            >
+              Beli Sekarang
+            </button>
+            <button
+              type="button"
+              class="btn-outline"
+              style="flex: 1; padding: 8px 10px; font-size: 0.64rem;"
+              onclick="addToCart('${product.id}', '${escapeJs(defaultFinish)}', 1)"
+            >
+              + Tambah ke Keranjang
+            </button>
+            <button
+              type="button"
+              class="btn-outline"
+              style="padding: 8px 10px; font-size: 0.64rem; border-color: #1f6f43; color: #1f6f43; font-weight: 700;"
+              onclick="orderProductViaWhatsApp('${product.id}', '${escapeJs(defaultFinish)}', 1)"
+            >
+              Pesan via WhatsApp
+            </button>
           </div>
         </article>
       `;
@@ -358,10 +385,10 @@ function renderShopCatalog() {
             <div class="product-hover-actions">
               <button
                 class="quick-add-btn"
-                onclick="addToCart('${p.id}', '${escapeJs(defaultFinish)}', 1)"
+                onclick="buyNowProduct('${p.id}', '${escapeJs(defaultFinish)}', 1)"
                 ${outOfStock ? "disabled style='opacity:0.5;cursor:not-allowed;'" : ""}
               >
-                ${outOfStock ? "Stok Habis" : "+ Keranjang"}
+                ${outOfStock ? "Stok Habis" : "Beli Sekarang"}
               </button>
               <button class="quick-view-btn" onclick="openProductDetailModal('${p.id}')">
                 Detail &amp; Safety
@@ -387,11 +414,40 @@ function renderShopCatalog() {
                   : ""
               }
             </div>
-            <p style="font-size: 0.74rem; color: var(--text-dark); line-height: 1.5; margin: 4px 0 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-              ${escapeHtml((p.description || "").split("\n")[0])}
+            <p style="font-size: 0.74rem; color: var(--text-dark); line-height: 1.45; margin: 4px 0 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+              ${escapeHtml((p.seoDescription || p.description || "").split("\n")[0])}
             </p>
-            <div style="font-size: 0.68rem; color: var(--text-bronze-dark); background: rgba(196, 158, 120, 0.12); padding: 5px 8px; border-left: 2px solid var(--text-bronze); line-height: 1.4;">
+            <div style="font-size: 0.68rem; color: var(--text-bronze-dark); background: rgba(196, 158, 120, 0.12); padding: 5px 8px; border-left: 2px solid var(--text-bronze); line-height: 1.4; margin-bottom: 8px;">
               <strong>✓ ${escapeHtml(p.recommendedAge || "Aman untuk usia 3 tahun ke atas")}</strong> · Material Non-Toxic
+            </div>
+            <!-- Tombol CTA Eksplisit & Menonjol (Selalu terlihat di Layar Handphone & Desktop) -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 4px;">
+              <button
+                type="button"
+                class="btn-primary"
+                style="padding: 9px 10px; font-size: 0.65rem; width: 100%;"
+                onclick="buyNowProduct('${p.id}', '${escapeJs(defaultFinish)}', 1)"
+                ${outOfStock ? "disabled style='opacity:0.5;cursor:not-allowed;'" : ""}
+              >
+                ${outOfStock ? "Stok Habis" : "Beli Sekarang"}
+              </button>
+              <button
+                type="button"
+                class="btn-outline"
+                style="padding: 9px 10px; font-size: 0.65rem; width: 100%;"
+                onclick="addToCart('${p.id}', '${escapeJs(defaultFinish)}', 1)"
+                ${outOfStock ? "disabled style='opacity:0.5;cursor:not-allowed;'" : ""}
+              >
+                Tambah ke Keranjang
+              </button>
+              <button
+                type="button"
+                class="btn-outline"
+                style="grid-column: 1 / -1; padding: 8px 10px; font-size: 0.65rem; width: 100%; border-color: #1f6f43; color: #1f6f43; font-weight: 700;"
+                onclick="orderProductViaWhatsApp('${p.id}', '${escapeJs(defaultFinish)}', 1)"
+              >
+                💬 Pesan via WhatsApp
+              </button>
             </div>
           </div>
         </article>
@@ -818,14 +874,75 @@ let currentDetailProductId = null;
 let currentSelectedFinish = null;
 let currentDetailQty = 1;
 
+function updatePageSeoForProduct(p) {
+  if (!p) return;
+  const metaTitle =
+    p.seoTitle ||
+    `${p.name} | Mainan Edukasi Anak & Mainan Motorik Balita — KutakKatik.id`;
+  const metaDesc =
+    p.seoDescription ||
+    `Jual ${p.name}. Mainan edukasi anak & mainan motorik balita berbahan kayu solid non-toxic untuk melatih motorik halus, kognitif, dan logika dasar STEM.`;
+  const metaKeywords =
+    p.seoKeywords ||
+    "Mainan Edukasi Anak, Mainan Motorik Balita, Mainan Montessori Kayu, Kit Eksplorasi Anak, Sensory Play Anak";
+
+  document.title = metaTitle;
+  const descEl = document.getElementById("metaDescription");
+  if (descEl) descEl.setAttribute("content", metaDesc);
+  const kwEl = document.getElementById("metaKeywords");
+  if (kwEl) kwEl.setAttribute("content", metaKeywords);
+  const ogTitleEl = document.getElementById("ogTitle");
+  if (ogTitleEl) ogTitleEl.setAttribute("content", metaTitle);
+  const ogDescEl = document.getElementById("ogDescription");
+  if (ogDescEl) ogDescEl.setAttribute("content", metaDesc);
+
+  const jsonLdEl = document.getElementById("seoJsonLd");
+  if (jsonLdEl) {
+    const idrPrice = Math.round(Number(p.price || 18) * Number(storeState?.settings?.idrRate || 16000));
+    jsonLdEl.textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: p.name,
+      description: metaDesc,
+      category: p.category || "Mainan Edukasi Anak",
+      keywords: metaKeywords,
+      brand: { "@type": "Brand", name: "KutakKatik.id" },
+      offers: {
+        "@type": "Offer",
+        priceCurrency: "IDR",
+        price: idrPrice,
+        availability: Number(p.stock) > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
+      }
+    });
+  }
+}
+
+function buyNowProduct(productId, finish, qty = 1) {
+  addToCart(productId, finish, qty);
+  closeAllOverlays();
+  openCheckoutModal();
+}
+
+function orderProductViaWhatsApp(productId, finish, qty = 1) {
+  const p = storeState.products.find((item) => item.id === productId);
+  if (!p) return;
+  const effectivePrice = getEffectiveUnitPrice(p);
+  const totalFormatted = formatPrice(effectivePrice * qty);
+  const chosenFinish = finish || (p.finishes && p.finishes[0]) || "Paket Standar";
+  const text = `Halo KutakKatik.id, saya ingin memesan:\n• Produk: ${p.name}\n• Varian/Usia: ${chosenFinish}\n• Jumlah: ${qty} set\n• Estimasi Harga: ${totalFormatted}\n\nMohon info ketersediaan dan pengirimannya. Terima kasih!`;
+  const waUrl = `https://wa.me/628121881490?text=${encodeURIComponent(text)}`;
+  window.open(waUrl, "_blank", "noopener");
+}
+
 function openProductDetailModal(productId) {
   const p = storeState.products.find((item) => item.id === productId);
   if (!p) return;
 
   currentDetailProductId = p.id;
-  currentSelectedFinish = (p.finishes && p.finishes[0]) || "Standard Brass";
+  currentSelectedFinish = (p.finishes && p.finishes[0]) || "Usia 3–5 Tahun (Pra-Sekolah)";
   currentDetailQty = 1;
 
+  updatePageSeoForProduct(p);
   renderProductDetailModalContent();
   openModalById("productDetailModal");
 }
@@ -837,6 +954,15 @@ function renderProductDetailModalContent() {
   const effectivePrice = getEffectiveUnitPrice(p);
   const prodReviews = (storeState.reviews || []).filter((r) => r.productId === p.id);
   const outOfStock = Number(p.stock) <= 0;
+  const shortSummary =
+    p.seoDescription ||
+    (p.description || "").split("\n\n")[0];
+  const metaTitle =
+    p.seoTitle ||
+    `${p.name} | Mainan Edukasi Anak & Mainan Motorik Balita — KutakKatik.id`;
+  const metaDesc =
+    p.seoDescription ||
+    `Jual ${p.name}. Mainan edukasi anak & mainan motorik balita berbahan kayu solid non-toxic.`;
 
   const container = document.getElementById("productDetailBody");
   const galleryImages = [p.image, p.hoverImage].filter((url, idx, arr) => url && arr.indexOf(url) === idx);
@@ -844,7 +970,7 @@ function renderProductDetailModalContent() {
     <div class="product-detail-layout">
       <div class="product-detail-gallery photo-labeled-wrap" style="position: relative; display: flex; flex-direction: column;">
         <span class="photo-spec-label bottom-left">${escapeHtml(p.category)} · ${escapeHtml(currentSelectedFinish)}</span>
-        <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" id="detailMainImg" style="flex: 1;" />
+        <img src="${escapeHtml(p.image)}" alt="${escapeHtml(metaTitle)}" id="detailMainImg" style="flex: 1;" />
         ${
           galleryImages.length > 1
             ? `<div style="position: absolute; bottom: 16px; right: 16px; display: flex; gap: 8px; z-index: 5;">
@@ -869,11 +995,11 @@ function renderProductDetailModalContent() {
 
       <div class="product-detail-content">
         <span class="micro-label">${escapeHtml(p.category)} · ${p.stock > 0 ? `${p.stock} TERSEDIA DI STUDIO` : "STOK HABIS"}</span>
-        <h2 class="serif-heading" style="font-size: 2rem; color: var(--text-dark);">
+        <h2 class="serif-heading" style="font-size: 1.9rem; color: var(--text-dark); line-height: 1.2;">
           ${escapeHtml(p.name)}
         </h2>
 
-        <div style="display: flex; align-items: baseline; gap: 12px;">
+        <div style="display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;">
           <span style="font-size: 1.35rem; font-weight: 600;">${formatPrice(effectivePrice)}</span>
           ${
             isTradeOrAdminUser()
@@ -882,6 +1008,74 @@ function renderProductDetailModalContent() {
               ? `<span class="compare-price">${formatPrice(p.compareAtPrice)}</span>`
               : ""
           }
+          <span style="font-size: 0.72rem; color: var(--text-bronze-dark); font-weight: 600;">
+            ✓ ${escapeHtml(p.recommendedAge || "Aman Usia 3+ Tahun")}
+          </span>
+        </div>
+
+        <!-- Ringkasan Singkat (Agar tidak menutupi tombol CTA di layar Handphone) -->
+        <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; margin: 0;">
+          ${escapeHtml(shortSummary)}
+        </p>
+
+        <!-- PILIHAN PAKET & 3 TOMBOL CTA UTAMA DI ATAS (MOBILE-FIRST ERGONOMICS) -->
+        <div style="background: var(--bg-cream); border: 1px solid var(--border-subtle); padding: 14px 16px;">
+          <label class="micro-label" style="display: block; margin-bottom: 6px;">
+            PILIHAN PAKET &amp; KATEGORI USIA: <strong style="color: var(--text-dark);">${escapeHtml(currentSelectedFinish)}</strong>
+          </label>
+          <div class="swatch-list" style="margin-bottom: 12px;">
+            ${(p.finishes || ["Usia 3–5 Tahun (Pra-Sekolah)"])
+              .map(
+                (fin) => `
+              <button
+                type="button"
+                class="swatch-pill ${fin === currentSelectedFinish ? "active" : ""}"
+                onclick="selectDetailFinish('${escapeJs(fin)}')"
+              >
+                ${escapeHtml(fin)}
+              </button>
+            `
+              )
+              .join("")}
+          </div>
+
+          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <div class="qty-control" style="height: 44px; display: flex; align-items: center; background: #fff;">
+              <button type="button" onclick="adjustDetailQty(-1)" style="width: 36px; height: 100%;">−</button>
+              <span id="detailQtyVal" style="padding: 0 12px; font-weight: 600;">${currentDetailQty}</span>
+              <button type="button" onclick="adjustDetailQty(1)" style="width: 36px; height: 100%;">+</button>
+            </div>
+
+            <button
+              type="button"
+              class="btn-primary"
+              style="flex: 1; min-width: 150px; padding: 12px 16px;"
+              onclick="buyNowProduct('${p.id}', '${escapeJs(currentSelectedFinish)}', ${currentDetailQty})"
+              ${outOfStock ? "disabled style='opacity:0.5;cursor:not-allowed;'" : ""}
+            >
+              ${outOfStock ? "Stok Habis" : `Beli Sekarang — ${formatPrice(effectivePrice * currentDetailQty)}`}
+            </button>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
+            <button
+              type="button"
+              class="btn-outline"
+              style="background: #fff; padding: 10px 12px; font-size: 0.68rem; font-weight: 700;"
+              onclick="addToCart('${p.id}', '${escapeJs(currentSelectedFinish)}', ${currentDetailQty}); closeAllOverlays(); toggleCartDrawer(true);"
+              ${outOfStock ? "disabled style='opacity:0.5;cursor:not-allowed;'" : ""}
+            >
+              + Tambah ke Keranjang
+            </button>
+            <button
+              type="button"
+              class="btn-outline"
+              style="background: #fff; padding: 10px 12px; font-size: 0.68rem; font-weight: 700; border-color: #1f6f43; color: #1f6f43;"
+              onclick="orderProductViaWhatsApp('${p.id}', '${escapeJs(currentSelectedFinish)}', ${currentDetailQty})"
+            >
+              💬 Pesan via WhatsApp
+            </button>
+          </div>
         </div>
 
         <!-- 1. Deskripsi Produk Berbasis Edukasi dan Perkembangan -->
@@ -889,12 +1083,12 @@ function renderProductDetailModalContent() {
           <span class="micro-label" style="color: var(--text-bronze-dark); display: block; margin-bottom: 6px;">
             1. MANFAAT EDUKASI &amp; TUMBUH KEMBANG ANAK (MOTORIK, KOGNITIF &amp; STEM)
           </span>
-          <p style="font-size: 0.84rem; color: var(--text-dark); line-height: 1.72; margin-bottom: ${p.educationalBenefits && p.educationalBenefits.length ? "10px" : "0"};">
+          <p style="font-size: 0.82rem; color: var(--text-dark); line-height: 1.68; margin-bottom: ${p.educationalBenefits && p.educationalBenefits.length ? "8px" : "0"};">
             ${escapeHtml((p.description || "").split("\n\n")[0])}
           </p>
           ${
             p.educationalBenefits && p.educationalBenefits.length
-              ? `<ul style="margin: 0; padding-left: 18px; font-size: 0.78rem; color: var(--text-muted); line-height: 1.65; display: flex; flex-direction: column; gap: 4px;">
+              ? `<ul style="margin: 0; padding-left: 18px; font-size: 0.77rem; color: var(--text-muted); line-height: 1.6; display: flex; flex-direction: column; gap: 4px;">
                   ${p.educationalBenefits.map((b) => `<li>${escapeHtml(b)}</li>`).join("")}
                 </ul>`
               : ""
@@ -902,11 +1096,11 @@ function renderProductDetailModalContent() {
         </div>
 
         <!-- 2. Informasi Keamanan (Safety & Material) yang Eksplisit -->
-        <div style="padding: 14px 16px; background: var(--bg-cream); border: 1px solid var(--border-subtle); border-left: 3px solid var(--text-bronze-dark); font-size: 0.78rem; line-height: 1.6;">
-          <span class="micro-label" style="color: var(--text-bronze-dark); display: block; margin-bottom: 8px;">
+        <div style="padding: 14px 16px; background: var(--bg-cream); border: 1px solid var(--border-subtle); border-left: 3px solid var(--text-bronze-dark); font-size: 0.77rem; line-height: 1.58;">
+          <span class="micro-label" style="color: var(--text-bronze-dark); display: block; margin-bottom: 6px;">
             2. INFORMASI KEAMANAN &amp; MATERIAL (SAFETY &amp; MATERIAL)
           </span>
-          <div style="display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; flex-direction: column; gap: 5px;">
             <div>
               <strong>• Bahan Mainan (Material):</strong>
               ${escapeHtml(
@@ -928,8 +1122,8 @@ function renderProductDetailModalContent() {
               )}
             </div>
           </div>
-          <div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border-subtle); font-size: 0.73rem; color: var(--text-muted);">
-            <div><strong>Pengemasan &amp; Pengiriman:</strong> ${escapeHtml(p.leadTime || "Ready Stock — Dikirim dalam 1–2 hari kerja")} (Kemasan Tahan Benturan Berlapis)</div>
+          <div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border-subtle); font-size: 0.72rem; color: var(--text-muted);">
+            <div><strong>Pengemasan &amp; Pengiriman:</strong> ${escapeHtml(p.leadTime || "Ready Stock — Dikirim dalam 1–2 hari kerja")}</div>
             <div style="margin-top: 3px;"><strong>Garansi Kepercayaan (Return/Refund):</strong> Jaminan 100% Tukar Baru Gratis Ongkir / Refund Penuh jika produk diterima cacat.</div>
             <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 6px;">
               <button type="button" class="underlined-link" style="font-size: 0.68rem;" onclick="openFaqModal()">FAQ Pengiriman &amp; Material</button>
@@ -939,46 +1133,18 @@ function renderProductDetailModalContent() {
           </div>
         </div>
 
-        <div>
-          <label class="micro-label" style="display: block; margin-bottom: 6px;">
-            PILIHAN PAKET &amp; KATEGORI USIA: <strong style="color: var(--text-dark);">${escapeHtml(currentSelectedFinish)}</strong>
-          </label>
-          <div class="swatch-list">
-            ${(p.finishes || ["Usia 3–5 Tahun (Pra-Sekolah)"])
-              .map(
-                (fin) => `
-              <button
-                type="button"
-                class="swatch-pill ${fin === currentSelectedFinish ? "active" : ""}"
-                onclick="selectDetailFinish('${escapeJs(fin)}')"
-              >
-                ${escapeHtml(fin)}
-              </button>
-            `
-              )
-              .join("")}
-          </div>
-        </div>
-
-        <div style="display: flex; gap: 12px; align-items: center; margin-top: 6px;">
-          <div class="qty-control" style="height: 46px; display: flex; align-items: center;">
-            <button type="button" onclick="adjustDetailQty(-1)" style="width: 38px; height: 100%;">−</button>
-            <span id="detailQtyVal" style="padding: 0 14px; font-weight: 600;">${currentDetailQty}</span>
-            <button type="button" onclick="adjustDetailQty(1)" style="width: 38px; height: 100%;">+</button>
-          </div>
-
-          <button
-            class="btn-primary"
-            style="flex: 1;"
-            onclick="addToCart('${p.id}', '${escapeJs(currentSelectedFinish)}', ${currentDetailQty}); closeAllOverlays(); toggleCartDrawer(true);"
-            ${outOfStock ? "disabled style='opacity:0.5;cursor:not-allowed;'" : ""}
-          >
-            ${outOfStock ? "Stok Sedang Habis" : `+ Tambah ke Keranjang — ${formatPrice(effectivePrice * currentDetailQty)}`}
-          </button>
+        <!-- 3. Struktur SEO Konten Halaman Produk (Meta Title & Meta Description) -->
+        <div style="padding: 10px 14px; background: #fff; border: 1px dashed var(--border-subtle); font-size: 0.72rem; color: var(--text-muted); line-height: 1.5;">
+          <span class="micro-label" style="color: var(--text-bronze-dark); display: block; margin-bottom: 4px;">
+            STRUKTUR SEO GOOGLE (META TITLE &amp; META DESCRIPTION)
+          </span>
+          <div><strong>Meta Title:</strong> ${escapeHtml(metaTitle)}</div>
+          <div style="margin-top: 2px;"><strong>Meta Description:</strong> ${escapeHtml(metaDesc)}</div>
+          <div style="margin-top: 2px;"><strong>Kata Kunci (Keywords):</strong> ${escapeHtml(p.seoKeywords || "Mainan Edukasi Anak, Mainan Motorik Balita, Mainan Montessori Kayu")}</div>
         </div>
 
         <!-- Reviews Section inside Product Modal -->
-        <div style="margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--border-subtle);">
+        <div style="margin-top: 10px; padding-top: 14px; border-top: 1px solid var(--border-subtle);">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
             <span class="micro-label">ULASAN ORANG TUA &amp; PENDIDIK (${prodReviews.length})</span>
             <span style="font-size: 0.78rem; color: var(--text-bronze-dark);">★ ${Number(p.rating || 5).toFixed(1)} / 5.0</span>

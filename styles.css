@@ -2096,4 +2096,18 @@ a {
   .form-grid {
     grid-template-columns: 1fr;
   }
+
+  .product-detail-gallery {
+    min-height: 210px;
+    max-height: 250px;
+  }
+
+  .product-detail-gallery img {
+    max-height: 250px;
+  }
+
+  .product-detail-content {
+    padding: 20px 18px;
+    gap: 12px;
+  }
 }
