@@ -40,9 +40,9 @@ window.INITIAL_STORE_DATA = {
       dimensions: "Box Kayu & Karton Edukasi 28×22×8 cm | 12 Proyek Eksperimen + Buku Panduan Orang Tua",
       leadTime: "Ready Stock — Dikirim dalam 1–2 hari kerja",
       image:
-        "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=1200&q=85",
+        "/uploads/kit-eksplorasi-3-5-tahun-1.jpg",
       hoverImage:
-        "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=1200&q=85",
+        "/uploads/kit-eksplorasi-3-5-tahun-2.jpg",
       description:
         "Dirancang oleh kurator tumbuh kembang anak untuk mengalihkan perhatian anak dari layar gadget melalui 12 eksperimen sains dan eksplorasi alam yang aman di rumah. Lengkap dengan kaca pembesar kayu, spesimen botani, kartu tantangan harian, dan panduan pendampingan orang tua."
     },

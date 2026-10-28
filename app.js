@@ -2,7 +2,7 @@
 // NIGHTWORKS® · KUTAK KATIK STUDIO — E-COMMERCE & ADMIN APPLICATION ENGINE
 // ============================================================================
 
-const STORAGE_KEY = "kutakkatik_edukasi_store_v3";
+const STORAGE_KEY = "kutakkatik_edukasi_store_v4";
 const SESSION_KEY = "kutakkatik_edukasi_session_v3";
 
 let storeState = null;
@@ -709,11 +709,32 @@ function renderProductDetailModalContent() {
   const outOfStock = Number(p.stock) <= 0;
 
   const container = document.getElementById("productDetailBody");
+  const galleryImages = [p.image, p.hoverImage].filter((url, idx, arr) => url && arr.indexOf(url) === idx);
   container.innerHTML = `
     <div class="product-detail-layout">
-      <div class="product-detail-gallery photo-labeled-wrap">
+      <div class="product-detail-gallery photo-labeled-wrap" style="position: relative; display: flex; flex-direction: column;">
         <span class="photo-spec-label bottom-left">${escapeHtml(p.category)} · ${escapeHtml(currentSelectedFinish)}</span>
-        <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" id="detailMainImg" />
+        <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" id="detailMainImg" style="flex: 1;" />
+        ${
+          galleryImages.length > 1
+            ? `<div style="position: absolute; bottom: 16px; right: 16px; display: flex; gap: 8px; z-index: 5;">
+                ${galleryImages
+                  .map(
+                    (imgUrl, i) => `
+                  <button
+                    type="button"
+                    onclick="document.getElementById('detailMainImg').src='${escapeJs(imgUrl)}'"
+                    style="width: 54px; height: 54px; padding: 0; border: 2px solid rgba(255,255,255,0.9); border-radius: 6px; overflow: hidden; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.35); background: #fff;"
+                    title="Lihat Foto ${i + 1}"
+                  >
+                    <img src="${escapeHtml(imgUrl)}" alt="Foto ${i + 1}" style="width: 100%; height: 100%; object-fit: cover;" />
+                  </button>
+                `
+                  )
+                  .join("")}
+              </div>`
+            : ""
+        }
       </div>
 
       <div class="product-detail-content">
