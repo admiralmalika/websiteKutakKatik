@@ -2,7 +2,7 @@
 // NIGHTWORKS® · KUTAK KATIK STUDIO — E-COMMERCE & ADMIN APPLICATION ENGINE
 // ============================================================================
 
-const STORAGE_KEY = "kutakkatik_edukasi_store_v4";
+const STORAGE_KEY = "kutakkatik_edukasi_store_v5";
 const SESSION_KEY = "kutakkatik_edukasi_session_v3";
 
 let storeState = null;
@@ -361,10 +361,10 @@ function renderShopCatalog() {
                 onclick="addToCart('${p.id}', '${escapeJs(defaultFinish)}', 1)"
                 ${outOfStock ? "disabled style='opacity:0.5;cursor:not-allowed;'" : ""}
               >
-                ${outOfStock ? "Out of Stock" : "+ Add to Bag"}
+                ${outOfStock ? "Stok Habis" : "+ Keranjang"}
               </button>
               <button class="quick-view-btn" onclick="openProductDetailModal('${p.id}')">
-                Specs
+                Detail &amp; Safety
               </button>
             </div>
           </div>
@@ -381,14 +381,17 @@ function renderShopCatalog() {
               <span>${formatPrice(effectivePrice)}</span>
               ${
                 isTradeOrAdminUser()
-                  ? `<span class="compare-price">${formatPrice(p.price)}</span><span class="trade-tag">Trade -${storeState.settings.tradeDiscountPercent}%</span>`
+                  ? `<span class="compare-price">${formatPrice(p.price)}</span><span class="trade-tag">Mitra -${storeState.settings.tradeDiscountPercent}%</span>`
                   : p.compareAtPrice
                   ? `<span class="compare-price">${formatPrice(p.compareAtPrice)}</span>`
                   : ""
               }
             </div>
-            <div style="font-size: 0.72rem; color: var(--text-muted);">
-              ${p.finishes ? p.finishes.slice(0, 2).join(" · ") : "Solid Brass & Stone"}
+            <p style="font-size: 0.74rem; color: var(--text-dark); line-height: 1.5; margin: 4px 0 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+              ${escapeHtml((p.description || "").split("\n")[0])}
+            </p>
+            <div style="font-size: 0.68rem; color: var(--text-bronze-dark); background: rgba(196, 158, 120, 0.12); padding: 5px 8px; border-left: 2px solid var(--text-bronze); line-height: 1.4;">
+              <strong>✓ ${escapeHtml(p.recommendedAge || "Aman untuk usia 3 tahun ke atas")}</strong> · Material Non-Toxic
             </div>
           </div>
         </article>
@@ -738,8 +741,8 @@ function renderProductDetailModalContent() {
       </div>
 
       <div class="product-detail-content">
-        <span class="micro-label">${escapeHtml(p.category)} · ${p.stock > 0 ? `${p.stock} IN STUDIO STOCK` : "SOLD OUT"}</span>
-        <h2 class="serif-heading" style="font-size: 2.2rem; color: var(--text-dark);">
+        <span class="micro-label">${escapeHtml(p.category)} · ${p.stock > 0 ? `${p.stock} TERSEDIA DI STUDIO` : "STOK HABIS"}</span>
+        <h2 class="serif-heading" style="font-size: 2rem; color: var(--text-dark);">
           ${escapeHtml(p.name)}
         </h2>
 
@@ -747,23 +750,68 @@ function renderProductDetailModalContent() {
           <span style="font-size: 1.35rem; font-weight: 600;">${formatPrice(effectivePrice)}</span>
           ${
             isTradeOrAdminUser()
-              ? `<span class="compare-price">${formatPrice(p.price)}</span><span class="trade-tag">Trade Specifier Price</span>`
+              ? `<span class="compare-price">${formatPrice(p.price)}</span><span class="trade-tag">Harga Mitra Sekolah</span>`
               : p.compareAtPrice
               ? `<span class="compare-price">${formatPrice(p.compareAtPrice)}</span>`
               : ""
           }
         </div>
 
-        <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.75;">
-          ${escapeHtml(p.description)}
-        </p>
+        <!-- 1. Deskripsi Produk Berbasis Edukasi dan Perkembangan -->
+        <div style="background: #fff; border: 1px solid var(--border-subtle); padding: 14px 16px;">
+          <span class="micro-label" style="color: var(--text-bronze-dark); display: block; margin-bottom: 6px;">
+            1. MANFAAT EDUKASI &amp; TUMBUH KEMBANG ANAK (MOTORIK, KOGNITIF &amp; STEM)
+          </span>
+          <p style="font-size: 0.84rem; color: var(--text-dark); line-height: 1.72; margin-bottom: ${p.educationalBenefits && p.educationalBenefits.length ? "10px" : "0"};">
+            ${escapeHtml((p.description || "").split("\n\n")[0])}
+          </p>
+          ${
+            p.educationalBenefits && p.educationalBenefits.length
+              ? `<ul style="margin: 0; padding-left: 18px; font-size: 0.78rem; color: var(--text-muted); line-height: 1.65; display: flex; flex-direction: column; gap: 4px;">
+                  ${p.educationalBenefits.map((b) => `<li>${escapeHtml(b)}</li>`).join("")}
+                </ul>`
+              : ""
+          }
+        </div>
+
+        <!-- 2. Informasi Keamanan (Safety & Material) yang Eksplisit -->
+        <div style="padding: 14px 16px; background: var(--bg-cream); border: 1px solid var(--border-subtle); border-left: 3px solid var(--text-bronze-dark); font-size: 0.78rem; line-height: 1.6;">
+          <span class="micro-label" style="color: var(--text-bronze-dark); display: block; margin-bottom: 8px;">
+            2. INFORMASI KEAMANAN &amp; MATERIAL (SAFETY &amp; MATERIAL)
+          </span>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div>
+              <strong>• Bahan Mainan (Material):</strong>
+              ${escapeHtml(
+                p.safetyMaterial ||
+                  "Kayu solid lokal dengan finishing beeswax alami & cat water-based non-toxic (bebas BPA, timbal & ftalat)."
+              )}
+            </div>
+            <div>
+              <strong>• Kategori Usia yang Disarankan:</strong>
+              <span style="color: var(--text-bronze-dark); font-weight: 600;">
+                ${escapeHtml(p.recommendedAge || "Aman untuk usia 3 tahun ke atas (3+ Tahun)")}
+              </span>
+            </div>
+            <div>
+              <strong>• Peringatan Keamanan:</strong>
+              ${escapeHtml(
+                p.safetyWarning ||
+                  "Gunakan dengan pendampingan orang tua. Perhatikan apabila terdapat komponen kecil yang berisiko tertelan pada anak di bawah 3 tahun."
+              )}
+            </div>
+          </div>
+          <div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border-subtle); font-size: 0.73rem; color: var(--text-muted);">
+            <strong>Estimasi Pengiriman:</strong> ${escapeHtml(p.leadTime || "Ready Stock — Dikirim dalam 1–2 hari kerja")}
+          </div>
+        </div>
 
         <div>
           <label class="micro-label" style="display: block; margin-bottom: 6px;">
-            MATERIAL FINISH: <strong style="color: var(--text-dark);">${escapeHtml(currentSelectedFinish)}</strong>
+            PILIHAN PAKET &amp; KATEGORI USIA: <strong style="color: var(--text-dark);">${escapeHtml(currentSelectedFinish)}</strong>
           </label>
           <div class="swatch-list">
-            ${(p.finishes || ["Standard Finish"])
+            ${(p.finishes || ["Usia 3–5 Tahun (Pra-Sekolah)"])
               .map(
                 (fin) => `
               <button
@@ -779,11 +827,6 @@ function renderProductDetailModalContent() {
           </div>
         </div>
 
-        <div style="padding: 12px 14px; background: var(--bg-cream); border: 1px solid var(--border-subtle); font-size: 0.76rem;">
-          <div><strong>Dimensions &amp; Lamp:</strong> ${escapeHtml(p.dimensions || "Custom architectural dimensions")}</div>
-          <div style="margin-top: 4px;"><strong>Dispatch Lead Time:</strong> ${escapeHtml(p.leadTime || "Ships in 3–5 business days")}</div>
-        </div>
-
         <div style="display: flex; gap: 12px; align-items: center; margin-top: 6px;">
           <div class="qty-control" style="height: 46px; display: flex; align-items: center;">
             <button type="button" onclick="adjustDetailQty(-1)" style="width: 38px; height: 100%;">−</button>
@@ -797,21 +840,21 @@ function renderProductDetailModalContent() {
             onclick="addToCart('${p.id}', '${escapeJs(currentSelectedFinish)}', ${currentDetailQty}); closeAllOverlays(); toggleCartDrawer(true);"
             ${outOfStock ? "disabled style='opacity:0.5;cursor:not-allowed;'" : ""}
           >
-            ${outOfStock ? "Currently Out of Stock" : `Add to Bag — ${formatPrice(effectivePrice * currentDetailQty)}`}
+            ${outOfStock ? "Stok Sedang Habis" : `+ Tambah ke Keranjang — ${formatPrice(effectivePrice * currentDetailQty)}`}
           </button>
         </div>
 
         <!-- Reviews Section inside Product Modal -->
         <div style="margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--border-subtle);">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <span class="micro-label">CLIENT &amp; ARCHITECT REVIEWS (${prodReviews.length})</span>
+            <span class="micro-label">ULASAN ORANG TUA &amp; PENDIDIK (${prodReviews.length})</span>
             <span style="font-size: 0.78rem; color: var(--text-bronze-dark);">★ ${Number(p.rating || 5).toFixed(1)} / 5.0</span>
           </div>
 
           <div style="max-height: 130px; overflow-y: auto; margin-bottom: 12px; display: flex; flex-direction: column; gap: 8px;">
             ${
               prodReviews.length === 0
-                ? `<p style="font-size: 0.76rem; color: var(--text-muted);">No reviews yet. Be the first specifier to review this luminaire.</p>`
+                ? `<p style="font-size: 0.76rem; color: var(--text-muted);">Belum ada ulasan. Jadilah orang tua pertama yang membagikan pengalaman tumbuh kembang si kecil.</p>`
                 : prodReviews
                     .map(
                       (r) => `
@@ -832,11 +875,11 @@ function renderProductDetailModalContent() {
             <input
               type="text"
               name="comment"
-              placeholder="Write a quick review on this piece..."
+              placeholder="Tulis ulasan manfaat mainan ini untuk si kecil..."
               required
               style="flex: 1; padding: 8px 10px; font-size: 0.75rem; border: 1px solid var(--border-subtle); background: #fff;"
             />
-            <button type="submit" class="btn-outline" style="padding: 8px 14px; font-size: 0.64rem;">Post</button>
+            <button type="submit" class="btn-outline" style="padding: 8px 14px; font-size: 0.64rem;">Kirim</button>
           </form>
         </div>
       </div>
