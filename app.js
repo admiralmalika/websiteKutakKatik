@@ -2,7 +2,7 @@
 // NIGHTWORKS® · KUTAK KATIK STUDIO — E-COMMERCE & ADMIN APPLICATION ENGINE
 // ============================================================================
 
-const STORAGE_KEY = "kutakkatik_edukasi_store_v8";
+const STORAGE_KEY = "kutakkatik_edukasi_store_v9";
 const SESSION_KEY = "kutakkatik_edukasi_session_v3";
 
 let storeState = null;
@@ -276,7 +276,9 @@ function renderStaggeredFeatured() {
     .map(({ product, cls }, idx) => {
       const effectivePrice = getEffectiveUnitPrice(product);
       const defaultFinish = (product.finishes && product.finishes[0]) || "Usia 3–5 Tahun (Pra-Sekolah)";
-      const specLabel = `UNGGULAN 0${idx + 1} · ${product.category.toUpperCase()} · ${product.badge || "PILIHAN KURATOR"}`;
+      const isPO = Boolean(product.isPreOrder);
+      const poBadgeText = isPO ? `PRE-ORDER (${product.preOrderEta || "5–7 Hari Kerja"})` : (product.badge || "PILIHAN KURATOR");
+      const specLabel = `UNGGULAN 0${idx + 1} · ${product.category.toUpperCase()} · ${poBadgeText}`;
       return `
         <article class="staggered-card ${cls}">
           <div class="photo-labeled-wrap" onclick="openProductDetailModal('${product.id}')" style="cursor: pointer;">
@@ -287,6 +289,7 @@ function renderStaggeredFeatured() {
             <h3 class="staggered-card-title">${escapeHtml(product.name)}</h3>
             <span class="staggered-card-price">${formatPrice(effectivePrice)}</span>
           </div>
+          ${isPO ? `<div style="font-size: 0.66rem; color: #7a4b12; background: #fff8eb; border: 1px solid #f0d8a8; padding: 4px 8px; margin-top: 6px;">⏳ <strong>PRE-ORDER:</strong> ${escapeHtml(product.preOrderEta || "Estimasi Kirim 5–7 Hari Kerja")}</div>` : ""}
           <div style="margin-top: 8px;">
             <button
               type="button"
@@ -294,7 +297,7 @@ function renderStaggeredFeatured() {
               style="width: 100%; padding: 8px 10px; font-size: 0.65rem;"
               onclick="addToCart('${product.id}', '${escapeJs(defaultFinish)}', 1)"
             >
-              + Tambahkan ke Keranjang
+              ${isPO ? "+ Pre-Order ke Keranjang" : "+ Tambahkan ke Keranjang"}
             </button>
           </div>
         </article>
@@ -365,7 +368,9 @@ function renderShopCatalog() {
     .map((p) => {
       const effectivePrice = getEffectiveUnitPrice(p);
       const isWishlisted = sessionState.wishlist.includes(p.id);
-      const outOfStock = Number(p.stock) <= 0;
+      const isPO = Boolean(p.isPreOrder);
+      const poQuota = Number(p.preOrderQuota ?? 20);
+      const outOfStock = isPO ? poQuota <= 0 : Number(p.stock) <= 0;
       const defaultFinish = (p.finishes && p.finishes[0]) || "Paket Standar";
       const photoSpec = `${p.category} · ${defaultFinish}`;
 
@@ -374,7 +379,9 @@ function renderShopCatalog() {
           <div class="product-media">
             ${
               outOfStock
-                ? `<span class="product-badge out-of-stock">Sold Out</span>`
+                ? `<span class="product-badge out-of-stock">${isPO ? "Kuota PO Penuh" : "Sold Out"}</span>`
+                : isPO
+                ? `<span class="product-badge" style="background: #b86b14; color: #fff;">⏳ PRE-ORDER</span>`
                 : p.badge
                 ? `<span class="product-badge">${escapeHtml(p.badge)}</span>`
                 : ""
@@ -412,7 +419,7 @@ function renderShopCatalog() {
                 onclick="addToCart('${p.id}', '${escapeJs(defaultFinish)}', 1)"
                 ${outOfStock ? "disabled style='opacity:0.5;cursor:not-allowed;'" : ""}
               >
-                ${outOfStock ? "Stok Habis" : "+ Tambahkan ke Keranjang"}
+                ${outOfStock ? (isPO ? "Kuota PO Habis" : "Stok Habis") : isPO ? "+ Pre-Order ke Keranjang" : "+ Tambahkan ke Keranjang"}
               </button>
               <button class="quick-view-btn" onclick="openProductDetailModal('${p.id}')">
                 Detail &amp; Safety
@@ -438,6 +445,13 @@ function renderShopCatalog() {
                   : ""
               }
             </div>
+            ${
+              isPO
+                ? `<div style="font-size: 0.68rem; color: #7a4b12; background: #fff8eb; border: 1px solid #f0d8a8; padding: 5px 8px; margin: 4px 0 6px; line-height: 1.4;">
+                    <strong>⏳ PRE-ORDER AKTIF:</strong> ${escapeHtml(p.preOrderEta || "Estimasi Kirim 5–7 Hari Kerja")} · Sisa Kuota: <strong>${poQuota} slot</strong>
+                  </div>`
+                : ""
+            }
             <p style="font-size: 0.74rem; color: var(--text-dark); line-height: 1.45; margin: 4px 0 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
               ${escapeHtml((p.seoDescription || p.description || "").split("\n")[0])}
             </p>
@@ -453,7 +467,7 @@ function renderShopCatalog() {
                 onclick="addToCart('${p.id}', '${escapeJs(defaultFinish)}', 1)"
                 ${outOfStock ? "disabled style='opacity:0.5;cursor:not-allowed;'" : ""}
               >
-                ${outOfStock ? "Stok Habis" : "+ Tambahkan ke Keranjang"}
+                ${outOfStock ? (isPO ? "Kuota PO Habis" : "Stok Habis") : isPO ? "+ Pre-Order ke Keranjang" : "+ Tambahkan ke Keranjang"}
               </button>
             </div>
           </div>
@@ -960,7 +974,9 @@ function renderProductDetailModalContent() {
 
   const effectivePrice = getEffectiveUnitPrice(p);
   const prodReviews = (storeState.reviews || []).filter((r) => r.productId === p.id);
-  const outOfStock = Number(p.stock) <= 0;
+  const isPO = Boolean(p.isPreOrder);
+  const poQuota = Number(p.preOrderQuota ?? 20);
+  const outOfStock = isPO ? poQuota <= 0 : Number(p.stock) <= 0;
   const shortSummary =
     p.seoDescription ||
     (p.description || "").split("\n\n")[0];
@@ -1001,10 +1017,26 @@ function renderProductDetailModalContent() {
       </div>
 
       <div class="product-detail-content">
-        <span class="micro-label">${escapeHtml(p.category)} · ${p.stock > 0 ? `${p.stock} TERSEDIA DI STUDIO` : "STOK HABIS"}</span>
+        <span class="micro-label">${escapeHtml(p.category)} · ${
+          isPO
+            ? `⏳ PRE-ORDER AKTIF (KUOTA: ${poQuota} SLOT)`
+            : p.stock > 0
+            ? `${p.stock} TERSEDIA DI STUDIO`
+            : "STOK HABIS"
+        }</span>
         <h2 class="serif-heading" style="font-size: 1.9rem; color: var(--text-dark); line-height: 1.2;">
           ${escapeHtml(p.name)}
         </h2>
+
+        ${
+          isPO
+            ? `<div style="background: #fff8eb; border: 1px solid #f0d8a8; border-left: 4px solid #b86b14; padding: 10px 14px; font-size: 0.78rem; color: #5c3709; line-height: 1.5;">
+                <div><strong>⏳ Produk Pre-Order (PO) Studio KutakKatik.id</strong></div>
+                <div>• <strong>Estimasi Pengiriman:</strong> ${escapeHtml(p.preOrderEta || "5–7 Hari Kerja setelah pemesanan")}</div>
+                <div>• <strong>Sisa Kuota Batch Ini:</strong> ${poQuota} unit · <strong>Skema Pembayaran:</strong> ${Number(p.preOrderDpPercent || 100) < 100 ? `DP ${p.preOrderDpPercent}% / Pelunasan Saat Siap Kirim` : "Pembayaran Penuh (Prioritas Antrean Batch PO)"}</div>
+              </div>`
+            : ""
+        }
 
         <div style="display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;">
           <span style="font-size: 1.35rem; font-weight: 600;">${formatPrice(effectivePrice)}</span>
@@ -1025,7 +1057,7 @@ function renderProductDetailModalContent() {
           ${escapeHtml(shortSummary)}
         </p>
 
-        <!-- PILIHAN PAKET & 3 TOMBOL CTA UTAMA DI ATAS (MOBILE-FIRST ERGONOMICS) -->
+        <!-- PILIHAN PAKET & TOMBOL CTA UTAMA DI ATAS (MOBILE-FIRST ERGONOMICS) -->
         <div style="background: var(--bg-cream); border: 1px solid var(--border-subtle); padding: 14px 16px;">
           <label class="micro-label" style="display: block; margin-bottom: 6px;">
             PILIHAN PAKET &amp; KATEGORI USIA: <strong style="color: var(--text-dark);">${escapeHtml(currentSelectedFinish)}</strong>
@@ -1060,7 +1092,13 @@ function renderProductDetailModalContent() {
               onclick="addToCart('${p.id}', '${escapeJs(currentSelectedFinish)}', ${currentDetailQty}); closeAllOverlays(); toggleCartDrawer(true);"
               ${outOfStock ? "disabled style='opacity:0.5;cursor:not-allowed;'" : ""}
             >
-              ${outOfStock ? "Stok Habis" : `+ Tambahkan ke Keranjang — ${formatPrice(effectivePrice * currentDetailQty)}`}
+              ${
+                outOfStock
+                  ? isPO
+                    ? "Kuota PO Habis"
+                    : "Stok Habis"
+                  : `${isPO ? "+ Pre-Order ke Keranjang" : "+ Tambahkan ke Keranjang"} — ${formatPrice(effectivePrice * currentDetailQty)}`
+              }
             </button>
           </div>
         </div>
@@ -1180,7 +1218,7 @@ function selectDetailFinish(finish) {
 
 function adjustDetailQty(delta) {
   const p = storeState.products.find((item) => item.id === currentDetailProductId);
-  const maxStock = p ? Number(p.stock) : 99;
+  const maxStock = p ? (p.isPreOrder ? Number(p.preOrderQuota ?? 20) : Number(p.stock)) : 99;
   currentDetailQty = Math.max(1, Math.min(maxStock, currentDetailQty + delta));
   renderProductDetailModalContent();
 }
@@ -1212,8 +1250,10 @@ function submitProductReview(e, productId) {
 function addToCart(productId, finish, quantity = 1) {
   const p = storeState.products.find((item) => item.id === productId);
   if (!p) return;
-  if (Number(p.stock) <= 0) {
-    showToast("Sorry, this piece is currently out of stock.");
+  const isPO = Boolean(p.isPreOrder);
+  const maxAvail = isPO ? Number(p.preOrderQuota ?? 20) : Number(p.stock);
+  if (maxAvail <= 0) {
+    showToast(isPO ? "Maaf, kuota Pre-Order batch ini sudah penuh." : "Maaf, stok produk ini sedang habis.");
     return;
   }
 
@@ -1223,32 +1263,34 @@ function addToCart(productId, finish, quantity = 1) {
   );
 
   if (existing) {
-    existing.quantity = Math.min(Number(p.stock), existing.quantity + Number(quantity));
+    existing.quantity = Math.min(maxAvail, existing.quantity + Number(quantity));
   } else {
     sessionState.cart.push({
       productId: p.id,
       finish: chosenFinish,
-      quantity: Math.min(Number(p.stock), Number(quantity))
+      quantity: Math.min(maxAvail, Number(quantity))
     });
   }
 
   saveSessionState();
   renderHeaderBadges();
   renderCartDrawer();
-  showToast(`Added "${p.name}" (${chosenFinish}) to your Shopping Bag.`);
+  showToast(
+    `${isPO ? "[PRE-ORDER] " : ""}Ditambahkan "${p.name}" (${chosenFinish}) ke Keranjang Belanja.`
+  );
 }
 
 function updateCartItemQty(index, delta) {
   const item = sessionState.cart[index];
   if (!item) return;
   const p = storeState.products.find((x) => x.id === item.productId);
-  const maxStock = p ? Number(p.stock) : 99;
+  const maxStock = p ? (p.isPreOrder ? Number(p.preOrderQuota ?? 20) : Number(p.stock)) : 99;
   item.quantity += delta;
   if (item.quantity <= 0) {
     sessionState.cart.splice(index, 1);
   } else if (item.quantity > maxStock) {
     item.quantity = maxStock;
-    showToast(`Only ${maxStock} units available in studio stock.`);
+    showToast(`Maksimal ${maxStock} unit tersedia untuk produk ini.`);
   }
   saveSessionState();
   renderHeaderBadges();
@@ -1360,8 +1402,18 @@ function renderCartDrawer() {
       <div class="cart-item">
         <img src="${escapeHtml(item.product.image)}" alt="${escapeHtml(item.product.name)}" />
         <div>
-          <div class="cart-item-title">${escapeHtml(item.product.name)}</div>
-          <div class="cart-item-meta">Finish: ${escapeHtml(item.finish)}</div>
+          <div class="cart-item-title">
+            ${escapeHtml(item.product.name)}
+            ${
+              item.product.isPreOrder
+                ? `<span style="display: inline-block; background: #fff8eb; color: #7a4b12; border: 1px solid #f0d8a8; font-size: 0.6rem; padding: 2px 6px; margin-left: 4px;">⏳ PRE-ORDER</span>`
+                : ""
+            }
+          </div>
+          <div class="cart-item-meta">
+            Paket/Varian: ${escapeHtml(item.finish)}
+            ${item.product.isPreOrder ? `<br/><span style="color: #7a4b12;">Estimasi PO: ${escapeHtml(item.product.preOrderEta || "5–7 Hari Kerja")}</span>` : ""}
+          </div>
           <div class="qty-control">
             <button onclick="updateCartItemQty(${idx}, -1)">−</button>
             <span>${item.quantity}</span>
@@ -1581,7 +1633,8 @@ function submitOrderCheckout(e) {
   const { detailedItems, subtotal, discount, activeVoucherObj, shippingCost, total } =
     calculateCartTotals();
 
-  const orderId = "NW-2026-" + Math.floor(1000 + Math.random() * 9000);
+  const hasPreOrderItems = detailedItems.some((i) => Boolean(i.product.isPreOrder));
+  const orderId = (hasPreOrderItems ? "PO-2026-" : "NW-2026-") + Math.floor(1000 + Math.random() * 9000);
   const newOrder = {
     id: orderId,
     createdAt: new Date().toISOString(),
@@ -1591,7 +1644,15 @@ function submitOrderCheckout(e) {
     shippingAddress: fd.get("shippingAddress"),
     shippingMethod: fd.get("shippingMethod"),
     paymentMethod: fd.get("paymentMethod"),
-    status: "Pending",
+    status: hasPreOrderItems ? "Pre-Order Queue" : "Pending",
+    isPreOrder: hasPreOrderItems,
+    preOrderStatus: hasPreOrderItems ? "Menunggu Batch PO" : null,
+    preOrderEta: hasPreOrderItems
+      ? detailedItems
+          .filter((i) => i.product.isPreOrder)
+          .map((i) => i.product.preOrderEta || "5–7 Hari Kerja")
+          .join(", ")
+      : null,
     paymentStatus: "Unpaid",
     paymentProofUrl: null,
     paymentSenderName: fd.get("customerName"),
@@ -1608,15 +1669,21 @@ function submitOrderCheckout(e) {
       finish: i.finish,
       price: i.unitPrice,
       quantity: i.quantity,
-      image: i.product.image
+      image: i.product.image,
+      isPreOrder: Boolean(i.product.isPreOrder),
+      preOrderEta: i.product.preOrderEta || ""
     }))
   };
 
-  // Deduct product stock
+  // Deduct product stock or pre-order quota
   detailedItems.forEach((item) => {
     const prod = storeState.products.find((p) => p.id === item.product.id);
     if (prod) {
-      prod.stock = Math.max(0, Number(prod.stock) - Number(item.quantity));
+      if (prod.isPreOrder) {
+        prod.preOrderQuota = Math.max(0, Number(prod.preOrderQuota ?? 20) - Number(item.quantity));
+      } else {
+        prod.stock = Math.max(0, Number(prod.stock) - Number(item.quantity));
+      }
     }
   });
 
@@ -2377,6 +2444,8 @@ function renderAdminDashboard() {
     renderAdminProducts(main);
   } else if (tab === "pages") {
     renderAdminPages(main);
+  } else if (tab === "preorders") {
+    renderAdminPreOrders(main);
   } else if (tab === "orders") {
     renderAdminOrders(main);
   } else if (tab === "vouchers") {
@@ -2438,6 +2507,7 @@ function renderAdminOverview(container) {
       <div style="display: flex; gap: 10px; flex-wrap: wrap;">
         <button class="btn-outline" onclick="switchAdminTab('products')">+ Tambah / Edit Produk &amp; Foto</button>
         <button class="btn-outline" onclick="switchAdminTab('pages')">✎ Edit Halaman &amp; Gambar Website</button>
+        <button class="btn-outline" onclick="switchAdminTab('preorders')">⏳ Manajemen Pre-Order (PO)</button>
         <button class="btn-primary" onclick="closeAdminDashboard()">Lihat Website Live</button>
       </div>
     </div>
@@ -2573,6 +2643,49 @@ function renderAdminProducts(container) {
             </select>
           </div>
 
+          <!-- PENGATURAN PRE-ORDER (PO) PADA PRODUK -->
+          <div class="form-group full" style="background: #fff8eb; border: 1px solid #f0d8a8; padding: 14px 16px; margin: 4px 0;">
+            <span class="micro-label" style="color: #7a4b12; display: block; margin-bottom: 10px;">
+              ⏳ PENGATURAN SISTEM PRE-ORDER (PO) PRODUK
+            </span>
+            <div class="form-grid" style="margin-bottom: 0;">
+              <div class="form-group">
+                <label>Status Ketersediaan / Mode Pre-Order *</label>
+                <select name="isPreOrder">
+                  <option value="false" ${!editingProd?.isPreOrder ? "selected" : ""}>Ready Stock (Tersedia Langsung)</option>
+                  <option value="true" ${editingProd?.isPreOrder ? "selected" : ""}>⏳ Aktifkan Pre-Order (PO)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Estimasi Pengiriman / Jadwal Batch PO</label>
+                <input
+                  type="text"
+                  name="preOrderEta"
+                  value="${editingProd?.preOrderEta ? escapeHtml(editingProd.preOrderEta) : "Estimasi Kirim 5–7 Hari Kerja"}"
+                  placeholder="Contoh: Batch 2 — Kirim 5–7 Hari Kerja"
+                />
+              </div>
+              <div class="form-group">
+                <label>Kuota Slot Pre-Order (Unit)</label>
+                <input
+                  type="number"
+                  name="preOrderQuota"
+                  min="0"
+                  value="${editingProd?.preOrderQuota ?? 20}"
+                  placeholder="20"
+                />
+              </div>
+              <div class="form-group">
+                <label>Skema Pembayaran / DP Pre-Order (%)</label>
+                <select name="preOrderDpPercent">
+                  <option value="100" ${Number(editingProd?.preOrderDpPercent || 100) === 100 ? "selected" : ""}>100% Pembayaran Penuh (Prioritas Batch PO)</option>
+                  <option value="50" ${Number(editingProd?.preOrderDpPercent || 100) === 50 ? "selected" : ""}>DP 50% (Pelunasan Saat Siap Kirim)</option>
+                  <option value="30" ${Number(editingProd?.preOrderDpPercent || 100) === 30 ? "selected" : ""}>DP 30% (Khusus Mitra Sekolah / PAUD)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
           <!-- UPLOAD GAMBAR UTAMA (FOTO 1) -->
           <div class="form-group" style="background: var(--bg-cream); padding: 14px; border: 1px solid var(--border-subtle);">
             <label>Gambar Utama Produk (Foto 1) *</label>
@@ -2699,7 +2812,7 @@ function renderAdminProducts(container) {
             <th>Nama Produk</th>
             <th>Kategori &amp; Usia</th>
             <th>Harga</th>
-            <th>Stok</th>
+            <th>Stok / Status PO</th>
             <th>Slot Unggulan</th>
             <th>Aksi</th>
           </tr>
@@ -2715,14 +2828,39 @@ function renderAdminProducts(container) {
                   <img src="${escapeHtml(p.hoverImage || p.image)}" alt="${escapeHtml(p.name)} 2" style="width: 44px; height: 52px; object-fit: cover; border: 1px solid var(--border-subtle);" />
                 </div>
               </td>
-              <td><strong>${escapeHtml(p.name)}</strong><br/><small style="color:var(--text-muted);">${escapeHtml(p.badge || "")}</small></td>
+              <td>
+                <strong>${escapeHtml(p.name)}</strong>
+                ${
+                  p.isPreOrder
+                    ? `<br/><span style="display:inline-block; background:#fff8eb; color:#7a4b12; border:1px solid #f0d8a8; padding:2px 6px; font-size:0.62rem; margin-top:3px;">⏳ PRE-ORDER · ${escapeHtml(p.preOrderEta || "5–7 Hari Kerja")}</span>`
+                    : `<br/><small style="color:var(--text-muted);">${escapeHtml(p.badge || "Ready Stock")}</small>`
+                }
+              </td>
               <td>${escapeHtml(p.category)}<br/><small style="color:var(--text-bronze-dark);">${escapeHtml(p.recommendedAge || "")}</small></td>
               <td>${formatPrice(p.price)}</td>
-              <td>${p.stock <= 5 ? `<strong style="color:var(--accent-terracotta);">${p.stock} tersisa</strong>` : p.stock}</td>
+              <td>
+                ${
+                  p.isPreOrder
+                    ? `<strong style="color:#7a4b12;">Kuota PO: ${p.preOrderQuota ?? 20} slot</strong><br/><small style="color:var(--text-muted);">Stok Fisik: ${p.stock}</small>`
+                    : p.stock <= 5
+                    ? `<strong style="color:var(--accent-terracotta);">${p.stock} tersisa</strong>`
+                    : `${p.stock} Ready`
+                }
+              </td>
               <td>${p.featuredSlot ? `Slot #${p.featuredSlot}` : "—"}</td>
               <td>
-                <button class="btn-primary" style="padding: 6px 12px; font-size: 0.64rem; margin-right: 6px;" onclick="startEditProduct('${p.id}')">Edit / Ganti Foto</button>
-                <button class="underlined-link" style="color: var(--accent-terracotta); border-color: var(--accent-terracotta);" onclick="deleteAdminProduct('${p.id}')">Hapus</button>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center;">
+                  <button class="btn-primary" style="padding: 6px 10px; font-size: 0.62rem;" onclick="startEditProduct('${p.id}')">Edit / Foto</button>
+                  <button
+                    type="button"
+                    class="btn-outline"
+                    style="padding: 5px 9px; font-size: 0.6rem; ${p.isPreOrder ? "background:#fff8eb; color:#7a4b12; border-color:#d8a456;" : ""}"
+                    onclick="toggleProductPreOrderQuick('${p.id}')"
+                  >
+                    ${p.isPreOrder ? "Matikan PO (Set Ready)" : "⏳ Jadikan Pre-Order"}
+                  </button>
+                  <button class="underlined-link" style="color: var(--accent-terracotta); border-color: var(--accent-terracotta);" onclick="deleteAdminProduct('${p.id}')">Hapus</button>
+                </div>
               </td>
             </tr>
           `
@@ -2769,6 +2907,11 @@ function saveAdminProduct(e) {
     .map((s) => s.trim())
     .filter(Boolean);
 
+  const isPreOrder = fd.get("isPreOrder") === "true";
+  const preOrderEta = (fd.get("preOrderEta") || "").trim() || "Estimasi Kirim 5–7 Hari Kerja";
+  const preOrderQuota = Number(fd.get("preOrderQuota") ?? 20);
+  const preOrderDpPercent = Number(fd.get("preOrderDpPercent") || 100);
+
   const productData = {
     id,
     name: nameClean,
@@ -2777,9 +2920,13 @@ function saveAdminProduct(e) {
     price: priceUsd,
     compareAtPrice: null,
     stock: Number(fd.get("stock")),
+    isPreOrder,
+    preOrderEta,
+    preOrderQuota,
+    preOrderDpPercent,
     featured: Boolean(slotVal),
     featuredSlot: slotVal,
-    badge: fd.get("badge").trim() || null,
+    badge: fd.get("badge").trim() || (isPreOrder ? "Pre-Order Batch Aktif" : null),
     rating: 5.0,
     reviewCount: 12,
     finishes: fd
@@ -2794,7 +2941,9 @@ function saveAdminProduct(e) {
     seoTitle: (fd.get("seoTitle") || "").trim() || `${nameClean} | Mainan Edukasi Anak & Motorik Balita — KutakKatik.id`,
     seoDescription: (fd.get("seoDescription") || "").trim() || (fd.get("description") || "").trim().slice(0, 160),
     dimensions: `Bahan: ${(fd.get("safetyMaterial") || "Kayu Solid Non-Toxic").trim()} | Usia: ${(fd.get("recommendedAge") || "3+ Tahun").trim()}`,
-    leadTime: "Ready Stock — Dikirim dalam 1–2 hari kerja · Kemasan Aman Berlapis · Garansi 100% Tukar Baru / Refund Jika Cacat",
+    leadTime: isPreOrder
+      ? `Pre-Order — ${preOrderEta} · Kemasan Aman Berlapis · Garansi 100% Tukar Baru / Refund Jika Cacat`
+      : "Ready Stock — Dikirim dalam 1–2 hari kerja · Kemasan Aman Berlapis · Garansi 100% Tukar Baru / Refund Jika Cacat",
     image: mainImg,
     hoverImage: hoverImg,
     description: fd.get("description").trim()
@@ -2824,6 +2973,429 @@ function deleteAdminProduct(productId) {
   saveStoreState();
   renderAll();
   showToast(`Produk "${prod.name}" telah dihapus.`);
+}
+
+function toggleProductPreOrderQuick(productId) {
+  const prod = storeState.products.find((p) => p.id === productId);
+  if (!prod) return;
+  prod.isPreOrder = !prod.isPreOrder;
+  if (prod.isPreOrder) {
+    prod.preOrderEta = prod.preOrderEta || "Estimasi Kirim 5–7 Hari Kerja";
+    prod.preOrderQuota = prod.preOrderQuota ?? 20;
+    prod.preOrderDpPercent = prod.preOrderDpPercent || 100;
+    prod.leadTime = `Pre-Order — ${prod.preOrderEta} · Kemasan Aman Berlapis · Garansi 100% Tukar Baru / Refund Jika Cacat`;
+  } else {
+    prod.leadTime = "Ready Stock — Dikirim dalam 1–2 hari kerja · Kemasan Aman Berlapis · Garansi 100% Tukar Baru / Refund Jika Cacat";
+  }
+  saveStoreState();
+  renderAll();
+  showToast(
+    prod.isPreOrder
+      ? `⏳ Mode Pre-Order (PO) diaktifkan untuk "${prod.name}"!`
+      : `✓ "${prod.name}" diubah kembali menjadi Ready Stock.`
+  );
+}
+
+// 4. ADMIN PRE-ORDER (PO) MANAGEMENT & BATCH QUEUE (TAB 4)
+function renderAdminPreOrders(container) {
+  const poProducts = storeState.products.filter((p) => Boolean(p.isPreOrder));
+  const poOrders = storeState.orders.filter(
+    (o) =>
+      Boolean(o.isPreOrder) ||
+      o.status === "Pre-Order Queue" ||
+      (o.items && o.items.some((i) => Boolean(i.isPreOrder)))
+  );
+  const inProductionCount = poOrders.filter(
+    (o) => (o.preOrderStatus || "").includes("Diproduksi") || (o.preOrderStatus || "").includes("Dikurasi")
+  ).length;
+  const readyToShipCount = poOrders.filter((o) => o.preOrderStatus === "Siap Dikirim").length;
+
+  container.innerHTML = `
+    <div class="admin-header-bar">
+      <div>
+        <span class="micro-label">SISTEM MANAJEMEN PRE-ORDER (PO) &amp; ANTREAN BATCH PRODUKSI</span>
+        <h1 class="serif-heading" style="font-size: 2.1rem; color: var(--text-dark);">
+          Manajemen Pre-Order (PO) KutakKatik.id
+        </h1>
+      </div>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button class="btn-outline" onclick="switchAdminTab('products')">+ Tambah Produk PO Baru</button>
+        <button class="btn-primary" onclick="closeAdminDashboard()">Lihat Tampilan PO di Website</button>
+      </div>
+    </div>
+
+    <!-- KPI Ringkasan Pre-Order -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <span class="micro-label">PRODUK PRE-ORDER AKTIF</span>
+        <div class="kpi-value">${poProducts.length}</div>
+        <div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 4px;">Dari total ${storeState.products.length} produk katalog</div>
+      </div>
+      <div class="kpi-card">
+        <span class="micro-label">TOTAL PESANAN PRE-ORDER</span>
+        <div class="kpi-value">${poOrders.length}</div>
+        <div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 4px;">Antrean pesanan PO pelanggan &amp; sekolah</div>
+      </div>
+      <div class="kpi-card">
+        <span class="micro-label">SEDANG DIPRODUKSI / DIKURASI</span>
+        <div class="kpi-value">${inProductionCount}</div>
+        <div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 4px;">Dalam pengerjaan kriya kayu &amp; QC</div>
+      </div>
+      <div class="kpi-card">
+        <span class="micro-label">BATCH PO SIAP DIKIRIM</span>
+        <div class="kpi-value">${readyToShipCount}</div>
+        <div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 4px;">Siap diserahkan ke ekspedisi</div>
+      </div>
+    </div>
+
+    <!-- BAGIAN 1: PENGATURAN CEPAT STATUS PRE-ORDER, ESTIMASI & KUOTA PER PRODUK -->
+    <div style="background: #fff; border: 1px solid var(--border-subtle); padding: 24px; margin-bottom: 28px;">
+      <h3 class="serif-heading" style="font-size: 1.45rem; color: var(--text-dark); margin-bottom: 6px;">
+        1. Pengaturan Cepat Produk Pre-Order (PO), Kuota Slot &amp; Estimasi Kirim
+      </h3>
+      <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 16px;">
+        Aktifkan atau nonaktifkan status Pre-Order pada produk mana saja, atur jadwal estimasi pengiriman (ETA), kuota slot PO, serta skema pembayaran/DP secara langsung.
+      </p>
+
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Produk</th>
+              <th>Status Mode PO</th>
+              <th>Estimasi Pengiriman / Batch PO</th>
+              <th>Sisa Kuota PO</th>
+              <th>Skema DP (%)</th>
+              <th>Simpan / Toggle</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${storeState.products
+              .map(
+                (p, idx) => `
+              <tr>
+                <td>
+                  <div style="display: flex; gap: 10px; align-items: center;">
+                    <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" style="width: 42px; height: 48px; object-fit: cover; border: 1px solid var(--border-subtle);" />
+                    <div>
+                      <strong>${escapeHtml(p.name)}</strong><br/>
+                      <small style="color: var(--text-muted);">${escapeHtml(p.category)} · ${formatPrice(p.price)}</small>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <select id="poStatus_${idx}" style="padding: 6px 8px; font-size: 0.75rem; border: 1px solid var(--border-subtle); background: ${p.isPreOrder ? "#fff8eb" : "#fff"}; font-weight: 600;">
+                    <option value="false" ${!p.isPreOrder ? "selected" : ""}>Ready Stock (${p.stock} unit)</option>
+                    <option value="true" ${p.isPreOrder ? "selected" : ""}>⏳ PRE-ORDER AKTIF</option>
+                  </select>
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    id="poEta_${idx}"
+                    value="${escapeHtml(p.preOrderEta || "Estimasi Kirim 5–7 Hari Kerja")}"
+                    placeholder="Contoh: Batch 2 — Kirim 5–7 Hari Kerja"
+                    style="width: 100%; min-width: 190px; padding: 6px 8px; font-size: 0.75rem; border: 1px solid var(--border-subtle);"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    id="poQuota_${idx}"
+                    min="0"
+                    value="${p.preOrderQuota ?? 20}"
+                    style="width: 78px; padding: 6px 8px; font-size: 0.75rem; border: 1px solid var(--border-subtle);"
+                  />
+                </td>
+                <td>
+                  <select id="poDp_${idx}" style="padding: 6px 8px; font-size: 0.75rem; border: 1px solid var(--border-subtle);">
+                    <option value="100" ${Number(p.preOrderDpPercent || 100) === 100 ? "selected" : ""}>100% Lunas</option>
+                    <option value="50" ${Number(p.preOrderDpPercent || 100) === 50 ? "selected" : ""}>DP 50%</option>
+                    <option value="30" ${Number(p.preOrderDpPercent || 100) === 30 ? "selected" : ""}>DP 30%</option>
+                  </select>
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    class="btn-primary"
+                    style="padding: 7px 12px; font-size: 0.62rem;"
+                    onclick="saveQuickPreOrderProduct('${p.id}', ${idx})"
+                  >
+                    💾 Simpan PO
+                  </button>
+                </td>
+              </tr>
+            `
+              )
+              .join("")}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- BAGIAN 2: INPUT MANUAL PESANAN PRE-ORDER (PO) DARI ADMIN / WHATSAPP / MITRA SEKOLAH -->
+    <div style="background: #fff8eb; border: 1px solid #f0d8a8; padding: 24px; margin-bottom: 28px;">
+      <h3 class="serif-heading" style="font-size: 1.45rem; color: var(--text-dark); margin-bottom: 6px;">
+        2. Input Pesanan Pre-Order (PO) Baru Secara Manual (Dari WhatsApp / Sekolah / B2B)
+      </h3>
+      <p style="font-size: 0.78rem; color: #5c3709; margin-bottom: 16px;">
+        Catat pesanan Pre-Order yang masuk melalui WhatsApp atau pengadaan Mitra Sekolah/PAUD agar masuk ke antrean batch produksi &amp; memiliki Invoice resmi.
+      </p>
+      <form onsubmit="createManualPreOrderAdmin(event)">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Nama Pelanggan / Sekolah *</label>
+            <input type="text" name="customerName" required placeholder="Contoh: TK Karakter Bangsa / Ibu Nadia" style="background:#fff;" />
+          </div>
+          <div class="form-group">
+            <label>Nomor WhatsApp / Telepon *</label>
+            <input type="text" name="customerPhone" required placeholder="+62 812-xxxx-xxxx" style="background:#fff;" />
+          </div>
+          <div class="form-group">
+            <label>Email Pelanggan</label>
+            <input type="email" name="customerEmail" placeholder="opsional@email.com" style="background:#fff;" />
+          </div>
+          <div class="form-group">
+            <label>Pilih Produk Pre-Order *</label>
+            <select name="productId" required style="background:#fff;">
+              ${storeState.products
+                .map(
+                  (p) =>
+                    `<option value="${p.id}" ${p.isPreOrder ? "selected" : ""}>${escapeHtml(p.name)} (${formatPrice(p.price)}) ${p.isPreOrder ? "— [PO AKTIF]" : ""}</option>`
+                )
+                .join("")}
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Jumlah Unit (Qty) *</label>
+            <input type="number" name="quantity" min="1" value="1" required style="background:#fff;" />
+          </div>
+          <div class="form-group">
+            <label>Estimasi Batch / Pengiriman PO *</label>
+            <input type="text" name="preOrderEta" value="Batch PO Studio — Estimasi 5–7 Hari Kerja" required style="background:#fff;" />
+          </div>
+          <div class="form-group full">
+            <label>Alamat Pengiriman Lengkap &amp; Catatan Kustomisasi *</label>
+            <input type="text" name="shippingAddress" required placeholder="Alamat lengkap pengiriman & catatan pesanan PO..." style="background:#fff;" />
+          </div>
+        </div>
+        <button type="submit" class="btn-primary">+ Tambahkan ke Antrean Pesanan Pre-Order</button>
+      </form>
+    </div>
+
+    <!-- BAGIAN 3: DAFTAR ANTREAN PESANAN PRE-ORDER (PO) PELANGGAN & TRACKING PROGRES PRODUKSI -->
+    <div style="background: #fff; border: 1px solid var(--border-subtle); padding: 24px;">
+      <h3 class="serif-heading" style="font-size: 1.45rem; color: var(--text-dark); margin-bottom: 6px;">
+        3. Antrean Pesanan Pre-Order (PO) Pelanggan &amp; Status Batch Produksi
+      </h3>
+      <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 16px;">
+        Pantau seluruh pesanan Pre-Order, ubah tahapan produksi/kurasi, dan kirim pembaruan status ke WhatsApp pelanggan dalam 1 klik.
+      </p>
+
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ID Pesanan PO</th>
+              <th>Pelanggan &amp; Kontak</th>
+              <th>Item Produk Pre-Order</th>
+              <th>Estimasi Batch PO</th>
+              <th>Total &amp; Pembayaran</th>
+              <th>Tahapan Produksi PO</th>
+              <th>Notifikasi WA</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${
+              poOrders.length === 0
+                ? `<tr><td colspan="7" style="text-align:center; padding: 28px; color: var(--text-muted);">Belum ada antrean pesanan Pre-Order. Anda dapat mengaktifkan mode Pre-Order pada produk di atas atau menambahkan pesanan PO manual.</td></tr>`
+                : poOrders
+                    .map(
+                      (o) => `
+                  <tr>
+                    <td>
+                      <strong>${escapeHtml(o.id)}</strong><br/>
+                      <small style="color:var(--text-muted);">${new Date(o.createdAt).toLocaleDateString("id-ID")}</small>
+                    </td>
+                    <td>
+                      <strong>${escapeHtml(o.customerName)}</strong><br/>
+                      <small style="color:var(--text-muted);">${escapeHtml(o.customerPhone || o.customerEmail || "-")}</small><br/>
+                      <small style="color:var(--text-muted);">${escapeHtml(o.shippingAddress || "")}</small>
+                    </td>
+                    <td>
+                      ${(o.items || [])
+                        .map(
+                          (i) =>
+                            `<div>• <strong>${i.quantity}×</strong> ${escapeHtml(i.name)} <small>(${escapeHtml(i.finish || "Standar")})</small></div>`
+                        )
+                        .join("")}
+                    </td>
+                    <td>
+                      <span style="display:inline-block; background:#fff8eb; color:#7a4b12; border:1px solid #f0d8a8; padding:3px 7px; font-size:0.68rem;">
+                        ⏳ ${escapeHtml(o.preOrderEta || "Estimasi 5–7 Hari Kerja")}
+                      </span>
+                    </td>
+                    <td>
+                      <strong>${formatPrice(o.total)}</strong><br/>
+                      <span class="status-pill ${getPaymentStatusBadgeClass(o.paymentStatus)}">
+                        ${escapeHtml(o.paymentStatus || "Unpaid")}
+                      </span>
+                    </td>
+                    <td>
+                      <select
+                        onchange="updatePreOrderOrderStatus('${escapeJs(o.id)}', this.value)"
+                        style="padding: 6px 8px; font-size: 0.73rem; border: 1px solid var(--border-subtle); font-weight: 600;"
+                      >
+                        ${[
+                          "Menunggu Batch PO",
+                          "Sedang Diproduksi / Dikurasi",
+                          "Tahap QC & Finishing Non-Toxic",
+                          "Siap Dikirim",
+                          "Telah Dikirim (Selesai)"
+                        ]
+                          .map(
+                            (st) =>
+                              `<option value="${st}" ${(o.preOrderStatus || "Menunggu Batch PO") === st ? "selected" : ""}>${st}</option>`
+                          )
+                          .join("")}
+                      </select>
+                    </td>
+                    <td>
+                      <button
+                        type="button"
+                        class="btn-outline"
+                        style="padding: 6px 10px; font-size: 0.62rem;"
+                        onclick="notifyPreOrderWhatsApp('${escapeJs(o.id)}')"
+                      >
+                        📲 Kabari via WA
+                      </button>
+                    </td>
+                  </tr>
+                `
+                    )
+                    .join("")
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function saveQuickPreOrderProduct(productId, idx) {
+  const prod = storeState.products.find((p) => p.id === productId);
+  if (!prod) return;
+
+  const isPO = document.getElementById(`poStatus_${idx}`)?.value === "true";
+  const eta = (document.getElementById(`poEta_${idx}`)?.value || "").trim() || "Estimasi Kirim 5–7 Hari Kerja";
+  const quota = Number(document.getElementById(`poQuota_${idx}`)?.value ?? 20);
+  const dp = Number(document.getElementById(`poDp_${idx}`)?.value || 100);
+
+  prod.isPreOrder = isPO;
+  prod.preOrderEta = eta;
+  prod.preOrderQuota = quota;
+  prod.preOrderDpPercent = dp;
+  prod.leadTime = isPO
+    ? `Pre-Order — ${eta} · Kemasan Aman Berlapis · Garansi 100% Tukar Baru / Refund Jika Cacat`
+    : "Ready Stock — Dikirim dalam 1–2 hari kerja · Kemasan Aman Berlapis · Garansi 100% Tukar Baru / Refund Jika Cacat";
+  if (isPO && (!prod.badge || prod.badge === "Ready Stock")) {
+    prod.badge = "Pre-Order Batch Aktif";
+  }
+
+  saveStoreState();
+  renderAll();
+  showToast(
+    `Pengaturan Pre-Order untuk "${prod.name}" disimpan (${isPO ? `PO Aktif · Kuota ${quota}` : "Ready Stock"})!`
+  );
+}
+
+function createManualPreOrderAdmin(e) {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const prod = storeState.products.find((p) => p.id === fd.get("productId"));
+  if (!prod) return;
+
+  const qty = Math.max(1, Number(fd.get("quantity") || 1));
+  const unitPrice = getEffectiveUnitPrice(prod);
+  const subtotal = unitPrice * qty;
+  const orderId = "PO-2026-" + Math.floor(1000 + Math.random() * 9000);
+  const eta = (fd.get("preOrderEta") || "").trim() || prod.preOrderEta || "Estimasi 5–7 Hari Kerja";
+
+  const newPoOrder = {
+    id: orderId,
+    createdAt: new Date().toISOString(),
+    customerName: fd.get("customerName").trim(),
+    customerEmail: (fd.get("customerEmail") || "").trim() || "preorder@kutakkatik.id",
+    customerPhone: fd.get("customerPhone").trim(),
+    shippingAddress: fd.get("shippingAddress").trim(),
+    shippingMethod: "Pengiriman Batch Pre-Order Studio",
+    paymentMethod: "QRIS / Transfer Bank (Pre-Order)",
+    status: "Pre-Order Queue",
+    isPreOrder: true,
+    preOrderStatus: "Menunggu Batch PO",
+    preOrderEta: eta,
+    paymentStatus: "Waiting Verification",
+    paymentProofUrl: null,
+    paymentSenderName: fd.get("customerName").trim(),
+    paymentSenderBank: "Pre-Order Manual Admin",
+    paymentNotes: `Pre-Order: ${eta}`,
+    voucherCode: null,
+    subtotal,
+    discount: 0,
+    shippingCost: 0,
+    total: subtotal,
+    items: [
+      {
+        productId: prod.id,
+        name: prod.name,
+        finish: (prod.finishes && prod.finishes[0]) || "Paket Pre-Order",
+        price: unitPrice,
+        quantity: qty,
+        image: prod.image,
+        isPreOrder: true,
+        preOrderEta: eta
+      }
+    ]
+  };
+
+  if (prod.isPreOrder) {
+    prod.preOrderQuota = Math.max(0, Number(prod.preOrderQuota ?? 20) - qty);
+  }
+
+  storeState.orders.unshift(newPoOrder);
+  saveStoreState();
+  renderAll();
+  showToast(`Pesanan Pre-Order #${orderId} (${prod.name}) berhasil ditambahkan ke antrean!`);
+}
+
+function updatePreOrderOrderStatus(orderId, newPoStatus) {
+  const order = storeState.orders.find((o) => o.id === orderId);
+  if (!order) return;
+  order.preOrderStatus = newPoStatus;
+  if (newPoStatus === "Telah Dikirim (Selesai)") {
+    order.status = "Shipped";
+  } else if (newPoStatus === "Siap Dikirim") {
+    order.status = "In Craft";
+  } else {
+    order.status = "Pre-Order Queue";
+  }
+  saveStoreState();
+  renderAll();
+  showToast(`Status Pre-Order #${orderId} diperbarui ke: ${newPoStatus}`);
+}
+
+function notifyPreOrderWhatsApp(orderId) {
+  const order = storeState.orders.find((o) => o.id === orderId);
+  if (!order) return;
+  const rawPhone = (order.customerPhone || "").replace(/[^0-9]/g, "");
+  const normalizedPhone = rawPhone.startsWith("0")
+    ? "62" + rawPhone.slice(1)
+    : rawPhone.startsWith("62")
+    ? rawPhone
+    : "6281299008811";
+  const itemsText = (order.items || []).map((i) => `${i.quantity}x ${i.name}`).join(", ");
+  const msg = `Halo Kak ${order.customerName}, kami dari Studio KutakKatik.id ingin menginformasikan update pesanan Pre-Order Anda *#${order.id}* (${itemsText}):\n\n• Status Tahapan PO: *${order.preOrderStatus || "Menunggu Batch PO"}*\n• Estimasi Jadwal: *${order.preOrderEta || "5–7 Hari Kerja"}*\n\nTerima kasih telah mempercayakan tumbuh kembang si kecil bersama KutakKatik.id!`;
+  window.open(`https://wa.me/${normalizedPhone}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
 }
 
 // 2B. ADMIN WEBSITE PAGES, SECTIONS, SPACES & JOURNAL CMS EDITOR (TAB 3)

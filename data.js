@@ -157,6 +157,10 @@ window.INITIAL_STORE_DATA = {
       price: 120, // Rp 1.920.000
       compareAtPrice: 145,
       stock: 8,
+      isPreOrder: true,
+      preOrderEta: "Batch Kurasi Sekolah — Estimasi Kirim 5–7 Hari Kerja",
+      preOrderQuota: 15,
+      preOrderDpPercent: 50,
       featured: false,
       featuredSlot: null,
       badge: "Kurikulum Merdeka",
@@ -525,6 +529,45 @@ window.INITIAL_STORE_DATA = {
   ],
 
   orders: [
+    {
+      id: "PO-2026-8403",
+      createdAt: "2026-10-27T11:15:00Z",
+      customerName: "PAUD Tunas Harapan Nusantara",
+      customerEmail: "trade@kutakkatik.com",
+      customerPhone: "+62 812 9400 1122",
+      shippingAddress: "Jl. Kemang Raya No. 45, Mampang Prapatan, Jakarta Selatan 12730",
+      shippingMethod: "Pengiriman Batch Pre-Order Studio",
+      paymentMethod: "Bank Transfer / Virtual Account",
+      status: "Pre-Order Queue",
+      isPreOrder: true,
+      preOrderStatus: "Sedang Diproduksi / Dikurasi",
+      preOrderEta: "Batch Kurasi Sekolah — Estimasi Kirim 5–7 Hari Kerja",
+      paymentStatus: "Verified",
+      paymentSenderName: "Yayasan Tunas Harapan",
+      paymentSenderBank: "Mandiri Corporate",
+      paymentNotes: "Pembayaran Pre-Order Paket Pojok Eksplorasi PAUD",
+      paymentUploadedAt: "2026-10-27T11:30:00Z",
+      paymentVerifiedAt: "2026-10-27T12:00:00Z",
+      paymentVerifiedBy: "admin@kutakkatik.com",
+      voucherCode: "MITRA20",
+      subtotal: 120,
+      discount: 24,
+      shippingCost: 0,
+      total: 96,
+      items: [
+        {
+          productId: "prod-paket-sekolah-paud",
+          name: "Paket Pojok Eksplorasi & Pojok Baca PAUD / Sekolah",
+          finish: "Paket Kelas Kecil (10–15 Anak)",
+          price: 120,
+          quantity: 1,
+          isPreOrder: true,
+          preOrderEta: "Batch Kurasi Sekolah — Estimasi Kirim 5–7 Hari Kerja",
+          image:
+            "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80"
+        }
+      ]
+    },
     {
       id: "KK-2026-8401",
       createdAt: "2026-10-24T09:30:00Z",
