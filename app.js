@@ -247,30 +247,14 @@ function renderStaggeredFeatured() {
             <h3 class="staggered-card-title">${escapeHtml(product.name)}</h3>
             <span class="staggered-card-price">${formatPrice(effectivePrice)}</span>
           </div>
-          <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px;">
-            <button
-              type="button"
-              class="btn-primary"
-              style="flex: 1; padding: 8px 10px; font-size: 0.64rem;"
-              onclick="buyNowProduct('${product.id}', '${escapeJs(defaultFinish)}', 1)"
-            >
-              Beli Sekarang
-            </button>
+          <div style="margin-top: 8px;">
             <button
               type="button"
               class="btn-outline"
-              style="flex: 1; padding: 8px 10px; font-size: 0.64rem;"
+              style="width: 100%; padding: 8px 10px; font-size: 0.65rem;"
               onclick="addToCart('${product.id}', '${escapeJs(defaultFinish)}', 1)"
             >
-              + Tambah ke Keranjang
-            </button>
-            <button
-              type="button"
-              class="btn-outline"
-              style="padding: 8px 10px; font-size: 0.64rem; border-color: #1f6f43; color: #1f6f43; font-weight: 700;"
-              onclick="orderProductViaWhatsApp('${product.id}', '${escapeJs(defaultFinish)}', 1)"
-            >
-              Pesan via WhatsApp
+              + Tambahkan ke Keranjang
             </button>
           </div>
         </article>
@@ -385,10 +369,10 @@ function renderShopCatalog() {
             <div class="product-hover-actions">
               <button
                 class="quick-add-btn"
-                onclick="buyNowProduct('${p.id}', '${escapeJs(defaultFinish)}', 1)"
+                onclick="addToCart('${p.id}', '${escapeJs(defaultFinish)}', 1)"
                 ${outOfStock ? "disabled style='opacity:0.5;cursor:not-allowed;'" : ""}
               >
-                ${outOfStock ? "Stok Habis" : "Beli Sekarang"}
+                ${outOfStock ? "Stok Habis" : "+ Tambahkan ke Keranjang"}
               </button>
               <button class="quick-view-btn" onclick="openProductDetailModal('${p.id}')">
                 Detail &amp; Safety
@@ -420,33 +404,16 @@ function renderShopCatalog() {
             <div style="font-size: 0.68rem; color: var(--text-bronze-dark); background: rgba(196, 158, 120, 0.12); padding: 5px 8px; border-left: 2px solid var(--text-bronze); line-height: 1.4; margin-bottom: 8px;">
               <strong>✓ ${escapeHtml(p.recommendedAge || "Aman untuk usia 3 tahun ke atas")}</strong> · Material Non-Toxic
             </div>
-            <!-- Tombol CTA Eksplisit & Menonjol (Selalu terlihat di Layar Handphone & Desktop) -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 4px;">
-              <button
-                type="button"
-                class="btn-primary"
-                style="padding: 9px 10px; font-size: 0.65rem; width: 100%;"
-                onclick="buyNowProduct('${p.id}', '${escapeJs(defaultFinish)}', 1)"
-                ${outOfStock ? "disabled style='opacity:0.5;cursor:not-allowed;'" : ""}
-              >
-                ${outOfStock ? "Stok Habis" : "Beli Sekarang"}
-              </button>
+            <!-- Tombol CTA Tambahkan ke Keranjang -->
+            <div style="margin-top: 4px;">
               <button
                 type="button"
                 class="btn-outline"
-                style="padding: 9px 10px; font-size: 0.65rem; width: 100%;"
+                style="padding: 9px 12px; font-size: 0.66rem; width: 100%;"
                 onclick="addToCart('${p.id}', '${escapeJs(defaultFinish)}', 1)"
                 ${outOfStock ? "disabled style='opacity:0.5;cursor:not-allowed;'" : ""}
               >
-                Tambah ke Keranjang
-              </button>
-              <button
-                type="button"
-                class="btn-outline"
-                style="grid-column: 1 / -1; padding: 8px 10px; font-size: 0.65rem; width: 100%; border-color: #1f6f43; color: #1f6f43; font-weight: 700;"
-                onclick="orderProductViaWhatsApp('${p.id}', '${escapeJs(defaultFinish)}', 1)"
-              >
-                💬 Pesan via WhatsApp
+                ${outOfStock ? "Stok Habis" : "+ Tambahkan ke Keranjang"}
               </button>
             </div>
           </div>
@@ -1050,30 +1017,10 @@ function renderProductDetailModalContent() {
               type="button"
               class="btn-primary"
               style="flex: 1; min-width: 150px; padding: 12px 16px;"
-              onclick="buyNowProduct('${p.id}', '${escapeJs(currentSelectedFinish)}', ${currentDetailQty})"
-              ${outOfStock ? "disabled style='opacity:0.5;cursor:not-allowed;'" : ""}
-            >
-              ${outOfStock ? "Stok Habis" : `Beli Sekarang — ${formatPrice(effectivePrice * currentDetailQty)}`}
-            </button>
-          </div>
-
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
-            <button
-              type="button"
-              class="btn-outline"
-              style="background: #fff; padding: 10px 12px; font-size: 0.68rem; font-weight: 700;"
               onclick="addToCart('${p.id}', '${escapeJs(currentSelectedFinish)}', ${currentDetailQty}); closeAllOverlays(); toggleCartDrawer(true);"
               ${outOfStock ? "disabled style='opacity:0.5;cursor:not-allowed;'" : ""}
             >
-              + Tambah ke Keranjang
-            </button>
-            <button
-              type="button"
-              class="btn-outline"
-              style="background: #fff; padding: 10px 12px; font-size: 0.68rem; font-weight: 700; border-color: #1f6f43; color: #1f6f43;"
-              onclick="orderProductViaWhatsApp('${p.id}', '${escapeJs(currentSelectedFinish)}', ${currentDetailQty})"
-            >
-              💬 Pesan via WhatsApp
+              ${outOfStock ? "Stok Habis" : `+ Tambahkan ke Keranjang — ${formatPrice(effectivePrice * currentDetailQty)}`}
             </button>
           </div>
         </div>
