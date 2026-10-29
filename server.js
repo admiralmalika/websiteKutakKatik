@@ -87,6 +87,38 @@ const requestHandler = async (req, res) => {
     return sendJson(res, 200, db.getDbStatus());
   }
 
+  // 2B. API: GET /api/geo-lang (Detect Visitor IP & Country for Auto Language ID / EN)
+  if (pathname === "/api/geo-lang" && req.method === "GET") {
+    const forwarded = String(req.headers["x-forwarded-for"] || "").split(",")[0].trim();
+    const rawIp = parsedUrl.searchParams.get("ip") || forwarded || req.socket?.remoteAddress || "127.0.0.1";
+    const clientIp = rawIp.replace(/^::ffff:/, "");
+    const simCountry = (parsedUrl.searchParams.get("country") || "").toUpperCase();
+    const headerCountry = (
+      req.headers["x-vercel-ip-country"] ||
+      req.headers["cf-ipcountry"] ||
+      req.headers["x-country-code"] ||
+      ""
+    )
+      .toString()
+      .toUpperCase();
+
+    const countryCode = simCountry || headerCountry || null;
+    const isLocalIp =
+      clientIp === "127.0.0.1" ||
+      clientIp === "::1" ||
+      clientIp.startsWith("192.168.") ||
+      clientIp.startsWith("10.");
+
+    const resolvedCountry = countryCode || (isLocalIp ? "ID" : null);
+    const lang = resolvedCountry ? (resolvedCountry === "ID" ? "id" : "en") : null;
+    return sendJson(res, 200, {
+      ip: clientIp,
+      countryCode: resolvedCountry,
+      lang,
+      isLocalIp
+    });
+  }
+
   // 3. API: POST /api/db-config (Configure & Test DATABASE_URL from Admin UI)
   if (pathname === "/api/db-config" && req.method === "POST") {
     try {

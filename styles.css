@@ -226,6 +226,53 @@ a {
   color: var(--text-light);
 }
 
+.ip-geo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  color: rgba(248, 244, 239, 0.72);
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.lang-switch-pill {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(196, 158, 120, 0.14);
+  border: 1px solid rgba(156, 74, 45, 0.25);
+  border-radius: 999px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.lang-switch-btn {
+  font-family: var(--font-sans);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 3px 8px;
+  border-radius: 999px;
+  color: var(--text-muted);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 1.1;
+}
+
+.lang-switch-btn:hover {
+  color: var(--text-dark);
+}
+
+.lang-switch-btn.active {
+  background: var(--text-bronze);
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(156, 74, 45, 0.22);
+}
+
 /* ============================================================================
    MAIN EDITORIAL HEADER / NAVBAR (PHOTO 1)
    ============================================================================ */

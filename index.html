@@ -49,12 +49,16 @@
        TOP UTILITY & QUICK ADMIN / CURRENCY BAR
        ======================================================================== -->
   <div class="top-utility-bar">
-    <div class="utility-left"></div>
+    <div class="utility-left">
+      <span class="ip-geo-badge" id="ipGeoBadgeEl" onclick="toggleIpSimulation()" style="cursor: pointer;" title="Deteksi IP otomatis (Klik untuk simulasi IP Indonesia / Internasional)">
+        🌐 IP: Indonesia (ID)
+      </span>
+    </div>
     <div class="utility-right">
-      <button class="utility-pill" onclick="openConsultationModal()">Konsultasi Gratis</button>
-      <button class="utility-pill" onclick="openFaqModal()">FAQ &amp; Material</button>
-      <button class="utility-pill" onclick="openReturnPolicyModal()">Garansi &amp; Pengembalian</button>
-      <button class="utility-pill" onclick="openOrderTrackerModal()">Lacak Pesanan</button>
+      <button class="utility-pill" data-i18n="util_consult" onclick="openConsultationModal()">Konsultasi Gratis</button>
+      <button class="utility-pill" data-i18n="util_faq" onclick="openFaqModal()">FAQ &amp; Material</button>
+      <button class="utility-pill" data-i18n="util_warranty" onclick="openReturnPolicyModal()">Garansi &amp; Pengembalian</button>
+      <button class="utility-pill" data-i18n="util_track" onclick="openOrderTrackerModal()">Lacak Pesanan</button>
       <select id="currencySelect" class="currency-switch" onchange="changeCurrency(this.value)" aria-label="Currency">
         <option value="IDR">IDR (Rp)</option>
         <option value="USD">USD ($)</option>
@@ -71,20 +75,25 @@
   <header class="site-header" id="siteHeader">
     <nav aria-label="Primary Navigation">
       <ul class="nav-links">
-        <li><a href="#shopCatalogSection">PROGRAM &amp; KIT</a></li>
-        <li><a href="#foundersSection">TENTANG KAMI</a></li>
-        <li><a href="#trustSignalsSection">FAQ &amp; GARANSI</a></li>
-        <li><a href="#featuredSpacesSection">RUANG &amp; KELAS</a></li>
-        <li><a href="#journalSection">JURNAL PARENTING</a></li>
-        <li><a href="#tradeSpecifiersSection">MITRA SEKOLAH</a></li>
+        <li><a href="#shopCatalogSection" data-i18n="nav_programs">PROGRAM &amp; KIT</a></li>
+        <li><a href="#foundersSection" data-i18n="nav_about">TENTANG KAMI</a></li>
+        <li><a href="#trustSignalsSection" data-i18n="nav_faq">FAQ &amp; GARANSI</a></li>
+        <li><a href="#featuredSpacesSection" data-i18n="nav_spaces">RUANG &amp; KELAS</a></li>
+        <li><a href="#journalSection" data-i18n="nav_journal">JURNAL PARENTING</a></li>
+        <li><a href="#tradeSpecifiersSection" data-i18n="nav_trade">MITRA SEKOLAH</a></li>
       </ul>
     </nav>
 
     <!-- Center Minimal Brand Anchor -->
     <a href="#" class="brand-moth-logo" aria-label="KutakKatik.id Home"></a>
 
-    <!-- Right Utility Icons: Search, User/Admin, Wishlist, Cart + Gold Badge -->
+    <!-- Right Utility Icons: Language Toggle, Search, User/Admin, Wishlist, Cart + Gold Badge -->
     <div class="header-actions">
+      <div class="lang-switch-pill" id="langSwitchPill" title="Pilih Bahasa / Switch Language (ID / EN)">
+        <button type="button" class="lang-switch-btn active" id="langBtnId" onclick="setSiteLanguage('id', true)">ID</button>
+        <button type="button" class="lang-switch-btn" id="langBtnEn" onclick="setSiteLanguage('en', true)">EN</button>
+      </div>
+
       <button class="admin-Header-btn" id="adminQuickBtn" onclick="openAdminOrLogin()" title="Open Studio Admin Panel">
         Admin Panel
       </button>
@@ -165,10 +174,10 @@
           Solusi Kreatif &amp; Edukatif Tanpa Gadget: Temukan Ratusan Ide Mainan, Kelas, &amp; Kit Eksplorasi untuk Tumbuh Kembang Anak.
         </p>
         <div class="hero-cta-group">
-          <a href="#shopCatalogSection" class="btn-primary hero-cta-btn">
+          <a href="#shopCatalogSection" class="btn-primary hero-cta-btn" data-i18n="hero_cta_primary">
             Lihat Program / Kit Kami
           </a>
-          <button type="button" class="btn-outline hero-cta-btn" onclick="openConsultationModal()">
+          <button type="button" class="btn-outline hero-cta-btn" data-i18n="hero_cta_secondary" onclick="openConsultationModal()">
             Konsultasi Gratis
           </button>
         </div>
@@ -179,13 +188,13 @@
          SECTION 2: FEATURED PRODUCTS — STAGGERED 3-COLUMN SHOWCASE (PHOTO 2)
          ====================================================================== -->
     <section class="featured-staggered-section" aria-labelledby="featuredProductsHeading">
-      <p class="micro-label section-micro-header" id="featuredProductsHeading">PROGRAM &amp; KIT EKSPLORASI PILIHAN</p>
+      <p class="micro-label section-micro-header" id="featuredProductsHeading" data-i18n="feat_heading">PROGRAM &amp; KIT EKSPLORASI PILIHAN</p>
 
       <div class="staggered-trio-grid" id="staggeredFeaturedGrid">
         <!-- Populated dynamically by app.js from the 3 featured slot products -->
       </div>
 
-      <a href="#shopCatalogSection" class="underlined-link">LIHAT SEMUA PROGRAM &amp; KIT</a>
+      <a href="#shopCatalogSection" class="underlined-link" data-i18n="feat_view_all">LIHAT SEMUA PROGRAM &amp; KIT</a>
     </section>
 
     <!-- ======================================================================
@@ -194,20 +203,20 @@
     <section class="shop-catalog-section" id="shopCatalogSection">
       <div class="shop-header-row">
         <div class="shop-title-group">
-          <span class="micro-label">KATALOG EDUKASI &amp; TUMBUH KEMBANG ANAK</span>
-          <h2>Mainan Edukatif, Kelas, &amp; Kit Eksplorasi</h2>
+          <span class="micro-label" data-i18n="shop_sub">KATALOG EDUKASI &amp; TUMBUH KEMBANG ANAK</span>
+          <h2 data-i18n="shop_title">Mainan Edukatif, Kelas, &amp; Kit Eksplorasi</h2>
         </div>
         <div id="activeUserBanner" style="font-size: 0.76rem; color: var(--text-bronze-dark);"></div>
       </div>
 
       <div class="shop-controls-bar">
         <div class="category-tabs" id="categoryTabs">
-          <button class="cat-tab active" data-cat="ALL" onclick="setShopCategory('ALL')">Semua Program &amp; Kit</button>
-          <button class="cat-tab" data-cat="Kit Eksplorasi" onclick="setShopCategory('Kit Eksplorasi')">Kit Eksplorasi</button>
-          <button class="cat-tab" data-cat="Mainan Edukatif" onclick="setShopCategory('Mainan Edukatif')">Mainan Edukatif</button>
-          <button class="cat-tab" data-cat="Sensory Play" onclick="setShopCategory('Sensory Play')">Sensory Play</button>
-          <button class="cat-tab" data-cat="Kelas & Workshop" onclick="setShopCategory('Kelas & Workshop')">Kelas &amp; Workshop</button>
-          <button class="cat-tab" data-cat="Paket Sekolah" onclick="setShopCategory('Paket Sekolah')">Paket Sekolah</button>
+          <button class="cat-tab active" data-cat="ALL" data-i18n="cat_all" onclick="setShopCategory('ALL')">Semua Program &amp; Kit</button>
+          <button class="cat-tab" data-cat="Kit Eksplorasi" data-i18n="cat_kit" onclick="setShopCategory('Kit Eksplorasi')">Kit Eksplorasi</button>
+          <button class="cat-tab" data-cat="Mainan Edukatif" data-i18n="cat_toy" onclick="setShopCategory('Mainan Edukatif')">Mainan Edukatif</button>
+          <button class="cat-tab" data-cat="Sensory Play" data-i18n="cat_sensory" onclick="setShopCategory('Sensory Play')">Sensory Play</button>
+          <button class="cat-tab" data-cat="Kelas & Workshop" data-i18n="cat_class" onclick="setShopCategory('Kelas & Workshop')">Kelas &amp; Workshop</button>
+          <button class="cat-tab" data-cat="Paket Sekolah" data-i18n="cat_school" onclick="setShopCategory('Paket Sekolah')">Paket Sekolah</button>
         </div>
 
         <div class="filter-right-group">
@@ -219,10 +228,10 @@
             oninput="renderShopCatalog()"
           />
           <select id="shopSortSelect" class="shop-select" onchange="renderShopCatalog()" aria-label="Sort products">
-            <option value="featured">Urutkan: Unggulan</option>
-            <option value="price-asc">Harga: Terendah ke Tertinggi</option>
-            <option value="price-desc">Harga: Tertinggi ke Terendah</option>
-            <option value="rating">Rating Tertinggi</option>
+            <option value="featured" data-i18n="sort_featured">Urutkan: Unggulan</option>
+            <option value="price-asc" data-i18n="sort_price_asc">Harga: Terendah ke Tertinggi</option>
+            <option value="price-desc" data-i18n="sort_price_desc">Harga: Tertinggi ke Terendah</option>
+            <option value="rating" data-i18n="sort_rating">Rating Tertinggi</option>
           </select>
         </div>
       </div>
@@ -261,7 +270,7 @@
     <section class="founders-section" id="foundersSection">
       <div class="founders-grid">
         <div class="founders-copy-col">
-          <span class="micro-label">TENTANG KAMI (ABOUT US) · VISI &amp; NILAI KUTAKKATIK.ID</span>
+          <span class="micro-label" data-i18n="founders_label">TENTANG KAMI (ABOUT US) · VISI &amp; NILAI KUTAKKATIK.ID</span>
           <h2 class="serif-heading" id="foundersHeadingEl">
             VISI KAMI: MENGHADIRKAN MASA KECIL YANG KAYA EKSPLORASI NYATA, AMAN, DAN BERMAKNA TANPA KETERGANTUNGAN GADGET.
           </h2>
@@ -272,15 +281,15 @@
             Kami hanya menggunakan kayu solid lokal pilihan dengan <em>finishing beeswax</em> murni &amp; cat <em>water-based non-toxic</em>, plastik ABS <em>non-toxic</em>, serta material sensorik <em>food-grade</em> yang melewati inspeksi kehalusan sudut secara ketat demi keamanan buah hati Anda.
           </p>
           <div style="display: flex; gap: 18px; flex-wrap: wrap; margin-top: 14px;">
-            <button class="underlined-link" onclick="openFoundersModal()">VISI &amp; CERITA LENGKAP KAMI</button>
-            <button class="underlined-link" onclick="openFaqModal()">STANDAR MATERIAL &amp; FAQ</button>
-            <button class="underlined-link" onclick="openReturnPolicyModal()">GARANSI 100% PRODUK AMAN</button>
+            <button class="underlined-link" data-i18n="founders_link1" onclick="openFoundersModal()">VISI &amp; CERITA LENGKAP KAMI</button>
+            <button class="underlined-link" data-i18n="founders_link2" onclick="openFaqModal()">STANDAR MATERIAL &amp; FAQ</button>
+            <button class="underlined-link" data-i18n="founders_link3" onclick="openReturnPolicyModal()">GARANSI 100% PRODUK AMAN</button>
           </div>
         </div>
 
         <div class="founders-portrait-col">
           <div class="founders-portrait-wrap photo-labeled-wrap">
-            <span class="photo-spec-label bottom-left">
+            <span class="photo-spec-label bottom-left" data-i18n="founders_photo1_label">
               TIM KURATOR · PENDIDIK &amp; PERANCANG MODUL TUMBUH KEMBANG ANAK
             </span>
             <img
@@ -293,7 +302,7 @@
 
         <div class="founders-right-col">
           <div class="founders-small-photo photo-labeled-wrap">
-            <span class="photo-spec-label bottom-left">
+            <span class="photo-spec-label bottom-left" data-i18n="founders_photo2_label">
               STUDIO RISET · MATERIAL KAYU ALAMI &amp; KOMPONEN SENSORIK AMAN
             </span>
             <img
@@ -325,7 +334,7 @@
     <section class="trade-specifiers-section" id="tradeSpecifiersSection">
       <div class="trade-split-grid">
         <div class="trade-visual photo-labeled-wrap">
-          <span class="photo-spec-label bottom-left">
+          <span class="photo-spec-label bottom-left" data-i18n="trade_photo_label">
             MITRA PENDIDIKAN · POJOK EKSPLORASI &amp; KURIKULUM PAUD / SEKOLAH DASAR
           </span>
           <img
@@ -346,9 +355,9 @@
             Tim kurator edukasi kami siap mendampingi pemilihan kit sesuai kelompok usia dan kebutuhan stimulasi siswa Anda.
           </p>
           <div class="trade-links-row">
-            <button class="underlined-link" onclick="openAuthModal('register-trade')">DAFTAR MITRA SEKOLAH</button>
-            <button class="underlined-link" onclick="openAuthModal('login')">LOGIN MITRA</button>
-            <button class="underlined-link" onclick="openConsultationModal()">KONSULTASI GRATIS</button>
+            <button class="underlined-link" data-i18n="trade_link1" onclick="openAuthModal('register-trade')">DAFTAR MITRA SEKOLAH</button>
+            <button class="underlined-link" data-i18n="trade_link2" onclick="openAuthModal('login')">LOGIN MITRA</button>
+            <button class="underlined-link" data-i18n="trade_link3" onclick="openConsultationModal()">KONSULTASI GRATIS</button>
           </div>
         </div>
       </div>
@@ -359,7 +368,7 @@
       <div class="insta-collage-stage">
         <!-- Floating Photo 1 -->
         <a href="#shopCatalogSection" class="insta-float-card insta-float-1 photo-labeled-wrap">
-          <span class="photo-spec-label bottom-left">IDE 01 · POJOK CERMIN &amp; EKSPLORASI SENSORIK</span>
+          <span class="photo-spec-label bottom-left" data-i18n="insta_1">IDE 01 · POJOK CERMIN &amp; EKSPLORASI SENSORIK</span>
           <img
             src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=600&q=80"
             alt="Pojok bermain dan eksplorasi anak KutakKatik.id"
@@ -368,7 +377,7 @@
 
         <!-- Floating Photo 2 -->
         <a href="#shopCatalogSection" class="insta-float-card insta-float-2 photo-labeled-wrap">
-          <span class="photo-spec-label bottom-left">IDE 02 · SUDUT BACA &amp; MOTORIK HALUS</span>
+          <span class="photo-spec-label bottom-left" data-i18n="insta_2">IDE 02 · SUDUT BACA &amp; MOTORIK HALUS</span>
           <img
             src="https://images.unsplash.com/photo-1534349762230-e0cadf78f5da?auto=format&fit=crop&w=600&q=80"
             alt="Kit meronce dan motorik halus anak"
@@ -377,7 +386,7 @@
 
         <!-- Center Editorial Callout -->
         <div class="insta-center-content">
-          <h2 class="serif-heading">
+          <h2 class="serif-heading" data-i18n-html="insta_heading">
             IKUTI KAMI DI INSTAGRAM<br/>
             UNTUK INSPIRASI IDE<br/>
             BERMAIN TANPA GADGET,<br/>
@@ -389,7 +398,7 @@
 
         <!-- Floating Photo 3 -->
         <a href="#shopCatalogSection" class="insta-float-card insta-float-3 photo-labeled-wrap">
-          <span class="photo-spec-label bottom-left">IDE 03 · STIMULASI VISUAL &amp; GEOMETRI</span>
+          <span class="photo-spec-label bottom-left" data-i18n="insta_3">IDE 03 · STIMULASI VISUAL &amp; GEOMETRI</span>
           <img
             src="https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=500&q=80"
             alt="Opal glass sphere bathroom sconces"
@@ -398,7 +407,7 @@
 
         <!-- Floating Photo 4 -->
         <a href="#shopCatalogSection" class="insta-float-card insta-float-4 photo-labeled-wrap">
-          <span class="photo-spec-label bottom-left">IDE 04 · KRIYA TANAH LIAT &amp; BOTANI ALAM</span>
+          <span class="photo-spec-label bottom-left" data-i18n="insta_4">IDE 04 · KRIYA TANAH LIAT &amp; BOTANI ALAM</span>
           <img
             src="https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=500&q=80"
             alt="Textured plaster wall with brass sconce and trailing foliage"
@@ -407,7 +416,7 @@
 
         <!-- Floating Photo 5 -->
         <a href="#shopCatalogSection" class="insta-float-card insta-float-5 photo-labeled-wrap">
-          <span class="photo-spec-label bottom-left">IDE 05 · AREA KEMANDIRIAN MONTESSORI</span>
+          <span class="photo-spec-label bottom-left" data-i18n="insta_5">IDE 05 · AREA KEMANDIRIAN MONTESSORI</span>
           <img
             src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80"
             alt="Minimalist architectural bathroom lighting"
@@ -420,8 +429,8 @@
          SECTION 6: STUDIO JOURNAL
          ====================================================================== -->
     <section class="journal-section" id="journalSection">
-      <span class="micro-label">CATATAN PARENTING &amp; EDUKASI</span>
-      <h2 class="serif-heading" style="font-size: 2.1rem; color: var(--text-dark); margin-top: 6px;">
+      <span class="micro-label" data-i18n="journal_sub">CATATAN PARENTING &amp; EDUKASI</span>
+      <h2 class="serif-heading" data-i18n="journal_title" style="font-size: 2.1rem; color: var(--text-dark); margin-top: 6px;">
         Jurnal Tumbuh Kembang &amp; Ide Bermain
       </h2>
       <div class="journal-grid" id="journalGrid">
@@ -436,15 +445,15 @@
       <div style="max-width: 1380px; margin: 0 auto;">
         <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 18px; margin-bottom: 34px;">
           <div>
-            <span class="micro-label">JAMINAN KEAMANAN BELANJA ORANG TUA (TRUST &amp; SAFETY GUARANTEE)</span>
-            <h2 class="serif-heading" style="font-size: 2.15rem; color: var(--text-dark); margin-top: 6px;">
+            <span class="micro-label" data-i18n="trust_sub">JAMINAN KEAMANAN BELANJA ORANG TUA (TRUST &amp; SAFETY GUARANTEE)</span>
+            <h2 class="serif-heading" data-i18n="trust_title" style="font-size: 2.15rem; color: var(--text-dark); margin-top: 6px;">
               FAQ, Standar Material, &amp; Kebijakan Pengembalian 100% Aman
             </h2>
           </div>
           <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-            <button type="button" class="btn-outline" onclick="openFoundersModal()">Tentang Kami (Visi &amp; Nilai)</button>
-            <button type="button" class="btn-outline" onclick="openFaqModal()">Buka Halaman FAQ Lengkap</button>
-            <button type="button" class="btn-primary" onclick="openReturnPolicyModal()">Kebijakan Pengembalian (Return/Refund)</button>
+            <button type="button" class="btn-outline" data-i18n="trust_btn1" onclick="openFoundersModal()">Tentang Kami (Visi &amp; Nilai)</button>
+            <button type="button" class="btn-outline" data-i18n="trust_btn2" onclick="openFaqModal()">Buka Halaman FAQ Lengkap</button>
+            <button type="button" class="btn-primary" data-i18n="trust_btn3" onclick="openReturnPolicyModal()">Kebijakan Pengembalian (Return/Refund)</button>
           </div>
         </div>
 
@@ -562,42 +571,42 @@
     <div class="footer-grid">
       <div class="footer-col">
         <div class="footer-brand-title" id="footerBrandTitle">KutakKatik.id®</div>
-        <p style="font-size: 0.8rem; color: rgba(248,244,239,0.68); max-width: 310px; margin-bottom: 18px;">
+        <p data-i18n="footer_desc" style="font-size: 0.8rem; color: rgba(248,244,239,0.68); max-width: 310px; margin-bottom: 18px;">
           Solusi kreatif &amp; edukatif tanpa gadget: menghadirkan ratusan ide mainan kayu, kelas anak, dan kit eksplorasi untuk tumbuh kembang optimal.
         </p>
         <form class="newsletter-form" onsubmit="handleNewsletterSubmit(event)">
-          <input type="email" placeholder="Masukkan email untuk ide bermain mingguan..." required />
-          <button type="submit">Gabung</button>
+          <input type="email" id="newsletterEmailInput" placeholder="Masukkan email untuk ide bermain mingguan..." required />
+          <button type="submit" data-i18n="footer_join">Gabung</button>
         </form>
       </div>
 
       <div class="footer-col">
-        <h4>Program &amp; Kit Kami</h4>
+        <h4 data-i18n="footer_col1">Program &amp; Kit Kami</h4>
         <ul class="footer-links">
-          <li><a href="#shopCatalogSection" onclick="setShopCategory('Kit Eksplorasi')">Kit Eksplorasi Sains &amp; Alam</a></li>
-          <li><a href="#shopCatalogSection" onclick="setShopCategory('Mainan Edukatif')">Mainan Edukatif Montessori</a></li>
-          <li><a href="#shopCatalogSection" onclick="setShopCategory('Sensory Play')">Kotak Sensory Play &amp; Kriya</a></li>
-          <li><a href="#shopCatalogSection" onclick="setShopCategory('Kelas & Workshop')">Kelas &amp; Workshop Akhir Pekan</a></li>
-          <li><a href="#shopCatalogSection" onclick="setShopCategory('Paket Sekolah')">Paket Pojok Eksplorasi PAUD/TK</a></li>
+          <li><a href="#shopCatalogSection" data-i18n="footer_c1_1" onclick="setShopCategory('Kit Eksplorasi')">Kit Eksplorasi Sains &amp; Alam</a></li>
+          <li><a href="#shopCatalogSection" data-i18n="footer_c1_2" onclick="setShopCategory('Mainan Edukatif')">Mainan Edukatif Montessori</a></li>
+          <li><a href="#shopCatalogSection" data-i18n="footer_c1_3" onclick="setShopCategory('Sensory Play')">Kotak Sensory Play &amp; Kriya</a></li>
+          <li><a href="#shopCatalogSection" data-i18n="footer_c1_4" onclick="setShopCategory('Kelas & Workshop')">Kelas &amp; Workshop Akhir Pekan</a></li>
+          <li><a href="#shopCatalogSection" data-i18n="footer_c1_5" onclick="setShopCategory('Paket Sekolah')">Paket Pojok Eksplorasi PAUD/TK</a></li>
         </ul>
       </div>
 
       <div class="footer-col">
-        <h4>Layanan &amp; Kepercayaan Orang Tua</h4>
+        <h4 data-i18n="footer_col2">Layanan &amp; Kepercayaan Orang Tua</h4>
         <ul class="footer-links">
-          <li><button onclick="openFoundersModal()">Tentang Kami (Visi &amp; Nilai Edukasi)</button></li>
-          <li><button onclick="openFaqModal()">FAQ (Material, Pengemasan &amp; Pengiriman)</button></li>
-          <li><button onclick="openReturnPolicyModal()">Kebijakan Pengembalian (Return/Refund)</button></li>
-          <li><button onclick="openConsultationModal()">Konsultasi Gratis Pilih Kit</button></li>
-          <li><button onclick="openOrderTrackerModal()">Lacak Pesanan &amp; Upload Bukti</button></li>
-          <li><button onclick="openAuthModal('register-trade')">Pendaftaran Mitra Sekolah</button></li>
+          <li><button data-i18n="footer_c2_1" onclick="openFoundersModal()">Tentang Kami (Visi &amp; Nilai Edukasi)</button></li>
+          <li><button data-i18n="footer_c2_2" onclick="openFaqModal()">FAQ (Material, Pengemasan &amp; Pengiriman)</button></li>
+          <li><button data-i18n="footer_c2_3" onclick="openReturnPolicyModal()">Kebijakan Pengembalian (Return/Refund)</button></li>
+          <li><button data-i18n="footer_c2_4" onclick="openConsultationModal()">Konsultasi Gratis Pilih Kit</button></li>
+          <li><button data-i18n="footer_c2_5" onclick="openOrderTrackerModal()">Lacak Pesanan &amp; Upload Bukti</button></li>
+          <li><button data-i18n="footer_c2_6" onclick="openAuthModal('register-trade')">Pendaftaran Mitra Sekolah</button></li>
         </ul>
       </div>
 
       <div class="footer-col">
-        <h4>Studio &amp; Admin</h4>
+        <h4 data-i18n="footer_col3">Studio &amp; Admin</h4>
         <ul class="footer-links">
-          <li><button onclick="openAdminOrLogin()" style="color: var(--accent-gold); font-weight: 600;">→ Buka Admin Dashboard</button></li>
+          <li><button data-i18n="footer_c3_admin" onclick="openAdminOrLogin()" style="color: var(--accent-gold); font-weight: 600;">→ Buka Admin Dashboard</button></li>
           <li><span>Email: <a href="mailto:admin@kutakkatik.id">admin@kutakkatik.id</a> &amp; <a href="mailto:info@kutakkatik.id">info@kutakkatik.id</a></span></li>
           <li><span>WhatsApp: <a href="https://wa.me/628121881490" target="_blank" rel="noopener">08121881490</a></span></li>
           <li><span>Studio: Jakarta · BSD · Bandung</span></li>
@@ -606,8 +615,8 @@
     </div>
 
     <div class="footer-bottom">
-      <span>© 2026 KutakKatik.id® — Solusi Kreatif &amp; Edukatif Tanpa Gadget. All Rights Reserved.</span>
-      <span>Mainan Edukatif, Kelas, &amp; Kit Eksplorasi Tumbuh Kembang Anak</span>
+      <span data-i18n="footer_copy">© 2026 KutakKatik.id® — Solusi Kreatif &amp; Edukatif Tanpa Gadget. All Rights Reserved.</span>
+      <span data-i18n="footer_tagline">Mainan Edukatif, Kelas, &amp; Kit Eksplorasi Tumbuh Kembang Anak</span>
     </div>
   </footer>
 

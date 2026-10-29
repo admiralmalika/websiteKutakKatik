@@ -14,8 +14,389 @@ let sessionState = {
   activeCategory: "ALL",
   activeSpaceIndex: 0, // Defaults to Space 03 (Code Cascade from Photo 3)
   activeAdminTab: "overview",
-  editingProductId: null
+  editingProductId: null,
+  lang: "id",
+  manualLangOverride: false,
+  detectedIp: "Auto",
+  detectedCountry: "ID"
 };
+
+// ============================================================================
+// BILINGUAL (ID / EN) DICTIONARY & IP-BASED AUTO LANGUAGE DETECTION
+// ============================================================================
+const I18N_DICT = {
+  id: {
+    util_consult: "Konsultasi Gratis",
+    util_faq: "FAQ & Material",
+    util_warranty: "Garansi & Pengembalian",
+    util_track: "Lacak Pesanan",
+    nav_programs: "PROGRAM & KIT",
+    nav_about: "TENTANG KAMI",
+    nav_faq: "FAQ & GARANSI",
+    nav_spaces: "RUANG & KELAS",
+    nav_journal: "JURNAL PARENTING",
+    nav_trade: "MITRA SEKOLAH",
+    hero_photo_label: "FOTO UTAMA · RUANG EKSPLORASI KELUARGA & AKTIVITAS TANPA GADGET (USIA 2–8 TAHUN)",
+    hero_subtitle: "EKSPLORASI &<br/>TUMBUH KEMBANG",
+    hero_statement: "Solusi Kreatif & Edukatif Tanpa Gadget: Temukan Ratusan Ide Mainan, Kelas, & Kit Eksplorasi untuk Tumbuh Kembang Anak.",
+    hero_cta_primary: "Lihat Program / Kit Kami",
+    hero_cta_secondary: "Konsultasi Gratis",
+    feat_heading: "PROGRAM & KIT EKSPLORASI PILIHAN",
+    feat_view_all: "LIHAT SEMUA PROGRAM & KIT",
+    shop_sub: "KATALOG EDUKASI & TUMBUH KEMBANG ANAK",
+    shop_title: "Mainan Edukatif, Kelas, & Kit Eksplorasi",
+    cat_all: "Semua Program & Kit",
+    cat_kit: "Kit Eksplorasi",
+    cat_toy: "Mainan Edukatif",
+    cat_sensory: "Sensory Play",
+    cat_class: "Kelas & Workshop",
+    cat_school: "Paket Sekolah",
+    search_placeholder: "Cari kit sains, sensory play, balok kayu, usia...",
+    sort_featured: "Urutkan: Unggulan",
+    sort_price_asc: "Harga: Terendah ke Tertinggi",
+    sort_price_desc: "Harga: Tertinggi ke Terendah",
+    sort_rating: "Rating Tertinggi",
+    banner_strip_label: "SUASANA RUANG · DESAIN STUDIO BELAJAR & EKSPLORASI SENSORIK KUTAKKATIK.ID",
+    founders_label: "TENTANG KAMI (ABOUT US) · VISI & NILAI KUTAKKATIK.ID",
+    founders_heading: "VISI KAMI: MENGHADIRKAN MASA KECIL YANG KAYA EKSPLORASI NYATA, AMAN, DAN BERMAKNA TANPA KETERGANTUNGAN GADGET.",
+    founders_p1: "Lahir dari kepedulian pendidik dan orang tua terhadap tingginya paparan layar (screen time) pada anak usia dini, KutakKatik.id® hadir dengan nilai utama bahwa setiap mainan harus memiliki tujuan tumbuh kembang yang jelas—melatih motorik halus, kognitif, kemampuan problem-solving, serta logika dasar (STEM).",
+    founders_p2: "Kami hanya menggunakan kayu solid lokal pilihan dengan finishing beeswax murni & cat water-based non-toxic, plastik ABS non-toxic, serta material sensorik food-grade yang melewati inspeksi kehalusan sudut secara ketat demi keamanan buah hati Anda.",
+    founders_link1: "VISI & CERITA LENGKAP KAMI",
+    founders_link2: "STANDAR MATERIAL & FAQ",
+    founders_link3: "GARANSI 100% PRODUK AMAN",
+    founders_photo1_label: "TIM KURATOR · PENDIDIK & PERANCANG MODUL TUMBUH KEMBANG ANAK",
+    founders_photo2_label: "STUDIO RISET · MATERIAL KAYU ALAMI & KOMPONEN SENSORIK AMAN",
+    trade_photo_label: "MITRA PENDIDIKAN · POJOK EKSPLORASI & KURIKULUM PAUD / SEKOLAH DASAR",
+    trade_heading: "MITRA SEKOLAH, PAUD & TERAPIS TUMBUH KEMBANG",
+    trade_p1: "Program kemitraan kami dikhususkan bagi sekolah, TK/PAUD, daycare, komunitas parenting, dan terapis tumbuh kembang anak. Sebagai Mitra KutakKatik.id, Anda mendapatkan potongan harga otomatis 20% serta kurasi kurikulum kit eksplorasi untuk kelas Anda.",
+    trade_p2: "Tim kurator edukasi kami siap mendampingi pemilihan kit sesuai kelompok usia dan kebutuhan stimulasi siswa Anda.",
+    trade_link1: "DAFTAR MITRA SEKOLAH",
+    trade_link2: "LOGIN MITRA",
+    trade_link3: "KONSULTASI GRATIS",
+    insta_1: "IDE 01 · POJOK CERMIN & EKSPLORASI SENSORIK",
+    insta_2: "IDE 02 · SUDUT BACA & MOTORIK HALUS",
+    insta_3: "IDE 03 · STIMULASI VISUAL & GEOMETRI",
+    insta_4: "IDE 04 · KRIYA TANAH LIAT & BOTANI ALAM",
+    insta_5: "IDE 05 · AREA KEMANDIRIAN MONTESSORI",
+    insta_heading: "IKUTI KAMI DI INSTAGRAM<br/>UNTUK INSPIRASI IDE<br/>BERMAIN TANPA GADGET,<br/>JADWAL KELAS, &amp; KARYA<br/>EKSPLORASI ANAK",
+    journal_sub: "CATATAN PARENTING & EDUKASI",
+    journal_title: "Jurnal Tumbuh Kembang & Ide Bermain",
+    trust_sub: "JAMINAN KEAMANAN BELANJA ORANG TUA (TRUST & SAFETY GUARANTEE)",
+    trust_title: "FAQ, Standar Material, & Kebijakan Pengembalian 100% Aman",
+    trust_btn1: "Tentang Kami (Visi & Nilai)",
+    trust_btn2: "Buka Halaman FAQ Lengkap",
+    trust_btn3: "Kebijakan Pengembalian (Return/Refund)",
+    footer_desc: "Solusi kreatif & edukatif tanpa gadget: menghadirkan ratusan ide mainan kayu, kelas anak, dan kit eksplorasi untuk tumbuh kembang optimal.",
+    footer_email_placeholder: "Masukkan email untuk ide bermain mingguan...",
+    footer_join: "Gabung",
+    footer_col1: "Program & Kit Kami",
+    footer_c1_1: "Kit Eksplorasi Sains & Alam",
+    footer_c1_2: "Mainan Edukatif Montessori",
+    footer_c1_3: "Kotak Sensory Play & Kriya",
+    footer_c1_4: "Kelas & Workshop Akhir Pekan",
+    footer_c1_5: "Paket Pojok Eksplorasi PAUD/TK",
+    footer_col2: "Layanan & Kepercayaan Orang Tua",
+    footer_c2_1: "Tentang Kami (Visi & Nilai Edukasi)",
+    footer_c2_2: "FAQ (Material, Pengemasan & Pengiriman)",
+    footer_c2_3: "Kebijakan Pengembalian (Return/Refund)",
+    footer_c2_4: "Konsultasi Gratis Pilih Kit",
+    footer_c2_5: "Lacak Pesanan & Upload Bukti",
+    footer_c2_6: "Pendaftaran Mitra Sekolah",
+    footer_col3: "Studio & Admin",
+    footer_c3_admin: "→ Buka Admin Dashboard",
+    footer_copy: "© 2026 KutakKatik.id® — Solusi Kreatif & Edukatif Tanpa Gadget. All Rights Reserved.",
+    footer_tagline: "Mainan Edukatif, Kelas, & Kit Eksplorasi Tumbuh Kembang Anak",
+    btn_add_cart: "+ Tambahkan ke Keranjang",
+    btn_preorder_cart: "+ Pre-Order ke Keranjang",
+    btn_out_of_stock: "Stok Habis",
+    btn_po_full: "Kuota PO Habis",
+    btn_detail_safety: "Detail & Safety",
+    space_sub: "RUANG & KELAS EKSPLORASI",
+    space_btn: "LIHAT DETAIL RUANG & KIT",
+    login_admin: "Masuk / Admin",
+    my_orders: "Pesanan Saya"
+  },
+  en: {
+    util_consult: "Free Consultation",
+    util_faq: "FAQ & Materials",
+    util_warranty: "Warranty & Returns",
+    util_track: "Track Order",
+    nav_programs: "PROGRAMS & KITS",
+    nav_about: "ABOUT US",
+    nav_faq: "FAQ & WARRANTY",
+    nav_spaces: "SPACES & CLASSES",
+    nav_journal: "PARENTING JOURNAL",
+    nav_trade: "SCHOOL PARTNERS",
+    hero_photo_label: "FEATURED PHOTO · FAMILY EXPLORATION SPACE & SCREEN-FREE ACTIVITIES (AGES 2–8)",
+    hero_subtitle: "EXPLORATION &<br/>CHILD DEVELOPMENT",
+    hero_statement: "Creative & Educational Screen-Free Solutions: Discover Curated Wooden Toys, Classes, & Montessori Exploration Kits for Growing Minds.",
+    hero_cta_primary: "Explore Programs & Kits",
+    hero_cta_secondary: "Free Consultation",
+    feat_heading: "CURATED EXPLORATION PROGRAMS & KITS",
+    feat_view_all: "VIEW ALL PROGRAMS & KITS",
+    shop_sub: "CHILD DEVELOPMENT & EDUCATIONAL CATALOG",
+    shop_title: "Educational Toys, Classes, & Exploration Kits",
+    cat_all: "All Programs & Kits",
+    cat_kit: "Exploration Kits",
+    cat_toy: "Educational Toys",
+    cat_sensory: "Sensory Play",
+    cat_class: "Classes & Workshops",
+    cat_school: "School Bundles",
+    search_placeholder: "Search science kits, sensory play, wooden blocks, age...",
+    sort_featured: "Sort: Featured",
+    sort_price_asc: "Price: Low to High",
+    sort_price_desc: "Price: High to Low",
+    sort_rating: "Highest Rated",
+    banner_strip_label: "STUDIO ATMOSPHERE · KUTAKKATIK.ID LEARNING & SENSORY EXPLORATION STUDIO",
+    founders_label: "ABOUT US · VISION & VALUES OF KUTAKKATIK.ID",
+    founders_heading: "OUR VISION: BRINGING A CHILDHOOD RICH IN REAL, SAFE, AND MEANINGFUL EXPLORATION WITHOUT GADGET DEPENDENCY.",
+    founders_p1: "Born from the shared concern of educators and parents over excessive screen time in early childhood, KutakKatik.id® is built on the core value that every toy must serve a clear developmental purpose—training fine motor skills, cognition, problem-solving, and early STEM logic.",
+    founders_p2: "We exclusively use selected local solid wood with pure beeswax & non-toxic water-based paint, non-toxic ABS, and food-grade sensory materials that pass strict rounded-edge safety inspections for your child.",
+    founders_link1: "OUR FULL VISION & STORY",
+    founders_link2: "MATERIAL STANDARDS & FAQ",
+    founders_link3: "100% SAFE PRODUCT GUARANTEE",
+    founders_photo1_label: "CURATORIAL TEAM · EDUCATORS & CHILD DEVELOPMENT MODULE DESIGNERS",
+    founders_photo2_label: "RESEARCH STUDIO · NATURAL SOLID WOOD & SAFE SENSORY COMPONENTS",
+    trade_photo_label: "EDUCATION PARTNERS · EXPLORATION CORNERS & PRESCHOOL / PRIMARY CURRICULUM",
+    trade_heading: "SCHOOL, PRESCHOOL & CHILD THERAPIST PARTNERS",
+    trade_p1: "Our partnership program is tailored for schools, kindergartens, daycares, parenting communities, and child development therapists. As a KutakKatik.id Partner, you receive an automatic 20% discount and curated exploration kit curricula for your classroom.",
+    trade_p2: "Our educational curators are ready to assist in selecting kits suited to your students' age groups and developmental goals.",
+    trade_link1: "REGISTER AS SCHOOL PARTNER",
+    trade_link2: "PARTNER SIGN IN",
+    trade_link3: "FREE CONSULTATION",
+    insta_1: "IDEA 01 · MIRROR CORNER & SENSORY EXPLORATION",
+    insta_2: "IDEA 02 · READING NOOK & FINE MOTOR SKILLS",
+    insta_3: "IDEA 03 · VISUAL STIMULATION & GEOMETRY",
+    insta_4: "IDEA 04 · NATURAL CLAY CRAFT & BOTANY",
+    insta_5: "IDEA 05 · MONTESSORI INDEPENDENCE ZONE",
+    insta_heading: "FOLLOW US ON INSTAGRAM<br/>FOR SCREEN-FREE PLAY<br/>INSPIRATION, CLASS SCHEDULES,<br/>&amp; CHILDREN'S CREATIVE<br/>EXPLORATION WORKS",
+    journal_sub: "PARENTING & EDUCATION NOTES",
+    journal_title: "Child Development & Play Ideas Journal",
+    trust_sub: "PARENT SHOPPING PEACE OF MIND (TRUST & SAFETY GUARANTEE)",
+    trust_title: "FAQ, Material Standards, & 100% Safe Return Policy",
+    trust_btn1: "About Us (Vision & Values)",
+    trust_btn2: "Open Full FAQ Page",
+    trust_btn3: "Return & Refund Policy",
+    footer_desc: "Creative & educational screen-free solutions: bringing hundreds of wooden toy ideas, children's classes, and exploration kits for optimal growth.",
+    footer_email_placeholder: "Enter your email for weekly play ideas...",
+    footer_join: "Join",
+    footer_col1: "Our Programs & Kits",
+    footer_c1_1: "Science & Nature Exploration Kits",
+    footer_c1_2: "Montessori Educational Toys",
+    footer_c1_3: "Sensory Play & Craft Boxes",
+    footer_c1_4: "Weekend Classes & Workshops",
+    footer_c1_5: "Preschool / Kindergarten Corner Bundles",
+    footer_col2: "Parent Care & Trust",
+    footer_c2_1: "About Us (Educational Vision & Values)",
+    footer_c2_2: "FAQ (Materials, Packaging & Shipping)",
+    footer_c2_3: "Return & Refund Policy",
+    footer_c2_4: "Free Kit Selection Consultation",
+    footer_c2_5: "Track Order & Upload Payment Proof",
+    footer_c2_6: "School Partner Registration",
+    footer_col3: "Studio & Admin",
+    footer_c3_admin: "→ Open Admin Dashboard",
+    footer_copy: "© 2026 KutakKatik.id® — Creative & Educational Screen-Free Solutions. All Rights Reserved.",
+    footer_tagline: "Educational Toys, Classes, & Child Development Exploration Kits",
+    btn_add_cart: "+ Add to Shopping Bag",
+    btn_preorder_cart: "+ Pre-Order Now",
+    btn_out_of_stock: "Out of Stock",
+    btn_po_full: "Pre-Order Full",
+    btn_detail_safety: "Details & Safety",
+    space_sub: "EXPLORATION SPACES & CLASSES",
+    space_btn: "VIEW SPACE & KIT DETAILS",
+    login_admin: "Sign In / Admin",
+    my_orders: "My Orders"
+  }
+};
+
+function t(key) {
+  const lang = sessionState.lang === "en" ? "en" : "id";
+  return (I18N_DICT[lang] && I18N_DICT[lang][key]) || I18N_DICT.id[key] || key;
+}
+
+function translateCategoryName(cat) {
+  if (sessionState.lang !== "en") return cat;
+  const map = {
+    "Kit Eksplorasi": "Exploration Kits",
+    "Mainan Edukatif": "Educational Toys",
+    "Sensory Play": "Sensory Play",
+    "Kelas & Workshop": "Classes & Workshops",
+    "Paket Sekolah": "School Bundles"
+  };
+  return map[cat] || cat;
+}
+
+function setSiteLanguage(lang, isManual = false) {
+  const normalized = lang === "en" ? "en" : "id";
+  sessionState.lang = normalized;
+  if (isManual) {
+    sessionState.manualLangOverride = true;
+  }
+  document.documentElement.lang = normalized;
+  saveSessionState();
+  renderAll();
+  if (isManual) {
+    showToast(
+      normalized === "en"
+        ? "Language switched to English (EN)"
+        : "Bahasa diubah ke Bahasa Indonesia (ID)"
+    );
+  }
+}
+
+function toggleIpSimulation() {
+  // Simulate switching between an Indonesian IP (103.147.8.12 -> ID) and an International IP (172.64.155.20 -> US/Global)
+  if (sessionState.detectedCountry === "ID") {
+    sessionState.detectedIp = "172.64.155.20";
+    sessionState.detectedCountry = "US";
+    sessionState.manualLangOverride = false;
+    storeState.settings.currency = "USD";
+    setSiteLanguage("en", false);
+    showToast("🌐 Simulasi IP Internasional (172.64.155.20 · US) → Otomatis Bahasa Inggris (EN)");
+  } else {
+    sessionState.detectedIp = "103.147.8.12";
+    sessionState.detectedCountry = "ID";
+    sessionState.manualLangOverride = false;
+    storeState.settings.currency = "IDR";
+    setSiteLanguage("id", false);
+    showToast("🌐 Simulasi IP Indonesia (103.147.8.12 · ID) → Otomatis Bahasa Indonesia (ID)");
+  }
+}
+
+async function detectLanguageByIp() {
+  const params = new URLSearchParams(window.location.search);
+  const queryLang = (params.get("lang") || "").toLowerCase();
+  const queryIpCountry = (params.get("ip_country") || params.get("country") || "").toUpperCase();
+
+  if (queryIpCountry) {
+    sessionState.detectedCountry = queryIpCountry;
+    sessionState.detectedIp = queryIpCountry === "ID" ? "103.147.8.12" : "172.64.155.20";
+    const autoLang = queryIpCountry === "ID" ? "id" : "en";
+    storeState.settings.currency = queryIpCountry === "ID" ? "IDR" : "USD";
+    setSiteLanguage(autoLang, false);
+    return;
+  }
+
+  if (queryLang === "id" || queryLang === "en") {
+    setSiteLanguage(queryLang, true);
+    return;
+  }
+
+  let ipAddr = null;
+  let countryCode = null;
+
+  // 1. Check backend /api/geo-lang (reads Vercel/Cloudflare IP headers or socket IP)
+  if (window.location.protocol.startsWith("http")) {
+    try {
+      const res = await fetch("/api/geo-lang");
+      if (res.ok) {
+        const data = await res.json();
+        if (data.ip) ipAddr = data.ip;
+        if (data.countryCode && !data.isLocalIp) {
+          countryCode = data.countryCode.toUpperCase();
+        }
+      }
+    } catch (_) {}
+  }
+
+  // 2. Query public client Geo-IP API to detect actual public IP & Country
+  if (!countryCode) {
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 3200);
+      const geoRes = await fetch("https://ipwho.is/", { signal: ctrl.signal });
+      clearTimeout(timer);
+      if (geoRes.ok) {
+        const geo = await geoRes.json();
+        if (geo && geo.success !== false && geo.country_code) {
+          ipAddr = geo.ip || ipAddr;
+          countryCode = String(geo.country_code).toUpperCase();
+        }
+      }
+    } catch (_) {
+      try {
+        const ctrl2 = new AbortController();
+        const timer2 = setTimeout(() => ctrl2.abort(), 3200);
+        const geoRes2 = await fetch("https://ipapi.co/json/", { signal: ctrl2.signal });
+        clearTimeout(timer2);
+        if (geoRes2.ok) {
+          const geo2 = await geoRes2.json();
+          if (geo2 && geo2.country_code) {
+            ipAddr = geo2.ip || ipAddr;
+            countryCode = String(geo2.country_code).toUpperCase();
+          }
+        }
+      } catch (_e) {}
+    }
+  }
+
+  if (!countryCode) {
+    // Fallback to timezone heuristic if offline
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+    const isIndoTz = /Jakarta|Pontianak|Makassar|Jayapura/i.test(tz);
+    countryCode = isIndoTz ? "ID" : "ID";
+  }
+
+  sessionState.detectedIp = ipAddr || "Local";
+  sessionState.detectedCountry = countryCode;
+
+  // Automatically set language based on IP country (ID -> Bahasa Indonesia, Other IP -> English)
+  // unless the user explicitly clicked the manual language toggle button in this session
+  if (!sessionState.manualLangOverride) {
+    const autoLang = countryCode === "ID" ? "id" : "en";
+    sessionState.lang = autoLang;
+    document.documentElement.lang = autoLang;
+    if (countryCode !== "ID" && storeState?.settings) {
+      storeState.settings.currency = "USD";
+    }
+  }
+  saveSessionState();
+  renderAll();
+}
+
+function applySiteLanguage() {
+  const lang = sessionState.lang === "en" ? "en" : "id";
+  document.documentElement.lang = lang;
+
+  // Update active state on the unobtrusive ID | EN toggle buttons
+  const btnId = document.getElementById("langBtnId");
+  const btnEn = document.getElementById("langBtnEn");
+  if (btnId) btnId.classList.toggle("active", lang === "id");
+  if (btnEn) btnEn.classList.toggle("active", lang === "en");
+
+  // Update IP Geo Badge in top utility bar
+  const ipBadge = document.getElementById("ipGeoBadgeEl");
+  if (ipBadge) {
+    const countryLabel =
+      sessionState.detectedCountry === "ID"
+        ? "Indonesia (ID)"
+        : `${sessionState.detectedCountry || "Global"} (INTL)`;
+    ipBadge.textContent = `🌐 IP: ${sessionState.detectedIp} · ${countryLabel} · ${lang.toUpperCase()}`;
+  }
+
+  // Translate all static [data-i18n] elements
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
+    const key = el.getAttribute("data-i18n");
+    if (key && I18N_DICT[lang] && I18N_DICT[lang][key]) {
+      el.textContent = I18N_DICT[lang][key];
+    }
+  });
+
+  // Translate all static [data-i18n-html] elements
+  document.querySelectorAll("[data-i18n-html]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-html");
+    if (key && I18N_DICT[lang] && I18N_DICT[lang][key]) {
+      el.innerHTML = I18N_DICT[lang][key];
+    }
+  });
+
+  // Search & Newsletter placeholders
+  const searchInput = document.getElementById("shopSearchInput");
+  if (searchInput) searchInput.placeholder = t("search_placeholder");
+
+  const newsInput = document.getElementById("newsletterEmailInput");
+  if (newsInput) newsInput.placeholder = t("footer_email_placeholder");
+}
 
 // ============================================================================
 // INITIALIZATION & PERSISTENCE (LOCALSTORAGE + OPTIONAL NODE API SYNC)
@@ -24,6 +405,7 @@ async function initApp() {
   loadStateFromStorage();
   await syncFromServerIfAvailable();
   renderAll();
+  await detectLanguageByIp();
 }
 
 function loadStateFromStorage() {
@@ -71,7 +453,11 @@ function saveSessionState() {
         currentUser: sessionState.currentUser,
         cart: sessionState.cart,
         wishlist: sessionState.wishlist,
-        appliedVoucher: sessionState.appliedVoucher
+        appliedVoucher: sessionState.appliedVoucher,
+        lang: sessionState.lang,
+        manualLangOverride: sessionState.manualLangOverride,
+        detectedIp: sessionState.detectedIp,
+        detectedCountry: sessionState.detectedCountry
       })
     );
   } catch (e) {
@@ -133,6 +519,7 @@ function changeCurrency(newCurrency) {
 // MASTER RENDER ORCHESTRATOR
 // ============================================================================
 function renderAll() {
+  applySiteLanguage();
   renderBrandSettings();
   renderHeaderBadges();
   renderStaggeredFeatured();
@@ -148,6 +535,7 @@ function renderAll() {
 
 function renderBrandSettings() {
   const s = storeState.settings;
+  const isEn = sessionState.lang === "en";
   const wordmarkEl = document.getElementById("heroWordmarkTitle");
   if (wordmarkEl) {
     const heroText = (s.heroWordmark || "Mind Booster").trim();
@@ -162,11 +550,11 @@ function renderBrandSettings() {
   }
   const subEl = document.getElementById("heroSubtitleText");
   if (subEl) {
-    subEl.innerHTML = escapeHtml(s.brandSubtitle).replace("&", "&amp;<br/>");
+    subEl.innerHTML = isEn ? t("hero_subtitle") : escapeHtml(s.brandSubtitle).replace("&", "&amp;<br/>");
   }
   const stmtEl = document.getElementById("heroStatementText");
   if (stmtEl) {
-    stmtEl.textContent = s.heroStatement;
+    stmtEl.textContent = isEn ? t("hero_statement") : s.heroStatement;
   }
   const instaEl = document.getElementById("instaHandleLink");
   if (instaEl) {
@@ -186,22 +574,32 @@ function renderBrandSettings() {
   if (heroBgImgEl && s.heroImage) heroBgImgEl.src = s.heroImage;
 
   const heroPhotoLabelEl = document.getElementById("heroPhotoLabelEl");
-  if (heroPhotoLabelEl && s.heroPhotoLabel) heroPhotoLabelEl.textContent = s.heroPhotoLabel;
+  if (heroPhotoLabelEl) {
+    heroPhotoLabelEl.textContent = isEn ? t("hero_photo_label") : (s.heroPhotoLabel || t("hero_photo_label"));
+  }
 
   const bannerStripImgEl = document.getElementById("bannerStripImgEl");
   if (bannerStripImgEl && s.bannerStripImage) bannerStripImgEl.src = s.bannerStripImage;
 
   const bannerStripLabelEl = document.getElementById("bannerStripLabelEl");
-  if (bannerStripLabelEl && s.bannerStripLabel) bannerStripLabelEl.textContent = s.bannerStripLabel;
+  if (bannerStripLabelEl) {
+    bannerStripLabelEl.textContent = isEn ? t("banner_strip_label") : (s.bannerStripLabel || t("banner_strip_label"));
+  }
 
   const foundersHeadingEl = document.getElementById("foundersHeadingEl");
-  if (foundersHeadingEl && s.aboutTitle) foundersHeadingEl.textContent = s.aboutTitle;
+  if (foundersHeadingEl) {
+    foundersHeadingEl.textContent = isEn ? t("founders_heading") : (s.aboutTitle || t("founders_heading"));
+  }
 
   const foundersPara1El = document.getElementById("foundersPara1El");
-  if (foundersPara1El && s.aboutPara1) foundersPara1El.textContent = s.aboutPara1;
+  if (foundersPara1El) {
+    foundersPara1El.textContent = isEn ? t("founders_p1") : (s.aboutPara1 || t("founders_p1"));
+  }
 
   const foundersPara2El = document.getElementById("foundersPara2El");
-  if (foundersPara2El && s.aboutPara2) foundersPara2El.textContent = s.aboutPara2;
+  if (foundersPara2El) {
+    foundersPara2El.textContent = isEn ? t("founders_p2") : (s.aboutPara2 || t("founders_p2"));
+  }
 
   const foundersMainImgEl = document.getElementById("foundersMainImgEl");
   if (foundersMainImgEl && s.aboutMainImage) foundersMainImgEl.src = s.aboutMainImage;
@@ -210,13 +608,19 @@ function renderBrandSettings() {
   if (foundersSecondImgEl && s.aboutSecondImage) foundersSecondImgEl.src = s.aboutSecondImage;
 
   const tradeHeadingEl = document.getElementById("tradeHeadingEl");
-  if (tradeHeadingEl && s.tradeTitle) tradeHeadingEl.textContent = s.tradeTitle;
+  if (tradeHeadingEl) {
+    tradeHeadingEl.textContent = isEn ? t("trade_heading") : (s.tradeTitle || t("trade_heading"));
+  }
 
   const tradePara1El = document.getElementById("tradePara1El");
-  if (tradePara1El && s.tradePara1) tradePara1El.textContent = s.tradePara1;
+  if (tradePara1El) {
+    tradePara1El.textContent = isEn ? t("trade_p1") : (s.tradePara1 || t("trade_p1"));
+  }
 
   const tradePara2El = document.getElementById("tradePara2El");
-  if (tradePara2El && s.tradePara2) tradePara2El.textContent = s.tradePara2;
+  if (tradePara2El) {
+    tradePara2El.textContent = isEn ? t("trade_p2") : (s.tradePara2 || t("trade_p2"));
+  }
 
   const tradeMainImgEl = document.getElementById("tradeMainImgEl");
   if (tradeMainImgEl && s.tradeMainImage) tradeMainImgEl.src = s.tradeMainImage;
@@ -228,15 +632,23 @@ function renderBrandSettings() {
   if (user) {
     topBtn.textContent = `${user.name} (${user.role.toUpperCase()})`;
     if (user.role === "admin") {
-      banner.innerHTML = `Login sebagai <strong>Admin (${escapeHtml(user.email)})</strong> · <button class="underlined-link" onclick="openAdminOrLogin()">Buka Admin Dashboard</button>`;
+      banner.innerHTML = isEn
+        ? `Signed in as <strong>Admin (${escapeHtml(user.email)})</strong> · <button class="underlined-link" onclick="openAdminOrLogin()">Open Admin Dashboard</button>`
+        : `Login sebagai <strong>Admin (${escapeHtml(user.email)})</strong> · <button class="underlined-link" onclick="openAdminOrLogin()">Buka Admin Dashboard</button>`;
     } else if (user.role === "trade") {
-      banner.innerHTML = `✦ <strong>Akun Mitra Sekolah / PAUD Aktif:</strong> Diskon otomatis ${storeState.settings.tradeDiscountPercent}% diterapkan pada seluruh katalog.`;
+      banner.innerHTML = isEn
+        ? `✦ <strong>Active School Partner Account:</strong> Automatic ${storeState.settings.tradeDiscountPercent}% discount applied across catalog.`
+        : `✦ <strong>Akun Mitra Sekolah / PAUD Aktif:</strong> Diskon otomatis ${storeState.settings.tradeDiscountPercent}% diterapkan pada seluruh katalog.`;
     } else {
-      banner.innerHTML = `Halo, <strong>${escapeHtml(user.name)}</strong> · <button class="underlined-link" onclick="handleAccountButtonClick()">Pesanan Saya</button>`;
+      banner.innerHTML = isEn
+        ? `Hello, <strong>${escapeHtml(user.name)}</strong> · <button class="underlined-link" onclick="handleAccountButtonClick()">My Orders</button>`
+        : `Halo, <strong>${escapeHtml(user.name)}</strong> · <button class="underlined-link" onclick="handleAccountButtonClick()">Pesanan Saya</button>`;
     }
   } else {
-    topBtn.textContent = "Masuk / Admin";
-    banner.innerHTML = `Pengelola Sekolah / PAUD atau Orang Tua? <button class="underlined-link" onclick="openAuthModal('login')">Login Akun / Mitra (-20%)</button>`;
+    topBtn.textContent = t("login_admin");
+    banner.innerHTML = isEn
+      ? `School Educator or Parent? <button class="underlined-link" onclick="openAuthModal('login')">Sign In / School Partner (-20%)</button>`
+      : `Pengelola Sekolah / PAUD atau Orang Tua? <button class="underlined-link" onclick="openAuthModal('login')">Login Akun / Mitra (-20%)</button>`;
   }
 }
 
@@ -257,6 +669,7 @@ function renderHeaderBadges() {
 function renderStaggeredFeatured() {
   const container = document.getElementById("staggeredFeaturedGrid");
   if (!container) return;
+  const isEn = sessionState.lang === "en";
 
   // Find slot 1 (left), slot 2 (center tall), slot 3 (right) or fallback to first 3 products
   const slot1 =
@@ -277,8 +690,12 @@ function renderStaggeredFeatured() {
       const effectivePrice = getEffectiveUnitPrice(product);
       const defaultFinish = (product.finishes && product.finishes[0]) || "Usia 3–5 Tahun (Pra-Sekolah)";
       const isPO = Boolean(product.isPreOrder);
-      const poBadgeText = isPO ? `PRE-ORDER (${product.preOrderEta || "5–7 Hari Kerja"})` : (product.badge || "PILIHAN KURATOR");
-      const specLabel = `UNGGULAN 0${idx + 1} · ${product.category.toUpperCase()} · ${poBadgeText}`;
+      const poBadgeText = isPO
+        ? `PRE-ORDER (${product.preOrderEta || (isEn ? "5–7 Business Days" : "5–7 Hari Kerja")})`
+        : (product.badge || (isEn ? "CURATOR'S PICK" : "PILIHAN KURATOR"));
+      const catLabel = translateCategoryName(product.category).toUpperCase();
+      const featPrefix = isEn ? "FEATURED" : "UNGGULAN";
+      const specLabel = `${featPrefix} 0${idx + 1} · ${catLabel} · ${poBadgeText}`;
       return `
         <article class="staggered-card ${cls}">
           <div class="photo-labeled-wrap" onclick="openProductDetailModal('${product.id}')" style="cursor: pointer;">
@@ -289,7 +706,7 @@ function renderStaggeredFeatured() {
             <h3 class="staggered-card-title">${escapeHtml(product.name)}</h3>
             <span class="staggered-card-price">${formatPrice(effectivePrice)}</span>
           </div>
-          ${isPO ? `<div style="font-size: 0.66rem; color: #7a4b12; background: #fff8eb; border: 1px solid #f0d8a8; padding: 4px 8px; margin-top: 6px;">⏳ <strong>PRE-ORDER:</strong> ${escapeHtml(product.preOrderEta || "Estimasi Kirim 5–7 Hari Kerja")}</div>` : ""}
+          ${isPO ? `<div style="font-size: 0.66rem; color: #7a4b12; background: #fff8eb; border: 1px solid #f0d8a8; padding: 4px 8px; margin-top: 6px;">⏳ <strong>PRE-ORDER:</strong> ${escapeHtml(product.preOrderEta || (isEn ? "Est. Dispatch 5–7 Business Days" : "Estimasi Kirim 5–7 Hari Kerja"))}</div>` : ""}
           <div style="margin-top: 8px;">
             <button
               type="button"
@@ -297,7 +714,7 @@ function renderStaggeredFeatured() {
               style="width: 100%; padding: 8px 10px; font-size: 0.65rem;"
               onclick="addToCart('${product.id}', '${escapeJs(defaultFinish)}', 1)"
             >
-              ${isPO ? "+ Pre-Order ke Keranjang" : "+ Tambahkan ke Keranjang"}
+              ${isPO ? t("btn_preorder_cart") : t("btn_add_cart")}
             </button>
           </div>
         </article>
@@ -366,20 +783,27 @@ function renderShopCatalog() {
 
   grid.innerHTML = list
     .map((p) => {
+      const isEn = sessionState.lang === "en";
       const effectivePrice = getEffectiveUnitPrice(p);
       const isWishlisted = sessionState.wishlist.includes(p.id);
       const isPO = Boolean(p.isPreOrder);
       const poQuota = Number(p.preOrderQuota ?? 20);
       const outOfStock = isPO ? poQuota <= 0 : Number(p.stock) <= 0;
-      const defaultFinish = (p.finishes && p.finishes[0]) || "Paket Standar";
-      const photoSpec = `${p.category} · ${defaultFinish}`;
+      const defaultFinish = (p.finishes && p.finishes[0]) || (isEn ? "Standard Kit" : "Paket Standar");
+      const displayCat = translateCategoryName(p.category);
+      const photoSpec = `${displayCat} · ${defaultFinish}`;
+      const ctaLabel = outOfStock
+        ? (isPO ? t("btn_po_full") : t("btn_out_of_stock"))
+        : isPO
+        ? t("btn_preorder_cart")
+        : t("btn_add_cart");
 
       return `
         <article class="product-card">
           <div class="product-media">
             ${
               outOfStock
-                ? `<span class="product-badge out-of-stock">${isPO ? "Kuota PO Penuh" : "Sold Out"}</span>`
+                ? `<span class="product-badge out-of-stock">${isPO ? t("btn_po_full") : "Sold Out"}</span>`
                 : isPO
                 ? `<span class="product-badge" style="background: #b86b14; color: #fff;">⏳ PRE-ORDER</span>`
                 : p.badge
@@ -390,7 +814,7 @@ function renderShopCatalog() {
             <button
               class="wishlist-card-btn ${isWishlisted ? "active" : ""}"
               onclick="toggleWishlistItem('${p.id}', event)"
-              title="Simpan ke Wishlist"
+              title="${isEn ? "Save to Wishlist" : "Simpan ke Wishlist"}"
               aria-label="Wishlist"
             >
               ${isWishlisted ? "♥" : "♡"}
@@ -419,17 +843,17 @@ function renderShopCatalog() {
                 onclick="addToCart('${p.id}', '${escapeJs(defaultFinish)}', 1)"
                 ${outOfStock ? "disabled style='opacity:0.5;cursor:not-allowed;'" : ""}
               >
-                ${outOfStock ? (isPO ? "Kuota PO Habis" : "Stok Habis") : isPO ? "+ Pre-Order ke Keranjang" : "+ Tambahkan ke Keranjang"}
+                ${ctaLabel}
               </button>
               <button class="quick-view-btn" onclick="openProductDetailModal('${p.id}')">
-                Detail &amp; Safety
+                ${t("btn_detail_safety")}
               </button>
             </div>
           </div>
 
           <div class="product-info">
             <div class="product-cat-row">
-              <span>${escapeHtml(p.category)}</span>
+              <span>${escapeHtml(displayCat)}</span>
               <span>★ ${Number(p.rating || 5).toFixed(1)} (${p.reviewCount || 12})</span>
             </div>
             <h3 class="product-title" onclick="openProductDetailModal('${p.id}')">
@@ -439,7 +863,7 @@ function renderShopCatalog() {
               <span>${formatPrice(effectivePrice)}</span>
               ${
                 isTradeOrAdminUser()
-                  ? `<span class="compare-price">${formatPrice(p.price)}</span><span class="trade-tag">Mitra -${storeState.settings.tradeDiscountPercent}%</span>`
+                  ? `<span class="compare-price">${formatPrice(p.price)}</span><span class="trade-tag">${isEn ? "Partner" : "Mitra"} -${storeState.settings.tradeDiscountPercent}%</span>`
                   : p.compareAtPrice
                   ? `<span class="compare-price">${formatPrice(p.compareAtPrice)}</span>`
                   : ""
@@ -448,7 +872,7 @@ function renderShopCatalog() {
             ${
               isPO
                 ? `<div style="font-size: 0.68rem; color: #7a4b12; background: #fff8eb; border: 1px solid #f0d8a8; padding: 5px 8px; margin: 4px 0 6px; line-height: 1.4;">
-                    <strong>⏳ PRE-ORDER AKTIF:</strong> ${escapeHtml(p.preOrderEta || "Estimasi Kirim 5–7 Hari Kerja")} · Sisa Kuota: <strong>${poQuota} slot</strong>
+                    <strong>⏳ ${isEn ? "ACTIVE PRE-ORDER" : "PRE-ORDER AKTIF"}:</strong> ${escapeHtml(p.preOrderEta || (isEn ? "Est. Dispatch 5–7 Business Days" : "Estimasi Kirim 5–7 Hari Kerja"))} · ${isEn ? "Remaining" : "Sisa Kuota"}: <strong>${poQuota} slot</strong>
                   </div>`
                 : ""
             }
@@ -456,7 +880,7 @@ function renderShopCatalog() {
               ${escapeHtml((p.seoDescription || p.description || "").split("\n")[0])}
             </p>
             <div style="font-size: 0.68rem; color: var(--text-bronze-dark); background: rgba(196, 158, 120, 0.12); padding: 5px 8px; border-left: 2px solid var(--text-bronze); line-height: 1.4; margin-bottom: 8px;">
-              <strong>✓ ${escapeHtml(p.recommendedAge || "Aman untuk usia 3 tahun ke atas")}</strong> · Material Non-Toxic
+              <strong>✓ ${escapeHtml(p.recommendedAge || (isEn ? "Safe for ages 3+" : "Aman untuk usia 3 tahun ke atas"))}</strong> · ${isEn ? "Non-Toxic Materials" : "Material Non-Toxic"}
             </div>
             <!-- Tombol CTA Tambahkan ke Keranjang -->
             <div style="margin-top: 4px;">
@@ -467,7 +891,7 @@ function renderShopCatalog() {
                 onclick="addToCart('${p.id}', '${escapeJs(defaultFinish)}', 1)"
                 ${outOfStock ? "disabled style='opacity:0.5;cursor:not-allowed;'" : ""}
               >
-                ${outOfStock ? (isPO ? "Kuota PO Habis" : "Stok Habis") : isPO ? "+ Pre-Order ke Keranjang" : "+ Tambahkan ke Keranjang"}
+                ${ctaLabel}
               </button>
             </div>
           </div>
@@ -489,6 +913,7 @@ function resetCatalogFilters() {
 function renderFeaturedSpaces() {
   const container = document.getElementById("spacesEditorialContainer");
   if (!container || !storeState.spaces || storeState.spaces.length === 0) return;
+  const isEn = sessionState.lang === "en";
 
   const idx = sessionState.activeSpaceIndex % storeState.spaces.length;
   const space = storeState.spaces[idx];
@@ -508,7 +933,7 @@ function renderFeaturedSpaces() {
       </div>
 
       <div class="space-left-thumb photo-labeled-wrap">
-        <span class="photo-spec-label bottom-left">SUDUT EKSPLORASI · ${escapeHtml(space.title)}</span>
+        <span class="photo-spec-label bottom-left">${isEn ? "EXPLORATION CORNER" : "SUDUT EKSPLORASI"} · ${escapeHtml(space.title)}</span>
         <img src="${escapeHtml(space.leftThumbImage)}" alt="${escapeHtml(space.title)} overview" loading="lazy" />
       </div>
 
@@ -518,7 +943,7 @@ function renderFeaturedSpaces() {
     <!-- Center Column: Tall Arched Photo (Photo 3 Signature Archway) -->
     <div class="spaces-center-arch">
       <div class="arch-frame photo-labeled-wrap" onclick="openSpaceModal('${space.id}')" style="cursor: pointer;">
-        <span class="photo-spec-label bottom-left">RUANG UTAMA ${escapeHtml(space.number)} · ${escapeHtml(space.location)}</span>
+        <span class="photo-spec-label bottom-left">${isEn ? "MAIN SPACE" : "RUANG UTAMA"} ${escapeHtml(space.number)} · ${escapeHtml(space.location)}</span>
         <img src="${escapeHtml(space.mainArchImage)}" alt="${escapeHtml(space.title)}" loading="lazy" />
       </div>
     </div>
@@ -526,14 +951,14 @@ function renderFeaturedSpaces() {
     <!-- Right Column: Top-Right Square Detail + Title + Description + View Space -->
     <div class="spaces-right-col">
       <div class="space-right-detail-thumb photo-labeled-wrap">
-        <span class="photo-spec-label bottom-left">DETAIL MODUL · ${escapeHtml(space.architect || "KUTAKKATIK.ID")}</span>
+        <span class="photo-spec-label bottom-left">${isEn ? "MODULE DETAIL" : "DETAIL MODUL"} · ${escapeHtml(space.architect || "KUTAKKATIK.ID")}</span>
         <img src="${escapeHtml(space.rightDetailImage)}" alt="${escapeHtml(space.title)} detail" loading="lazy" />
       </div>
 
-      <span class="micro-label" style="color: var(--accent-gold);">RUANG &amp; KELAS EKSPLORASI</span>
+      <span class="micro-label" style="color: var(--accent-gold);">${t("space_sub")}</span>
       <h2 class="space-title">${escapeHtml(space.title)}</h2>
       <p class="space-summary">${escapeHtml(space.summary)}</p>
-      <button class="underlined-link light" onclick="openSpaceModal('${space.id}')">LIHAT DETAIL RUANG &amp; KIT</button>
+      <button class="underlined-link light" onclick="openSpaceModal('${space.id}')">${t("space_btn")}</button>
     </div>
   `;
 }
