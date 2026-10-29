@@ -389,10 +389,88 @@ function applySiteLanguage() {
 }
 
 // ============================================================================
-// INITIALIZATION & PERSISTENCE (LOCALSTORAGE + OPTIONAL NODE API SYNC)
+// INITIALIZATION & PERSISTENCE (LOCALSTORAGE + INDEXEDDB + NODE API SYNC)
 // ============================================================================
+const IDB_NAME = "kutakkatik_store_db";
+const IDB_STORE = "kv";
+
+function openStoreIdb() {
+  return new Promise((resolve, reject) => {
+    if (!window.indexedDB) return reject(new Error("IndexedDB not supported"));
+    const req = indexedDB.open(IDB_NAME, 1);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains(IDB_STORE)) {
+        db.createObjectStore(IDB_STORE);
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function idbGetStore() {
+  try {
+    const db = await openStoreIdb();
+    return await new Promise((resolve, reject) => {
+      const tx = db.transaction(IDB_STORE, "readonly");
+      const req = tx.objectStore(IDB_STORE).get(STORAGE_KEY);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => reject(req.error);
+    });
+  } catch (_) {
+    return null;
+  }
+}
+
+async function idbSetStore(data) {
+  try {
+    const db = await openStoreIdb();
+    await new Promise((resolve, reject) => {
+      const tx = db.transaction(IDB_STORE, "readwrite");
+      tx.objectStore(IDB_STORE).put(data, STORAGE_KEY);
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => reject(tx.error);
+    });
+  } catch (_) {}
+}
+
+function persistLocalStoreSnapshot(stateObj) {
+  if (!stateObj) return;
+  const ts = Number(stateObj.lastUpdated) || 0;
+  if (ts > 0) {
+    try {
+      localStorage.setItem(STORAGE_KEY + "_ts", String(ts));
+    } catch (_) {}
+  }
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(stateObj));
+  } catch (e) {
+    // Clean up legacy store keys if 5MB localStorage quota is reached
+    try {
+      for (let i = 1; i <= 8; i++) {
+        localStorage.removeItem(`kutakkatik_edukasi_store_v${i}`);
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(stateObj));
+    } catch (err) {
+      console.warn("localStorage quota exceeded, relying on IndexedDB & Server:", err);
+    }
+  }
+  idbSetStore(stateObj);
+}
+
 async function initApp() {
   loadStateFromStorage();
+  // Also check IndexedDB in case large Base64 images exceeded localStorage 5MB quota
+  const idbData = await idbGetStore();
+  if (idbData && idbData.products && idbData.products.length > 0) {
+    const localTs = Number(storeState?.lastUpdated || 0);
+    const idbTs = Number(idbData.lastUpdated || 0);
+    if (idbTs >= localTs) {
+      storeState = idbData;
+    }
+  }
+  renderAll();
   await syncFromServerIfAvailable();
   renderAll();
   await detectLanguageByIp();
@@ -405,7 +483,6 @@ function loadStateFromStorage() {
       storeState = JSON.parse(rawStore);
     } else {
       storeState = JSON.parse(JSON.stringify(window.INITIAL_STORE_DATA));
-      saveStoreState();
     }
 
     const rawSession = localStorage.getItem(SESSION_KEY);
@@ -420,18 +497,19 @@ function loadStateFromStorage() {
 }
 
 function saveStoreState() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(storeState));
-  } catch (e) {
-    console.warn("Could not save to localStorage:", e);
-  }
-  // Also push to Node backend if running via server.js
+  if (!storeState) return;
+  storeState.lastUpdated = Date.now();
+  persistLocalStoreSnapshot(storeState);
+
+  // Also push to Node/PostgreSQL backend if running via HTTP(S)
   if (window.location.protocol.startsWith("http")) {
     fetch("/api/state", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(storeState)
-    }).catch(() => {});
+    }).catch((err) => {
+      console.warn("Failed to sync state to server:", err);
+    });
   }
 }
 
@@ -458,16 +536,28 @@ function saveSessionState() {
 async function syncFromServerIfAvailable() {
   if (!window.location.protocol.startsWith("http")) return;
   try {
-    const res = await fetch("/api/state");
+    const res = await fetch("/api/state", { cache: "no-store" });
     if (res.ok) {
       const serverData = await res.json();
       if (serverData && serverData.products && serverData.products.length > 0) {
-        storeState = serverData;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(storeState));
+        const localTs = Number(storeState?.lastUpdated || localStorage.getItem(STORAGE_KEY + "_ts") || 0);
+        const serverTs = Number(serverData.lastUpdated || 0);
+
+        if (localTs > serverTs) {
+          // Local browser has newer Admin edits than the server snapshot; push local state to server!
+          fetch("/api/state", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(storeState)
+          }).catch(() => {});
+        } else {
+          storeState = serverData;
+          persistLocalStoreSnapshot(storeState);
+        }
       }
     }
   } catch (_) {
-    // Running as static file or server not started; localStorage handles everything seamlessly
+    // Running as static file or server not started; localStorage + IndexedDB handles everything seamlessly
   }
 }
 
@@ -523,6 +613,14 @@ function renderAll() {
   }
 }
 
+function resolveEditableText(customValue, i18nKey, extraDefault = "") {
+  const val = (customValue || "").trim();
+  const idDefault = (I18N_DICT.id[i18nKey] || "").replace(/<br\s*\/?>/gi, " ").trim();
+  const isCustom = val && val !== idDefault && val !== extraDefault;
+  if (isCustom) return val;
+  return t(i18nKey);
+}
+
 function renderBrandSettings() {
   const s = storeState.settings;
   const isEn = sessionState.lang === "en";
@@ -540,11 +638,15 @@ function renderBrandSettings() {
   }
   const subEl = document.getElementById("heroSubtitleText");
   if (subEl) {
-    subEl.innerHTML = isEn ? t("hero_subtitle") : escapeHtml(s.brandSubtitle).replace("&amp;", "&amp;<br/>");
+    const defaultSub = "EKSPLORASI & TUMBUH KEMBANG";
+    const isCustomSub = s.brandSubtitle && s.brandSubtitle.trim() !== defaultSub;
+    subEl.innerHTML = (!isCustomSub && isEn)
+      ? t("hero_subtitle")
+      : escapeHtml(s.brandSubtitle || defaultSub).replace("&amp;", "&amp;<br/>");
   }
   const stmtEl = document.getElementById("heroStatementText");
   if (stmtEl) {
-    stmtEl.textContent = isEn ? t("hero_statement") : s.heroStatement;
+    stmtEl.textContent = resolveEditableText(s.heroStatement, "hero_statement");
   }
   const instaEl = document.getElementById("instaHandleLink");
   if (instaEl) {
@@ -565,7 +667,7 @@ function renderBrandSettings() {
 
   const heroPhotoLabelEl = document.getElementById("heroPhotoLabelEl");
   if (heroPhotoLabelEl) {
-    heroPhotoLabelEl.textContent = isEn ? t("hero_photo_label") : (s.heroPhotoLabel || t("hero_photo_label"));
+    heroPhotoLabelEl.textContent = resolveEditableText(s.heroPhotoLabel, "hero_photo_label");
   }
 
   const bannerStripImgEl = document.getElementById("bannerStripImgEl");
@@ -573,22 +675,22 @@ function renderBrandSettings() {
 
   const bannerStripLabelEl = document.getElementById("bannerStripLabelEl");
   if (bannerStripLabelEl) {
-    bannerStripLabelEl.textContent = isEn ? t("banner_strip_label") : (s.bannerStripLabel || t("banner_strip_label"));
+    bannerStripLabelEl.textContent = resolveEditableText(s.bannerStripLabel, "banner_strip_label");
   }
 
   const foundersHeadingEl = document.getElementById("foundersHeadingEl");
   if (foundersHeadingEl) {
-    foundersHeadingEl.textContent = isEn ? t("founders_heading") : (s.aboutTitle || t("founders_heading"));
+    foundersHeadingEl.textContent = resolveEditableText(s.aboutTitle, "founders_heading");
   }
 
   const foundersPara1El = document.getElementById("foundersPara1El");
   if (foundersPara1El) {
-    foundersPara1El.textContent = isEn ? t("founders_p1") : (s.aboutPara1 || t("founders_p1"));
+    foundersPara1El.textContent = resolveEditableText(s.aboutPara1, "founders_p1");
   }
 
   const foundersPara2El = document.getElementById("foundersPara2El");
   if (foundersPara2El) {
-    foundersPara2El.textContent = isEn ? t("founders_p2") : (s.aboutPara2 || t("founders_p2"));
+    foundersPara2El.textContent = resolveEditableText(s.aboutPara2, "founders_p2");
   }
 
   const foundersMainImgEl = document.getElementById("foundersMainImgEl");
@@ -599,17 +701,17 @@ function renderBrandSettings() {
 
   const tradeHeadingEl = document.getElementById("tradeHeadingEl");
   if (tradeHeadingEl) {
-    tradeHeadingEl.textContent = isEn ? t("trade_heading") : (s.tradeTitle || t("trade_heading"));
+    tradeHeadingEl.textContent = resolveEditableText(s.tradeTitle, "trade_heading");
   }
 
   const tradePara1El = document.getElementById("tradePara1El");
   if (tradePara1El) {
-    tradePara1El.textContent = isEn ? t("trade_p1") : (s.tradePara1 || t("trade_p1"));
+    tradePara1El.textContent = resolveEditableText(s.tradePara1, "trade_p1");
   }
 
   const tradePara2El = document.getElementById("tradePara2El");
   if (tradePara2El) {
-    tradePara2El.textContent = isEn ? t("trade_p2") : (s.tradePara2 || t("trade_p2"));
+    tradePara2El.textContent = resolveEditableText(s.tradePara2, "trade_p2");
   }
 
   const tradeMainImgEl = document.getElementById("tradeMainImgEl");

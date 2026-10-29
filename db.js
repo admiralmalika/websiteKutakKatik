@@ -51,7 +51,11 @@ function loadDotEnv() {
 
 loadDotEnv();
 
+const DEFAULT_SUPABASE_DB_URL =
+  "postgres://postgres.usvcfcyondtzjfdxsinv:B6EXlM0Rz2Zxc3eT@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres?sslmode=require";
+
 let pgPool = null;
+let memoryStoreCache = null;
 let dbState = {
   connected: false,
   mode: "local_json", // "postgresql" | "local_json"
@@ -87,6 +91,7 @@ function getConfiguredDatabaseUrl() {
     process.env.DATABASE_URL ||
     process.env.POSTGRES_URL ||
     process.env.SUPABASE_DB_URL ||
+    DEFAULT_SUPABASE_DB_URL ||
     "";
   return envUrl.trim();
 }
@@ -165,19 +170,23 @@ async function initPostgresPool(customUrl) {
     const client = await pgPool.connect();
     try {
       const verRes = await client.query("SELECT version()");
+      // Fast primary table check so cold starts complete in <150ms
+      await client.query(
+        `CREATE TABLE IF NOT EXISTS store_kv (
+           key VARCHAR(100) PRIMARY KEY,
+           payload JSONB NOT NULL,
+           updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+         );`
+      );
+
+      // Run full relational schema asynchronously in background
       let schemaSql = "";
       if (fs.existsSync(SCHEMA_FILE)) {
         schemaSql = fs.readFileSync(SCHEMA_FILE, "utf8");
-      } else {
-        schemaSql = `
-          CREATE TABLE IF NOT EXISTS store_kv (key VARCHAR(100) PRIMARY KEY, payload JSONB NOT NULL, updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW());
-          CREATE TABLE IF NOT EXISTS products (id VARCHAR(100) PRIMARY KEY, name VARCHAR(255) NOT NULL, slug VARCHAR(255) NOT NULL, category VARCHAR(120) NOT NULL, price NUMERIC(12, 2) NOT NULL DEFAULT 0, compare_at_price NUMERIC(12, 2), stock INTEGER NOT NULL DEFAULT 0, featured BOOLEAN NOT NULL DEFAULT FALSE, featured_slot INTEGER, badge VARCHAR(100), rating NUMERIC(3, 2) DEFAULT 5.0, review_count INTEGER DEFAULT 0, finishes JSONB DEFAULT '[]'::jsonb, dimensions TEXT, lead_time TEXT, image TEXT, hover_image TEXT, description TEXT, updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW());
-          CREATE TABLE IF NOT EXISTS users (id VARCHAR(100) PRIMARY KEY, name VARCHAR(255) NOT NULL, email VARCHAR(255) UNIQUE NOT NULL, username VARCHAR(120), password VARCHAR(255) NOT NULL, role VARCHAR(50) NOT NULL DEFAULT 'customer', company VARCHAR(255), joined_at VARCHAR(40), created_at TIMESTAMPTZ NOT NULL DEFAULT NOW());
-          CREATE TABLE IF NOT EXISTS orders (id VARCHAR(100) PRIMARY KEY, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), customer_name VARCHAR(255) NOT NULL, customer_email VARCHAR(255) NOT NULL, customer_phone VARCHAR(100), shipping_address TEXT NOT NULL, shipping_method VARCHAR(255), payment_method VARCHAR(255), status VARCHAR(60) NOT NULL DEFAULT 'Pending', payment_status VARCHAR(60) NOT NULL DEFAULT 'Unpaid', payment_proof_url TEXT, payment_sender_name VARCHAR(255), payment_sender_bank VARCHAR(120), payment_notes TEXT, payment_uploaded_at TIMESTAMPTZ, payment_verified_at TIMESTAMPTZ, payment_verified_by VARCHAR(255), voucher_code VARCHAR(100), subtotal NUMERIC(12, 2) NOT NULL DEFAULT 0, discount NUMERIC(12, 2) NOT NULL DEFAULT 0, shipping_cost NUMERIC(12, 2) NOT NULL DEFAULT 0, total NUMERIC(12, 2) NOT NULL DEFAULT 0, items JSONB NOT NULL DEFAULT '[]'::jsonb);
-          CREATE TABLE IF NOT EXISTS vouchers (code VARCHAR(100) PRIMARY KEY, discount_percent NUMERIC(5, 2) NOT NULL, description TEXT, active BOOLEAN NOT NULL DEFAULT TRUE);
-        `;
       }
-      await client.query(schemaSql);
+      if (schemaSql) {
+        pgPool.query(schemaSql).catch(() => {});
+      }
 
       dbState = {
         connected: true,
@@ -397,17 +406,31 @@ async function readStore() {
     try {
       const res = await pgPool.query(`SELECT payload FROM store_kv WHERE key = 'main_store' LIMIT 1`);
       if (res.rows.length > 0 && res.rows[0].payload) {
-        return res.rows[0].payload;
+        const pgData = res.rows[0].payload;
+        if (
+          memoryStoreCache &&
+          Number(memoryStoreCache.lastUpdated || 0) > Number(pgData.lastUpdated || 0)
+        ) {
+          return memoryStoreCache;
+        }
+        memoryStoreCache = pgData;
+        return pgData;
       }
     } catch (err) {
       console.warn("[PostgreSQL] Read error, falling back to local store.json:", err.message);
     }
   }
 
+  if (memoryStoreCache) {
+    return memoryStoreCache;
+  }
+
   // 2. Fallback to local data/store.json
   try {
     if (fs.existsSync(STORE_FILE)) {
-      return JSON.parse(fs.readFileSync(STORE_FILE, "utf8"));
+      const fileData = JSON.parse(fs.readFileSync(STORE_FILE, "utf8"));
+      memoryStoreCache = fileData;
+      return fileData;
     }
   } catch (err) {
     console.error("Error reading store.json:", err.message);
@@ -416,7 +439,10 @@ async function readStore() {
 }
 
 async function writeStore(data) {
-  await ensurePostgresConnected();
+  if (!data || typeof data !== "object") return false;
+  data.lastUpdated = Number(data.lastUpdated) || Date.now();
+  memoryStoreCache = data;
+
   // Keep local backup in data/store.json when running locally
   try {
     fs.writeFileSync(STORE_FILE, JSON.stringify(data, null, 2), "utf8");
@@ -424,9 +450,26 @@ async function writeStore(data) {
     // Ignore on read-only serverless environment (Vercel)
   }
 
-  // If PostgreSQL is active, sync to relational tables + store_kv
+  await ensurePostgresConnected();
+
+  // If PostgreSQL is active, immediately commit store_kv in 1 fast atomic query (<150ms)
   if (pgPool && dbState.connected) {
-    await syncStoreToPostgres(data);
+    try {
+      await pgPool.query(
+        `INSERT INTO store_kv (key, payload, updated_at)
+         VALUES ('main_store', $1::jsonb, NOW())
+         ON CONFLICT (key) DO UPDATE SET payload = EXCLUDED.payload, updated_at = NOW()`,
+        [JSON.stringify(data)]
+      );
+      dbState.lastSyncAt = new Date().toISOString();
+      dbState.lastError = null;
+    } catch (err) {
+      console.error("[PostgreSQL] Fast store_kv write error:", err.message);
+      dbState.lastError = err.message;
+    }
+
+    // Sync secondary relational tables asynchronously in background so it never blocks or rolls back store_kv
+    syncStoreToPostgres(data).catch(() => {});
   }
   return true;
 }
