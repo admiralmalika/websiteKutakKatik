@@ -1067,18 +1067,27 @@ a {
   padding-top: 28px;
 }
 
+.founders-copy-col .micro-label {
+  display: block;
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  line-height: 1.6;
+}
+
 .founders-copy-col .serif-heading {
-  font-size: clamp(1.45rem, 2.2vw, 1.95rem);
+  font-size: clamp(1.12rem, 1.45vw, 1.35rem);
   text-transform: uppercase;
-  margin: 18px 0 22px;
-  line-height: 1.32;
+  margin: 14px 0 18px;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  max-width: 380px;
 }
 
 .founders-copy-col p {
   font-size: 0.84rem;
   color: var(--text-muted);
-  max-width: 350px;
-  margin-bottom: 28px;
+  max-width: 380px;
+  margin-bottom: 24px;
   line-height: 1.75;
 }
 
