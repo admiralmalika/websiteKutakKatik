@@ -364,16 +364,6 @@ function applySiteLanguage() {
   if (btnId) btnId.classList.toggle("active", lang === "id");
   if (btnEn) btnEn.classList.toggle("active", lang === "en");
 
-  // Update IP Geo Badge in top utility bar
-  const ipBadge = document.getElementById("ipGeoBadgeEl");
-  if (ipBadge) {
-    const countryLabel =
-      sessionState.detectedCountry === "ID"
-        ? "Indonesia (ID)"
-        : `${sessionState.detectedCountry || "Global"} (INTL)`;
-    ipBadge.textContent = `🌐 IP: ${sessionState.detectedIp} · ${countryLabel} · ${lang.toUpperCase()}`;
-  }
-
   // Translate all static [data-i18n] elements
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     const key = el.getAttribute("data-i18n");
@@ -550,7 +540,7 @@ function renderBrandSettings() {
   }
   const subEl = document.getElementById("heroSubtitleText");
   if (subEl) {
-    subEl.innerHTML = isEn ? t("hero_subtitle") : escapeHtml(s.brandSubtitle).replace("&", "&amp;<br/>");
+    subEl.innerHTML = isEn ? t("hero_subtitle") : escapeHtml(s.brandSubtitle).replace("&amp;", "&amp;<br/>");
   }
   const stmtEl = document.getElementById("heroStatementText");
   if (stmtEl) {
@@ -984,9 +974,9 @@ function openSpaceModal(spaceId) {
     <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 22px;">
       Kurator Program &amp; Ruang: <strong>${escapeHtml(space.architect || "Tim Kurator KutakKatik.id")}</strong>
     </p>
-    <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; margin-bottom: 24px;">
-      <img src="${escapeHtml(space.mainArchImage)}" alt="${escapeHtml(space.title)}" style="height: 320px; width: 100%; object-fit: cover;" />
-      <img src="${escapeHtml(space.leftThumbImage)}" alt="${escapeHtml(space.title)}" style="height: 320px; width: 100%; object-fit: cover;" />
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 16px; margin-bottom: 24px;">
+      <img src="${escapeHtml(space.mainArchImage)}" alt="${escapeHtml(space.title)}" style="height: 260px; width: 100%; object-fit: cover;" />
+      <img src="${escapeHtml(space.leftThumbImage)}" alt="${escapeHtml(space.title)}" style="height: 260px; width: 100%; object-fit: cover;" />
     </div>
     <p style="font-size: 0.92rem; line-height: 1.8; color: var(--text-dark); margin-bottom: 28px;">
       ${escapeHtml(space.story)}
@@ -1022,7 +1012,7 @@ function openFoundersModal() {
     <h2 class="serif-heading" style="font-size: 2.15rem; color: var(--text-dark); margin: 10px 0 18px;">
       Visi Kami: Menghadirkan Mainan Edukatif Berkualitas yang Mengutamakan Tumbuh Kembang &amp; Keamanan Anak
     </h2>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 26px; align-items: start; margin-bottom: 22px;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 22px; align-items: start; margin-bottom: 22px;">
       <img
         src="https://images.unsplash.com/photo-1556157382-97eda2d62296?auto=format&fit=crop&w=900&q=85"
         alt="Tim Kurator KutakKatik.id"
@@ -2042,9 +2032,9 @@ function openCheckoutModal() {
         </div>
       </div>
 
-      <div style="display: flex; justify-content: flex-end; gap: 12px;">
-        <button type="button" class="btn-outline" onclick="closeAllOverlays()">Cancel</button>
-        <button type="submit" class="btn-primary">Lanjut ke Pembayaran QRIS / Transfer (${formatPrice(total)}) →</button>
+      <div style="display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px;">
+        <button type="button" class="btn-outline" style="flex: 1 1 110px;" onclick="closeAllOverlays()">Batal / Cancel</button>
+        <button type="submit" class="btn-primary" style="flex: 2 1 220px;">Lanjut ke Pembayaran (${formatPrice(total)}) →</button>
       </div>
     </form>
   `;

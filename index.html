@@ -49,11 +49,7 @@
        TOP UTILITY & QUICK ADMIN / CURRENCY BAR
        ======================================================================== -->
   <div class="top-utility-bar">
-    <div class="utility-left">
-      <span class="ip-geo-badge" id="ipGeoBadgeEl" onclick="toggleIpSimulation()" style="cursor: pointer;" title="Deteksi IP otomatis (Klik untuk simulasi IP Indonesia / Internasional)">
-        🌐 IP: Indonesia (ID)
-      </span>
-    </div>
+    <div class="utility-left"></div>
     <div class="utility-right">
       <button class="utility-pill" data-i18n="util_consult" onclick="openConsultationModal()">Konsultasi Gratis</button>
       <button class="utility-pill" data-i18n="util_faq" onclick="openFaqModal()">FAQ &amp; Material</button>
@@ -458,7 +454,7 @@
         </div>
 
         <!-- 4 Pilar Jaminan Kepercayaan Orang Tua -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; margin-bottom: 38px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 18px; margin-bottom: 38px;">
           <div style="background: var(--bg-cream-light); border: 1px solid var(--border-subtle); padding: 22px 24px;">
             <span class="micro-label" style="color: var(--text-bronze-dark);">01 · MATERIAL NON-TOXIC &amp; SNI</span>
             <h3 class="serif-heading" style="font-size: 1.3rem; margin: 8px 0;">Kayu Solid &amp; Cat Water-Based Aman</h3>
@@ -493,7 +489,7 @@
         </div>
 
         <!-- Grid 2 Kolom: FAQ Interaktif & Ringkasan Kebijakan Pengembalian -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 28px; align-items: start;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 28px; align-items: start;">
           <!-- Kolom Kiri: Pertanyaan yang Sering Diajukan (FAQ) -->
           <div style="background: #fff; border: 1px solid var(--border-subtle); padding: 28px;">
             <span class="micro-label" style="color: var(--text-bronze-dark);">PERTANYAAN YANG SERING DIAJUKAN (FAQ)</span>
@@ -667,7 +663,7 @@
        ======================================================================== -->
   <div class="modal-window" id="checkoutModal" role="dialog" aria-modal="true">
     <button class="modal-close-btn" onclick="closeAllOverlays()" aria-label="Close">✕</button>
-    <div id="checkoutModalBody" style="padding: 38px;"></div>
+    <div id="checkoutModalBody" class="modal-padded-body"></div>
   </div>
 
   <!-- ========================================================================
@@ -675,7 +671,7 @@
        ======================================================================== -->
   <div class="modal-window narrow" id="authModal" role="dialog" aria-modal="true">
     <button class="modal-close-btn" onclick="closeAllOverlays()" aria-label="Close">✕</button>
-    <div id="authModalBody" style="padding: 36px;"></div>
+    <div id="authModalBody" class="modal-padded-body"></div>
   </div>
 
   <!-- ========================================================================
@@ -683,7 +679,7 @@
        ======================================================================== -->
   <div class="modal-window narrow" id="orderTrackerModal" role="dialog" aria-modal="true">
     <button class="modal-close-btn" onclick="closeAllOverlays()" aria-label="Close">✕</button>
-    <div id="orderTrackerBody" style="padding: 36px;"></div>
+    <div id="orderTrackerBody" class="modal-padded-body"></div>
   </div>
 
   <!-- ========================================================================
@@ -691,7 +687,7 @@
        ======================================================================== -->
   <div class="modal-window" id="editorialModal" role="dialog" aria-modal="true">
     <button class="modal-close-btn" onclick="closeAllOverlays()" aria-label="Close">✕</button>
-    <div id="editorialModalBody" style="padding: 40px;"></div>
+    <div id="editorialModalBody" class="modal-padded-body"></div>
   </div>
 
   <!-- ========================================================================
