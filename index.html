@@ -72,11 +72,11 @@
     <nav aria-label="Primary Navigation">
       <ul class="nav-links">
         <li><a href="#shopCatalogSection" data-i18n="nav_programs" onclick="navigateHomeSection(event, 'shopCatalogSection')">PROGRAM &amp; KIT</a></li>
-        <li><a href="#foundersSection" data-i18n="nav_about" onclick="navigateHomeSection(event, 'foundersSection')">TENTANG KAMI</a></li>
+        <li><a href="#foundersSection" data-i18n="nav_about" onclick="openAboutPage(event)">TENTANG KAMI</a></li>
         <li><a href="#trustSignalsSection" data-i18n="nav_faq" onclick="navigateHomeSection(event, 'trustSignalsSection')">FAQ &amp; GARANSI</a></li>
-        <li><a href="#featuredSpacesSection" data-i18n="nav_spaces" onclick="navigateHomeSection(event, 'featuredSpacesSection')">RUANG &amp; KELAS</a></li>
+        <li><a href="#featuredSpacesSection" data-i18n="nav_spaces" onclick="openSpacesPage(event)">RUANG &amp; KELAS</a></li>
         <li><a href="#journalSection" data-i18n="nav_journal" onclick="openJournalPage(event)">JURNAL PARENTING</a></li>
-        <li><a href="#tradeSpecifiersSection" data-i18n="nav_trade" onclick="navigateHomeSection(event, 'tradeSpecifiersSection')">MITRA SEKOLAH</a></li>
+        <li><a href="#tradeSpecifiersSection" data-i18n="nav_trade" onclick="openTradePage(event)">MITRA SEKOLAH</a></li>
       </ul>
     </nav>
 
@@ -239,128 +239,6 @@
     </section>
 
     <!-- ======================================================================
-         SECTION 3: FEATURED SPACES — MIDNIGHT ARCHWAY SECTION (PHOTO 3)
-         ====================================================================== -->
-    <section class="featured-spaces-section" id="featuredSpacesSection">
-      <div class="spaces-editorial-grid" id="spacesEditorialContainer">
-        <!-- Populated dynamically by app.js (with interactive 01-04 switcher & View Space modal) -->
-      </div>
-    </section>
-
-    <!-- Full-Bleed Architectural Plaster Curve Banner (Bottom Photo 3 / Top Photo 4) -->
-    <div class="architectural-banner-strip">
-      <div class="banner-strip-inner photo-labeled-wrap">
-        <span class="photo-spec-label bottom-left" id="bannerStripLabelEl">
-          SUASANA RUANG · DESAIN STUDIO BELAJAR &amp; EKSPLORASI SENSORIK KUTAKKATIK.ID
-        </span>
-        <img
-          id="bannerStripImgEl"
-          src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=2000&q=85"
-          alt="Curved architectural plaster ceiling and minimalist pendant lights"
-        />
-      </div>
-    </div>
-
-    <!-- ======================================================================
-         SECTION 4: FOUNDERS ASYMMETRIC EDITORIAL SECTION (PHOTO 4)
-         ====================================================================== -->
-    <section class="founders-section" id="foundersSection">
-      <div class="founders-grid">
-        <div class="founders-copy-col">
-          <span class="micro-label" data-i18n="founders_label">TENTANG KAMI (ABOUT US) · VISI &amp; NILAI KUTAKKATIK.ID</span>
-          <h2 class="serif-heading" id="foundersHeadingEl">
-            VISI KAMI: MENGHADIRKAN MASA KECIL YANG KAYA EKSPLORASI NYATA, AMAN, DAN BERMAKNA TANPA KETERGANTUNGAN GADGET.
-          </h2>
-          <p id="foundersPara1El">
-            Lahir dari kepedulian pendidik dan orang tua terhadap tingginya paparan layar (<em>screen time</em>) pada anak usia dini, <strong>KutakKatik.id®</strong> hadir dengan nilai utama bahwa setiap mainan harus memiliki tujuan tumbuh kembang yang jelas—melatih motorik halus, kognitif, kemampuan <em>problem-solving</em>, serta logika dasar (STEM).
-          </p>
-          <p id="foundersPara2El" style="margin-top: 10px;">
-            Kami hanya menggunakan kayu solid lokal pilihan dengan <em>finishing beeswax</em> murni &amp; cat <em>water-based non-toxic</em>, plastik ABS <em>non-toxic</em>, serta material sensorik <em>food-grade</em> yang melewati inspeksi kehalusan sudut secara ketat demi keamanan buah hati Anda.
-          </p>
-          <div style="display: flex; gap: 18px; flex-wrap: wrap; margin-top: 14px;">
-            <button class="underlined-link" data-i18n="founders_link1" onclick="openFoundersModal()">VISI &amp; CERITA LENGKAP KAMI</button>
-            <button class="underlined-link" data-i18n="founders_link2" onclick="openFaqModal()">STANDAR MATERIAL &amp; FAQ</button>
-            <button class="underlined-link" data-i18n="founders_link3" onclick="openReturnPolicyModal()">GARANSI 100% PRODUK AMAN</button>
-          </div>
-        </div>
-
-        <div class="founders-portrait-col">
-          <div class="founders-portrait-wrap photo-labeled-wrap">
-            <span class="photo-spec-label bottom-left" data-i18n="founders_photo1_label">
-              TIM KURATOR · PENDIDIK &amp; PERANCANG MODUL TUMBUH KEMBANG ANAK
-            </span>
-            <img
-              id="foundersMainImgEl"
-              src="https://images.unsplash.com/photo-1556157382-97eda2d62296?auto=format&fit=crop&w=1000&q=85"
-              alt="Studio Founders in sunlit draped architectural workspace"
-            />
-          </div>
-        </div>
-
-        <div class="founders-right-col">
-          <div class="founders-small-photo photo-labeled-wrap">
-            <span class="photo-spec-label bottom-left" data-i18n="founders_photo2_label">
-              STUDIO RISET · MATERIAL KAYU ALAMI &amp; KOMPONEN SENSORIK AMAN
-            </span>
-            <img
-              id="foundersSecondImgEl"
-              src="https://images.unsplash.com/photo-1565814329452-e1efa11c5b89?auto=format&fit=crop&w=600&q=80"
-              alt="Brass cross pendant luminaires in front of sheer linen curtains"
-            />
-          </div>
-
-          <!-- Signature Hand + Moth Line-Art Illustration at bottom-right (Photo 4) -->
-          <div class="hand-moth-emblem" aria-hidden="true">
-            <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Moth above hand -->
-              <path d="M42 12V30" stroke="currentColor" stroke-width="1.2"/>
-              <path d="M42 17C34 11 24 12 22 18C20 22 28 26 42 23Z" stroke="currentColor" stroke-width="1.2"/>
-              <path d="M42 17C50 11 60 12 62 18C64 22 56 26 42 23Z" stroke="currentColor" stroke-width="1.2"/>
-              <!-- Open studio hand below -->
-              <path d="M18 54C24 48 33 47 44 50L58 46C61 45 63 48 60 51L45 58C38 61 29 62 22 68" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-              <path d="M28 48L42 42C45 41 47 43 45 46" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-            </svg>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ======================================================================
-         SECTION 5: TRADE & DESIGN SPECIFIERS + INSTAGRAM COLLAGE (PHOTO 5)
-         ====================================================================== -->
-    <section class="trade-specifiers-section" id="tradeSpecifiersSection">
-      <div class="trade-split-grid">
-        <div class="trade-visual photo-labeled-wrap">
-          <span class="photo-spec-label bottom-left" data-i18n="trade_photo_label">
-            MITRA PENDIDIKAN · POJOK EKSPLORASI &amp; KURIKULUM PAUD / SEKOLAH DASAR
-          </span>
-          <img
-            id="tradeMainImgEl"
-            src="https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=85"
-            alt="Bespoke fluted timber joinery with intersecting solid brass pendant"
-          />
-        </div>
-
-        <div class="trade-copy">
-          <h2 class="serif-heading" id="tradeHeadingEl">
-            MITRA SEKOLAH, PAUD &amp;<br/>TERAPIS TUMBUH KEMBANG
-          </h2>
-          <p id="tradePara1El">
-            Program kemitraan kami dikhususkan bagi sekolah, TK/PAUD, daycare, komunitas parenting, dan terapis tumbuh kembang anak. Sebagai Mitra KutakKatik.id, Anda mendapatkan potongan harga otomatis 20% serta kurasi kurikulum kit eksplorasi untuk kelas Anda.
-          </p>
-          <p id="tradePara2El">
-            Tim kurator edukasi kami siap mendampingi pemilihan kit sesuai kelompok usia dan kebutuhan stimulasi siswa Anda.
-          </p>
-          <div class="trade-links-row">
-            <button class="underlined-link" data-i18n="trade_link1" onclick="openAuthModal('register-trade')">DAFTAR MITRA SEKOLAH</button>
-            <button class="underlined-link" data-i18n="trade_link2" onclick="openAuthModal('login')">LOGIN MITRA</button>
-            <button class="underlined-link" data-i18n="trade_link3" onclick="openConsultationModal()">KONSULTASI GRATIS</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ======================================================================
          SECTION 7: TRUST SIGNALS — FAQ, MATERIAL, PENGIRIMAN & KEBIJAKAN PENGEMBALIAN
          ====================================================================== -->
     <section class="journal-section" id="trustSignalsSection" style="padding-top: 20px; padding-bottom: 90px; border-top: 1px solid var(--border-subtle);">
@@ -485,6 +363,142 @@
       </div>
     </section>
     </div><!-- /#homePageView -->
+
+    <!-- ======================================================================
+         DEDICATED TENTANG KAMI (ABOUT US) PAGE VIEW
+         ====================================================================== -->
+    <div id="aboutPageView" style="display: none;">
+      <div style="max-width: 1380px; margin: 0 auto; padding: 110px 6vw 0;">
+        <button type="button" class="underlined-link" onclick="closeJournalPage(event)">← KEMBALI KE BERANDA</button>
+      </div>
+      <section class="founders-section" id="foundersSection" style="padding-top: 32px; min-height: 70vh;">
+        <div class="founders-grid">
+          <div class="founders-copy-col">
+            <span class="micro-label" data-i18n="founders_label">TENTANG KAMI (ABOUT US) · VISI &amp; NILAI KUTAKKATIK.ID</span>
+            <h2 class="serif-heading" id="foundersHeadingEl">
+              VISI KAMI: MENGHADIRKAN MASA KECIL YANG KAYA EKSPLORASI NYATA, AMAN, DAN BERMAKNA TANPA KETERGANTUNGAN GADGET.
+            </h2>
+            <p id="foundersPara1El">
+              Lahir dari kepedulian pendidik dan orang tua terhadap tingginya paparan layar (<em>screen time</em>) pada anak usia dini, <strong>KutakKatik.id®</strong> hadir dengan nilai utama bahwa setiap mainan harus memiliki tujuan tumbuh kembang yang jelas—melatih motorik halus, kognitif, kemampuan <em>problem-solving</em>, serta logika dasar (STEM).
+            </p>
+            <p id="foundersPara2El" style="margin-top: 10px;">
+              Kami hanya menggunakan kayu solid lokal pilihan dengan <em>finishing beeswax</em> murni &amp; cat <em>water-based non-toxic</em>, plastik ABS <em>non-toxic</em>, serta material sensorik <em>food-grade</em> yang melewati inspeksi kehalusan sudut secara ketat demi keamanan buah hati Anda.
+            </p>
+            <div style="display: flex; gap: 18px; flex-wrap: wrap; margin-top: 14px;">
+              <button class="underlined-link" data-i18n="founders_link1" onclick="openFoundersModal()">VISI &amp; CERITA LENGKAP KAMI</button>
+              <button class="underlined-link" data-i18n="founders_link2" onclick="openFaqModal()">STANDAR MATERIAL &amp; FAQ</button>
+              <button class="underlined-link" data-i18n="founders_link3" onclick="openReturnPolicyModal()">GARANSI 100% PRODUK AMAN</button>
+            </div>
+          </div>
+
+          <div class="founders-portrait-col">
+            <div class="founders-portrait-wrap photo-labeled-wrap">
+              <span class="photo-spec-label bottom-left" data-i18n="founders_photo1_label">
+                TIM KURATOR · PENDIDIK &amp; PERANCANG MODUL TUMBUH KEMBANG ANAK
+              </span>
+              <img
+                id="foundersMainImgEl"
+                src="https://images.unsplash.com/photo-1556157382-97eda2d62296?auto=format&fit=crop&w=1000&q=85"
+                alt="Studio Founders in sunlit draped architectural workspace"
+              />
+            </div>
+          </div>
+
+          <div class="founders-right-col">
+            <div class="founders-small-photo photo-labeled-wrap">
+              <span class="photo-spec-label bottom-left" data-i18n="founders_photo2_label">
+                STUDIO RISET · MATERIAL KAYU ALAMI &amp; KOMPONEN SENSORIK AMAN
+              </span>
+              <img
+                id="foundersSecondImgEl"
+                src="https://images.unsplash.com/photo-1565814329452-e1efa11c5b89?auto=format&fit=crop&w=600&q=80"
+                alt="Brass cross pendant luminaires in front of sheer linen curtains"
+              />
+            </div>
+
+            <!-- Signature Hand + Moth Line-Art Illustration at bottom-right (Photo 4) -->
+            <div class="hand-moth-emblem" aria-hidden="true">
+              <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M42 12V30" stroke="currentColor" stroke-width="1.2"/>
+                <path d="M42 17C34 11 24 12 22 18C20 22 28 26 42 23Z" stroke="currentColor" stroke-width="1.2"/>
+                <path d="M42 17C50 11 60 12 62 18C64 22 56 26 42 23Z" stroke="currentColor" stroke-width="1.2"/>
+                <path d="M18 54C24 48 33 47 44 50L58 46C61 45 63 48 60 51L45 58C38 61 29 62 22 68" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                <path d="M28 48L42 42C45 41 47 43 45 46" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div><!-- /#aboutPageView -->
+
+    <!-- ======================================================================
+         DEDICATED RUANG & KELAS EKSPLORASI PAGE VIEW
+         ====================================================================== -->
+    <div id="spacesPageView" style="display: none;">
+      <div style="background: var(--bg-midnight); padding: 110px 6vw 0;">
+        <div style="max-width: 1380px; margin: 0 auto;">
+          <button type="button" class="underlined-link" style="color: var(--text-light);" onclick="closeJournalPage(event)">← KEMBALI KE BERANDA</button>
+        </div>
+      </div>
+      <section class="featured-spaces-section" id="featuredSpacesSection" style="padding-top: 32px;">
+        <div class="spaces-editorial-grid" id="spacesEditorialContainer">
+          <!-- Populated dynamically by app.js (with interactive 01-04 switcher & View Space modal) -->
+        </div>
+      </section>
+
+      <div class="architectural-banner-strip">
+        <div class="banner-strip-inner photo-labeled-wrap">
+          <span class="photo-spec-label bottom-left" id="bannerStripLabelEl">
+            SUASANA RUANG · DESAIN STUDIO BELAJAR &amp; EKSPLORASI SENSORIK KUTAKKATIK.ID
+          </span>
+          <img
+            id="bannerStripImgEl"
+            src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=2000&q=85"
+            alt="Curved architectural plaster ceiling and minimalist pendant lights"
+          />
+        </div>
+      </div>
+    </div><!-- /#spacesPageView -->
+
+    <!-- ======================================================================
+         DEDICATED MITRA SEKOLAH PAGE VIEW
+         ====================================================================== -->
+    <div id="tradePageView" style="display: none;">
+      <div style="max-width: 1380px; margin: 0 auto; padding: 110px 6vw 0;">
+        <button type="button" class="underlined-link" onclick="closeJournalPage(event)">← KEMBALI KE BERANDA</button>
+      </div>
+      <section class="trade-specifiers-section" id="tradeSpecifiersSection" style="padding-top: 32px; min-height: 70vh;">
+        <div class="trade-split-grid">
+          <div class="trade-visual photo-labeled-wrap">
+            <span class="photo-spec-label bottom-left" data-i18n="trade_photo_label">
+              MITRA PENDIDIKAN · POJOK EKSPLORASI &amp; KURIKULUM PAUD / SEKOLAH DASAR
+            </span>
+            <img
+              id="tradeMainImgEl"
+              src="https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=85"
+              alt="Bespoke fluted timber joinery with intersecting solid brass pendant"
+            />
+          </div>
+
+          <div class="trade-copy">
+            <h2 class="serif-heading" id="tradeHeadingEl">
+              MITRA SEKOLAH, PAUD &amp;<br/>TERAPIS TUMBUH KEMBANG
+            </h2>
+            <p id="tradePara1El">
+              Program kemitraan kami dikhususkan bagi sekolah, TK/PAUD, daycare, komunitas parenting, dan terapis tumbuh kembang anak. Sebagai Mitra KutakKatik.id, Anda mendapatkan potongan harga otomatis 20% serta kurasi kurikulum kit eksplorasi untuk kelas Anda.
+            </p>
+            <p id="tradePara2El">
+              Tim kurator edukasi kami siap mendampingi pemilihan kit sesuai kelompok usia dan kebutuhan stimulasi siswa Anda.
+            </p>
+            <div class="trade-links-row">
+              <button class="underlined-link" data-i18n="trade_link1" onclick="openAuthModal('register-trade')">DAFTAR MITRA SEKOLAH</button>
+              <button class="underlined-link" data-i18n="trade_link2" onclick="openAuthModal('login')">LOGIN MITRA</button>
+              <button class="underlined-link" data-i18n="trade_link3" onclick="openConsultationModal()">KONSULTASI GRATIS</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div><!-- /#tradePageView -->
 
     <!-- ======================================================================
          DEDICATED JOURNAL PARENTING PAGE VIEW

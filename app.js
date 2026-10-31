@@ -1357,24 +1357,50 @@ function submitConsultationForm(e) {
   }
 }
 
+const SUB_PAGE_VIEWS = ["aboutPageView", "spacesPageView", "tradePageView", "journalPageView"];
+
 function showHomePageView() {
   const homeEl = document.getElementById("homePageView");
-  const journalEl = document.getElementById("journalPageView");
   if (homeEl) homeEl.style.display = "block";
-  if (journalEl) journalEl.style.display = "none";
+  SUB_PAGE_VIEWS.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = "none";
+  });
+}
+
+function openSubPageView(viewId, hashName) {
+  const homeEl = document.getElementById("homePageView");
+  if (homeEl) homeEl.style.display = "none";
+  SUB_PAGE_VIEWS.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = id === viewId ? "block" : "none";
+  });
+  if (hashName && window.history && window.history.pushState) {
+    window.history.pushState(null, "", `#${hashName}`);
+  }
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function openAboutPage(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  openSubPageView("aboutPageView", "foundersSection");
+}
+
+function openSpacesPage(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  openSubPageView("spacesPageView", "featuredSpacesSection");
+  renderFeaturedSpaces();
+}
+
+function openTradePage(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  openSubPageView("tradePageView", "tradeSpecifiersSection");
 }
 
 function openJournalPage(e) {
   if (e && e.preventDefault) e.preventDefault();
-  const homeEl = document.getElementById("homePageView");
-  const journalEl = document.getElementById("journalPageView");
-  if (homeEl) homeEl.style.display = "none";
-  if (journalEl) journalEl.style.display = "block";
+  openSubPageView("journalPageView", "journalSection");
   renderJournal();
-  if (window.history && window.history.pushState) {
-    window.history.pushState(null, "", "#journalSection");
-  }
-  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function closeJournalPage(e) {
@@ -1398,19 +1424,23 @@ function navigateHomeSection(e, sectionId) {
   }
 }
 
-window.addEventListener("hashchange", () => {
-  if (window.location.hash === "#journalSection") {
+function syncRouteWithHash() {
+  const h = window.location.hash;
+  if (h === "#foundersSection") {
+    openAboutPage();
+  } else if (h === "#featuredSpacesSection") {
+    openSpacesPage();
+  } else if (h === "#tradeSpecifiersSection") {
+    openTradePage();
+  } else if (h === "#journalSection") {
     openJournalPage();
   } else {
     showHomePageView();
   }
-});
+}
 
-window.addEventListener("DOMContentLoaded", () => {
-  if (window.location.hash === "#journalSection") {
-    openJournalPage();
-  }
-});
+window.addEventListener("hashchange", syncRouteWithHash);
+window.addEventListener("DOMContentLoaded", syncRouteWithHash);
 
 function renderJournal() {
   const grid = document.getElementById("journalGrid");
