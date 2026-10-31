@@ -604,6 +604,11 @@ a {
   box-shadow: var(--shadow-soft);
 }
 
+.staggered-card > .photo-labeled-wrap {
+  width: 100%;
+  height: 100%;
+}
+
 .staggered-card img {
   width: 100%;
   height: 100%;
@@ -1155,6 +1160,17 @@ a {
   overflow: hidden;
   background: var(--bg-stone);
   box-shadow: var(--shadow-soft);
+}
+
+.founders-portrait-wrap img,
+.founders-small-photo img,
+.trade-visual img,
+.insta-float-card img,
+.photo-labeled-wrap > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .founders-right-col {
