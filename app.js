@@ -113,6 +113,8 @@ const I18N_DICT = {
     btn_detail_safety: "Detail & Safety",
     space_sub: "RUANG & KELAS EKSPLORASI",
     space_btn: "LIHAT DETAIL RUANG & KIT",
+    space_construction_note: "* Masih dalam proses persiapan dan konstruksi.",
+    back_to_home: "← KEMBALI KE BERANDA",
     login_admin: "Masuk / Admin",
     my_orders: "Pesanan Saya"
   },
@@ -204,6 +206,8 @@ const I18N_DICT = {
     btn_detail_safety: "Details & Safety",
     space_sub: "EXPLORATION SPACES & CLASSES",
     space_btn: "VIEW SPACE & KIT DETAILS",
+    space_construction_note: "* Currently under preparation and construction.",
+    back_to_home: "← BACK TO HOME",
     login_admin: "Sign In / Admin",
     my_orders: "My Orders"
   }
