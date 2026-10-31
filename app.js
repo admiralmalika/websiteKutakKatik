@@ -819,6 +819,7 @@ function renderStaggeredFeatured() {
 // SECTION 2B: FULL INTERACTIVE ONLINE SHOP CATALOG
 // ============================================================================
 function setShopCategory(category) {
+  showHomePageView();
   sessionState.activeCategory = category;
   document.querySelectorAll("#categoryTabs .cat-tab").forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.cat === category);
@@ -827,6 +828,7 @@ function setShopCategory(category) {
 }
 
 function focusShopSearch() {
+  showHomePageView();
   const el = document.getElementById("shopSearchInput");
   if (el) {
     el.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -1354,6 +1356,61 @@ function submitConsultationForm(e) {
     catalogEl.scrollIntoView({ behavior: "smooth" });
   }
 }
+
+function showHomePageView() {
+  const homeEl = document.getElementById("homePageView");
+  const journalEl = document.getElementById("journalPageView");
+  if (homeEl) homeEl.style.display = "block";
+  if (journalEl) journalEl.style.display = "none";
+}
+
+function openJournalPage(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  const homeEl = document.getElementById("homePageView");
+  const journalEl = document.getElementById("journalPageView");
+  if (homeEl) homeEl.style.display = "none";
+  if (journalEl) journalEl.style.display = "block";
+  renderJournal();
+  if (window.history && window.history.pushState) {
+    window.history.pushState(null, "", "#journalSection");
+  }
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function closeJournalPage(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  showHomePageView();
+  if (window.history && window.history.pushState) {
+    window.history.pushState(null, "", window.location.pathname + window.location.search);
+  }
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function navigateHomeSection(e, sectionId) {
+  if (e && e.preventDefault) e.preventDefault();
+  showHomePageView();
+  if (window.history && window.history.pushState) {
+    window.history.pushState(null, "", `#${sectionId}`);
+  }
+  const targetEl = document.getElementById(sectionId);
+  if (targetEl) {
+    targetEl.scrollIntoView({ behavior: "smooth" });
+  }
+}
+
+window.addEventListener("hashchange", () => {
+  if (window.location.hash === "#journalSection") {
+    openJournalPage();
+  } else {
+    showHomePageView();
+  }
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+  if (window.location.hash === "#journalSection") {
+    openJournalPage();
+  }
+});
 
 function renderJournal() {
   const grid = document.getElementById("journalGrid");

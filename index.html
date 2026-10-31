@@ -71,17 +71,17 @@
   <header class="site-header" id="siteHeader">
     <nav aria-label="Primary Navigation">
       <ul class="nav-links">
-        <li><a href="#shopCatalogSection" data-i18n="nav_programs">PROGRAM &amp; KIT</a></li>
-        <li><a href="#foundersSection" data-i18n="nav_about">TENTANG KAMI</a></li>
-        <li><a href="#trustSignalsSection" data-i18n="nav_faq">FAQ &amp; GARANSI</a></li>
-        <li><a href="#featuredSpacesSection" data-i18n="nav_spaces">RUANG &amp; KELAS</a></li>
-        <li><a href="#journalSection" data-i18n="nav_journal">JURNAL PARENTING</a></li>
-        <li><a href="#tradeSpecifiersSection" data-i18n="nav_trade">MITRA SEKOLAH</a></li>
+        <li><a href="#shopCatalogSection" data-i18n="nav_programs" onclick="navigateHomeSection(event, 'shopCatalogSection')">PROGRAM &amp; KIT</a></li>
+        <li><a href="#foundersSection" data-i18n="nav_about" onclick="navigateHomeSection(event, 'foundersSection')">TENTANG KAMI</a></li>
+        <li><a href="#trustSignalsSection" data-i18n="nav_faq" onclick="navigateHomeSection(event, 'trustSignalsSection')">FAQ &amp; GARANSI</a></li>
+        <li><a href="#featuredSpacesSection" data-i18n="nav_spaces" onclick="navigateHomeSection(event, 'featuredSpacesSection')">RUANG &amp; KELAS</a></li>
+        <li><a href="#journalSection" data-i18n="nav_journal" onclick="openJournalPage(event)">JURNAL PARENTING</a></li>
+        <li><a href="#tradeSpecifiersSection" data-i18n="nav_trade" onclick="navigateHomeSection(event, 'tradeSpecifiersSection')">MITRA SEKOLAH</a></li>
       </ul>
     </nav>
 
     <!-- Center Minimal Brand Anchor -->
-    <a href="#" class="brand-moth-logo" aria-label="KutakKatik.id Home"></a>
+    <a href="#" class="brand-moth-logo" aria-label="KutakKatik.id Home" onclick="closeJournalPage(event)"></a>
 
     <!-- Right Utility Icons: Language Toggle, Search, User/Admin, Wishlist, Cart + Gold Badge -->
     <div class="header-actions">
@@ -129,6 +129,7 @@
        SECTION 1: HERO & MANIFESTO (PHOTO 1)
        ======================================================================== -->
   <main>
+    <div id="homePageView">
     <section class="hero-section">
       <div class="hero-visual-wrapper">
         <span class="photo-spec-label hero-label" id="heroPhotoLabelEl">
@@ -360,19 +361,6 @@
     </section>
 
     <!-- ======================================================================
-         SECTION 6: STUDIO JOURNAL
-         ====================================================================== -->
-    <section class="journal-section" id="journalSection">
-      <span class="micro-label" data-i18n="journal_sub">CATATAN PARENTING &amp; EDUKASI</span>
-      <h2 class="serif-heading" data-i18n="journal_title" style="font-size: 2.1rem; color: var(--text-dark); margin-top: 6px;">
-        Jurnal Tumbuh Kembang &amp; Ide Bermain
-      </h2>
-      <div class="journal-grid" id="journalGrid">
-        <!-- Populated dynamically by app.js -->
-      </div>
-    </section>
-
-    <!-- ======================================================================
          SECTION 7: TRUST SIGNALS — FAQ, MATERIAL, PENGIRIMAN & KEBIJAKAN PENGEMBALIAN
          ====================================================================== -->
     <section class="journal-section" id="trustSignalsSection" style="padding-top: 20px; padding-bottom: 90px; border-top: 1px solid var(--border-subtle);">
@@ -496,6 +484,25 @@
         </div>
       </div>
     </section>
+    </div><!-- /#homePageView -->
+
+    <!-- ======================================================================
+         DEDICATED JOURNAL PARENTING PAGE VIEW
+         ====================================================================== -->
+    <div id="journalPageView" style="display: none;">
+      <section class="journal-section" id="journalSection" style="padding-top: 110px; min-height: 70vh; border-top: none;">
+        <div style="margin-bottom: 24px;">
+          <button type="button" class="underlined-link" onclick="closeJournalPage(event)">← KEMBALI KE BERANDA</button>
+        </div>
+        <span class="micro-label" data-i18n="journal_sub">CATATAN PARENTING &amp; EDUKASI</span>
+        <h2 class="serif-heading" data-i18n="journal_title" style="font-size: 2.1rem; color: var(--text-dark); margin-top: 6px;">
+          Jurnal Tumbuh Kembang &amp; Ide Bermain
+        </h2>
+        <div class="journal-grid" id="journalGrid">
+          <!-- Populated dynamically by app.js -->
+        </div>
+      </section>
+    </div><!-- /#journalPageView -->
   </main>
 
   <!-- ========================================================================
