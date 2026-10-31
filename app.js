@@ -819,7 +819,7 @@ function renderStaggeredFeatured() {
 // SECTION 2B: FULL INTERACTIVE ONLINE SHOP CATALOG
 // ============================================================================
 function setShopCategory(category) {
-  showHomePageView();
+  openSubPageView("programsPageView", "shopCatalogSection");
   sessionState.activeCategory = category;
   document.querySelectorAll("#categoryTabs .cat-tab").forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.cat === category);
@@ -828,7 +828,7 @@ function setShopCategory(category) {
 }
 
 function focusShopSearch() {
-  showHomePageView();
+  openSubPageView("programsPageView", "shopCatalogSection");
   const el = document.getElementById("shopSearchInput");
   if (el) {
     el.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -1357,7 +1357,14 @@ function submitConsultationForm(e) {
   }
 }
 
-const SUB_PAGE_VIEWS = ["aboutPageView", "spacesPageView", "tradePageView", "journalPageView"];
+const SUB_PAGE_VIEWS = [
+  "programsPageView",
+  "faqPageView",
+  "aboutPageView",
+  "spacesPageView",
+  "tradePageView",
+  "journalPageView"
+];
 
 function showHomePageView() {
   const homeEl = document.getElementById("homePageView");
@@ -1379,6 +1386,17 @@ function openSubPageView(viewId, hashName) {
     window.history.pushState(null, "", `#${hashName}`);
   }
   window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function openProgramsPage(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  openSubPageView("programsPageView", "shopCatalogSection");
+  renderShopCatalog();
+}
+
+function openFaqPage(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  openSubPageView("faqPageView", "trustSignalsSection");
 }
 
 function openAboutPage(e) {
@@ -1426,7 +1444,11 @@ function navigateHomeSection(e, sectionId) {
 
 function syncRouteWithHash() {
   const h = window.location.hash;
-  if (h === "#foundersSection") {
+  if (h === "#shopCatalogSection") {
+    openProgramsPage();
+  } else if (h === "#trustSignalsSection") {
+    openFaqPage();
+  } else if (h === "#foundersSection") {
     openAboutPage();
   } else if (h === "#featuredSpacesSection") {
     openSpacesPage();
