@@ -1052,6 +1052,9 @@ function renderFeaturedSpaces() {
       <span class="micro-label" style="color: var(--accent-gold);">${t("space_sub")}</span>
       <h2 class="space-title">${escapeHtml(space.title)}</h2>
       <p class="space-summary">${escapeHtml(space.summary)}</p>
+      <p style="font-size: 0.82rem; color: var(--accent-gold); font-style: italic; margin: -6px 0 14px;">
+        * Masih dalam proses persiapan dan konstruksi.
+      </p>
       <button class="underlined-link light" onclick="openSpaceModal('${space.id}')">${t("space_btn")}</button>
     </div>
   `;
