@@ -1008,13 +1008,66 @@ function resetCatalogFilters() {
 // ============================================================================
 // SECTION 3: FEATURED SPACES — MIDNIGHT ARCHWAY (PHOTO 3)
 // ============================================================================
+const SPACE_EN_TRANSLATIONS = {
+  "space-03": {
+    location: "EXPLORATION SPACE · SOUTH JAKARTA",
+    title: "SCREEN-FREE PLAY STUDIO",
+    summary:
+      "A child-friendly home exploration corner and learning studio designed to nurture focus, imagination, and independence through natural materials.",
+    architect: "KutakKatik.id Educational Curators",
+    story:
+      "Designed with Montessori principles and warm aesthetics that calm children's senses (avoiding overstimulating neon colors). Low open shelves make it easy for children to independently choose their Science Exploration Kits, Sensory Play boxes, and Wooden Blocks, and tidy them back up on their own."
+  },
+  "space-01": {
+    location: "FAMILY LIVING ROOM · BSD & BINTARO",
+    title: "HOME TINKERING & PLAY CORNER",
+    summary:
+      "Transforming a living room corner into a creative exploration zone that keeps children happily engaged for hours without asking for screens.",
+    architect: "KutakKatik.id Play Space Consultation",
+    story:
+      "With weekly toy rotation using the Complete Sensory Play Box and Natural Construction Blocks, the family living room stays tidy and aesthetic while serving as a warm developmental laboratory for parents and children."
+  },
+  "space-02": {
+    location: "WEEKEND CLASSES · BANDUNG",
+    title: "LITTLE CRAFT & SCIENCE CLASS",
+    summary:
+      "Guided play sessions with child development facilitators to build courage to try, teamwork, and fine motor skills.",
+    architect: "KutakKatik.id Class Program",
+    story:
+      "Every weekend, children gather to experiment with natural materials, assemble wooden creations, and share stories in front of peers—building communication skills and self-confidence from an early age."
+  },
+  "space-04": {
+    location: "SCHOOL PARTNERS · SURABAYA & BALI",
+    title: "PRESCHOOL EXPLORATION LAB",
+    summary:
+      "Curated educational kits and sensory corners tailored for schools, kindergartens, and child development therapy centers.",
+    architect: "KutakKatik.id School Partnership Division",
+    story:
+      "Supporting schools and educators in delivering hands-on exploratory learning aligned with each stage of a child's sensory and motor development."
+  }
+};
+
+function getLocalizedSpace(space) {
+  if (!space || sessionState.lang !== "en") return space;
+  const tr = SPACE_EN_TRANSLATIONS[space.id];
+  if (!tr) return space;
+  return {
+    ...space,
+    location: tr.location || space.location,
+    title: tr.title || space.title,
+    summary: tr.summary || space.summary,
+    architect: tr.architect || space.architect,
+    story: tr.story || space.story
+  };
+}
+
 function renderFeaturedSpaces() {
   const container = document.getElementById("spacesEditorialContainer");
   if (!container || !storeState.spaces || storeState.spaces.length === 0) return;
   const isEn = sessionState.lang === "en";
 
   const idx = sessionState.activeSpaceIndex % storeState.spaces.length;
-  const space = storeState.spaces[idx];
+  const space = getLocalizedSpace(storeState.spaces[idx]);
 
   container.innerHTML = `
     <!-- Left Column: Counter 03 / 04 + Small Space Photo + Location -->
@@ -1057,7 +1110,7 @@ function renderFeaturedSpaces() {
       <h2 class="space-title">${escapeHtml(space.title)}</h2>
       <p class="space-summary">${escapeHtml(space.summary)}</p>
       <p style="font-size: 0.82rem; color: var(--accent-gold); font-style: italic; margin: -6px 0 14px;">
-        * Masih dalam proses persiapan dan konstruksi.
+        ${escapeHtml(t("space_construction_note"))}
       </p>
       <button class="underlined-link light" onclick="openSpaceModal('${space.id}')">${t("space_btn")}</button>
     </div>
@@ -1071,7 +1124,9 @@ function cycleFeaturedSpace(direction) {
 }
 
 function openSpaceModal(spaceId) {
-  const space = storeState.spaces.find((s) => s.id === spaceId) || storeState.spaces[0];
+  const rawSpace = storeState.spaces.find((s) => s.id === spaceId) || storeState.spaces[0];
+  const space = getLocalizedSpace(rawSpace);
+  const isEn = sessionState.lang === "en";
   const featuredProds = (space.featuredProductIds || [])
     .map((pid) => storeState.products.find((p) => p.id === pid))
     .filter(Boolean);
@@ -1083,7 +1138,7 @@ function openSpaceModal(spaceId) {
       ${escapeHtml(space.title)}
     </h2>
     <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 22px;">
-      Kurator Program &amp; Ruang: <strong>${escapeHtml(space.architect || "Tim Kurator KutakKatik.id")}</strong>
+      ${isEn ? "Program &amp; Space Curator:" : "Kurator Program &amp; Ruang:"} <strong>${escapeHtml(space.architect || (isEn ? "KutakKatik.id Curatorial Team" : "Tim Kurator KutakKatik.id"))}</strong>
     </p>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 16px; margin-bottom: 24px;">
       <img src="${escapeHtml(space.mainArchImage)}" alt="${escapeHtml(space.title)}" style="height: 260px; width: 100%; object-fit: cover;" />
@@ -1092,7 +1147,7 @@ function openSpaceModal(spaceId) {
     <p style="font-size: 0.92rem; line-height: 1.8; color: var(--text-dark); margin-bottom: 28px;">
       ${escapeHtml(space.story)}
     </p>
-    <h4 class="micro-label" style="margin-bottom: 14px;">KIT EKSPLORASI &amp; PROGRAM YANG DIGUNAKAN</h4>
+    <h4 class="micro-label" style="margin-bottom: 14px;">${isEn ? "FEATURED EXPLORATION KITS &amp; PROGRAMS" : "KIT EKSPLORASI &amp; PROGRAM YANG DIGUNAKAN"}</h4>
     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px;">
       ${featuredProds
         .map(
@@ -1102,7 +1157,7 @@ function openSpaceModal(spaceId) {
           <div>
             <div style="font-family: var(--font-serif); font-size: 1.05rem;">${escapeHtml(p.name)}</div>
             <div style="font-size: 0.76rem; color: var(--text-bronze-dark); margin-bottom: 6px;">${formatPrice(getEffectiveUnitPrice(p))}</div>
-            <button class="underlined-link" onclick="openProductDetailModal('${p.id}')">Lihat Detail Kit</button>
+            <button class="underlined-link" onclick="openProductDetailModal('${p.id}')">${isEn ? "View Kit Details" : "Lihat Detail Kit"}</button>
           </div>
         </div>
       `
