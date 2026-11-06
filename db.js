@@ -411,10 +411,10 @@ async function readStore() {
           memoryStoreCache &&
           Number(memoryStoreCache.lastUpdated || 0) > Number(pgData.lastUpdated || 0)
         ) {
-          return memoryStoreCache;
+          return normalizeStorePricingServer(memoryStoreCache);
         }
-        memoryStoreCache = pgData;
-        return pgData;
+        memoryStoreCache = normalizeStorePricingServer(pgData);
+        return memoryStoreCache;
       }
     } catch (err) {
       console.warn("[PostgreSQL] Read error, falling back to local store.json:", err.message);
@@ -422,15 +422,15 @@ async function readStore() {
   }
 
   if (memoryStoreCache) {
-    return memoryStoreCache;
+    return normalizeStorePricingServer(memoryStoreCache);
   }
 
   // 2. Fallback to local data/store.json
   try {
     if (fs.existsSync(STORE_FILE)) {
       const fileData = JSON.parse(fs.readFileSync(STORE_FILE, "utf8"));
-      memoryStoreCache = fileData;
-      return fileData;
+      memoryStoreCache = normalizeStorePricingServer(fileData);
+      return memoryStoreCache;
     }
   } catch (err) {
     console.error("Error reading store.json:", err.message);
@@ -438,8 +438,65 @@ async function readStore() {
   return null;
 }
 
-async function writeStore(data) {
+function normalizeStorePricingServer(storeObj) {
+  if (!storeObj || typeof storeObj !== "object") return storeObj;
+  if (!storeObj.settings) storeObj.settings = {};
+  const rate = Number(storeObj.settings.idrRate || 16000);
+  storeObj.settings.currency = "IDR";
+  storeObj.settings.tradeDiscountPercent = 0;
+
+  if (Array.isArray(storeObj.products)) {
+    storeObj.products.forEach((p) => {
+      if (!p) return;
+      const rawPrice = Number(p.priceIdr || p.price || 0);
+      let exactIdr = rawPrice > 0 && rawPrice < 1000 ? Math.round(rawPrice * rate) : Math.round(rawPrice);
+      const nearestThousand = Math.round(exactIdr / 1000) * 1000;
+      if (exactIdr > 1000 && (Math.abs(exactIdr - nearestThousand) === 80 || Math.abs(exactIdr - nearestThousand) === 40)) {
+        exactIdr = nearestThousand;
+      }
+      p.priceIdr = exactIdr;
+      p.price = exactIdr;
+      const disc = Math.max(0, Math.min(90, Math.round(Number(p.discountPercent || 0))));
+      p.discountPercent = disc;
+      p.compareAtPrice = disc > 0 ? exactIdr : null;
+    });
+  }
+  return storeObj;
+}
+
+async function writeStore(data, options = {}) {
   if (!data || typeof data !== "object") return false;
+  const isAdmin = options.isAdmin === true;
+
+  // Protect prices, discounts, vouchers, and settings from non-admin public client requests
+  if (!isAdmin) {
+    const existing = await readStore();
+    if (existing && typeof existing === "object") {
+      data.settings = existing.settings || data.settings;
+      data.vouchers = existing.vouchers || data.vouchers;
+      data.spaces = existing.spaces || data.spaces;
+      data.journalPosts = existing.journalPosts || data.journalPosts;
+
+      if (Array.isArray(existing.products)) {
+        const incomingMap = new Map(
+          (Array.isArray(data.products) ? data.products : []).map((p) => [p.id, p])
+        );
+        data.products = existing.products.map((origProd) => {
+          const inc = incomingMap.get(origProd.id);
+          if (!inc) return origProd;
+          // Public requests may only deduct stock/preOrderQuota or increment reviewCount; prices & discounts remain locked to Admin values
+          return {
+            ...origProd,
+            stock: inc.stock !== undefined ? Number(inc.stock) : origProd.stock,
+            preOrderQuota: inc.preOrderQuota !== undefined ? Number(inc.preOrderQuota) : origProd.preOrderQuota,
+            reviewCount: inc.reviewCount !== undefined ? Number(inc.reviewCount) : origProd.reviewCount
+          };
+        });
+      }
+    }
+  }
+
+  normalizeStorePricingServer(data);
   data.lastUpdated = Number(data.lastUpdated) || Date.now();
   memoryStoreCache = data;
 

@@ -78,7 +78,8 @@ const requestHandler = async (req, res) => {
     if (req.method === "POST") {
       try {
         const parsed = await readJsonBody(req);
-        await db.writeStore(parsed);
+        const isAdmin = String(req.headers["x-admin-role"] || "").toLowerCase() === "admin";
+        await db.writeStore(parsed, { isAdmin });
         return sendJson(res, 200, { ok: true, dbStatus: db.getDbStatus() });
       } catch (e) {
         return sendJson(res, 400, { error: "Invalid JSON payload" });

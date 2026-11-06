@@ -55,10 +55,6 @@
       <button class="utility-pill" data-i18n="util_faq" onclick="openFaqModal()">FAQ &amp; Material</button>
       <button class="utility-pill" data-i18n="util_warranty" onclick="openReturnPolicyModal()">Garansi &amp; Pengembalian</button>
       <button class="utility-pill" data-i18n="util_track" onclick="openOrderTrackerModal()">Lacak Pesanan</button>
-      <select id="currencySelect" class="currency-switch" onchange="changeCurrency(this.value)" aria-label="Currency">
-        <option value="IDR">IDR (Rp)</option>
-        <option value="USD">USD ($)</option>
-      </select>
       <button class="utility-pill" id="topBarAccountBtn" onclick="handleAccountButtonClick()">
         Masuk / Admin
       </button>
@@ -498,14 +494,14 @@
               MITRA SEKOLAH, PAUD &amp;<br/>TERAPIS TUMBUH KEMBANG
             </h2>
             <p id="tradePara1El">
-              Program kemitraan kami dikhususkan bagi sekolah, TK/PAUD, daycare, komunitas parenting, dan terapis tumbuh kembang anak. Sebagai Mitra KutakKatik.id, Anda mendapatkan potongan harga otomatis 20% serta kurasi kurikulum kit eksplorasi untuk kelas Anda.
+              Program kemitraan kami dikhususkan bagi sekolah, TK/PAUD, daycare, komunitas parenting, dan terapis tumbuh kembang anak. Sebagai Mitra KutakKatik.id, Anda mendapatkan pendampingan kurasi kurikulum kit eksplorasi untuk kelas Anda.
             </p>
             <p id="tradePara2El">
               Tim kurator edukasi kami siap mendampingi pemilihan kit sesuai kelompok usia dan kebutuhan stimulasi siswa Anda.
             </p>
             <div class="trade-links-row">
-              <button class="underlined-link" data-i18n="trade_link1" onclick="openAuthModal('register-trade')">DAFTAR MITRA SEKOLAH</button>
-              <button class="underlined-link" data-i18n="trade_link2" onclick="openAuthModal('login')">LOGIN MITRA</button>
+              <button class="underlined-link" data-i18n="trade_link1" onclick="openConsultationModal()">KONSULTASI PENGADAAN SEKOLAH</button>
+              <button class="underlined-link" data-i18n="trade_link2" onclick="openAuthModal('login')">LOGIN AKUN</button>
               <button class="underlined-link" data-i18n="trade_link3" onclick="openConsultationModal()">KONSULTASI GRATIS</button>
             </div>
           </div>
@@ -567,7 +563,7 @@
           <li><button data-i18n="footer_c2_3" onclick="openReturnPolicyModal()">Kebijakan Pengembalian (Return/Refund)</button></li>
           <li><button data-i18n="footer_c2_4" onclick="openConsultationModal()">Konsultasi Gratis Pilih Kit</button></li>
           <li><button data-i18n="footer_c2_5" onclick="openOrderTrackerModal()">Lacak Pesanan &amp; Upload Bukti</button></li>
-          <li><button data-i18n="footer_c2_6" onclick="openAuthModal('register-trade')">Pendaftaran Mitra Sekolah</button></li>
+          <li><button data-i18n="footer_c2_6" onclick="openConsultationModal()">Konsultasi Mitra Sekolah</button></li>
         </ul>
       </div>
 

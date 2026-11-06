@@ -2,7 +2,7 @@
 // NIGHTWORKS® · KUTAK KATIK STUDIO — E-COMMERCE & ADMIN APPLICATION ENGINE
 // ============================================================================
 
-const STORAGE_KEY = "kutakkatik_edukasi_store_v9";
+const STORAGE_KEY = "kutakkatik_edukasi_store_v10";
 const SESSION_KEY = "kutakkatik_edukasi_session_v3";
 
 let storeState = null;
@@ -68,10 +68,10 @@ const I18N_DICT = {
     founders_photo2_label: "STUDIO RISET · MATERIAL KAYU ALAMI & KOMPONEN SENSORIK AMAN",
     trade_photo_label: "MITRA PENDIDIKAN · POJOK EKSPLORASI & KURIKULUM PAUD / SEKOLAH DASAR",
     trade_heading: "MITRA SEKOLAH, PAUD & TERAPIS TUMBUH KEMBANG",
-    trade_p1: "Program kemitraan kami dikhususkan bagi sekolah, TK/PAUD, daycare, komunitas parenting, dan terapis tumbuh kembang anak. Sebagai Mitra KutakKatik.id, Anda mendapatkan potongan harga otomatis 20% serta kurasi kurikulum kit eksplorasi untuk kelas Anda.",
+    trade_p1: "Program kemitraan kami dikhususkan bagi sekolah, TK/PAUD, daycare, komunitas parenting, dan terapis tumbuh kembang anak. Sebagai Mitra KutakKatik.id, Anda mendapatkan pendampingan kurasi kurikulum kit eksplorasi untuk kelas Anda.",
     trade_p2: "Tim kurator edukasi kami siap mendampingi pemilihan kit sesuai kelompok usia dan kebutuhan stimulasi siswa Anda.",
-    trade_link1: "DAFTAR MITRA SEKOLAH",
-    trade_link2: "LOGIN MITRA",
+    trade_link1: "KONSULTASI PENGADAAN SEKOLAH",
+    trade_link2: "LOGIN AKUN",
     trade_link3: "KONSULTASI GRATIS",
     insta_1: "IDE 01 · POJOK CERMIN & EKSPLORASI SENSORIK",
     insta_2: "IDE 02 · SUDUT BACA & MOTORIK HALUS",
@@ -161,10 +161,10 @@ const I18N_DICT = {
     founders_photo2_label: "RESEARCH STUDIO · NATURAL SOLID WOOD & SAFE SENSORY COMPONENTS",
     trade_photo_label: "EDUCATION PARTNERS · EXPLORATION CORNERS & PRESCHOOL / PRIMARY CURRICULUM",
     trade_heading: "SCHOOL, PRESCHOOL & CHILD THERAPIST PARTNERS",
-    trade_p1: "Our partnership program is tailored for schools, kindergartens, daycares, parenting communities, and child development therapists. As a KutakKatik.id Partner, you receive an automatic 20% discount and curated exploration kit curricula for your classroom.",
+    trade_p1: "Our partnership program is tailored for schools, kindergartens, daycares, parenting communities, and child development therapists. As a KutakKatik.id Partner, you receive dedicated exploration kit curriculum curation for your classroom.",
     trade_p2: "Our educational curators are ready to assist in selecting kits suited to your students' age groups and developmental goals.",
-    trade_link1: "REGISTER AS SCHOOL PARTNER",
-    trade_link2: "PARTNER SIGN IN",
+    trade_link1: "SCHOOL PROCUREMENT CONSULTATION",
+    trade_link2: "ACCOUNT SIGN IN",
     trade_link3: "FREE CONSULTATION",
     insta_1: "IDEA 01 · MIRROR CORNER & SENSORY EXPLORATION",
     insta_2: "IDEA 02 · READING NOOK & FINE MOTOR SKILLS",
@@ -250,13 +250,14 @@ function setSiteLanguage(lang, isManual = false) {
 
 function toggleIpSimulation() {
   // Simulate switching between an Indonesian IP (103.147.8.12 -> ID) and an International IP (172.64.155.20 -> US/Global)
+  // Note: Store prices always remain fixed in IDR (Rp) as set by Admin.
   if (sessionState.detectedCountry === "ID") {
     sessionState.detectedIp = "172.64.155.20";
     sessionState.detectedCountry = "US";
     sessionState.manualLangOverride = false;
-    storeState.settings.currency = "USD";
+    storeState.settings.currency = "IDR";
     setSiteLanguage("en", false);
-    showToast("🌐 Simulasi IP Internasional (172.64.155.20 · US) → Otomatis Bahasa Inggris (EN)");
+    showToast("🌐 Simulasi IP Internasional (172.64.155.20 · US) → Otomatis Bahasa Inggris (EN) · Harga Tetap IDR");
   } else {
     sessionState.detectedIp = "103.147.8.12";
     sessionState.detectedCountry = "ID";
@@ -276,7 +277,7 @@ async function detectLanguageByIp() {
     sessionState.detectedCountry = queryIpCountry;
     sessionState.detectedIp = queryIpCountry === "ID" ? "103.147.8.12" : "172.64.155.20";
     const autoLang = queryIpCountry === "ID" ? "id" : "en";
-    storeState.settings.currency = queryIpCountry === "ID" ? "IDR" : "USD";
+    if (storeState?.settings) storeState.settings.currency = "IDR";
     setSiteLanguage(autoLang, false);
     return;
   }
@@ -345,14 +346,15 @@ async function detectLanguageByIp() {
   sessionState.detectedCountry = countryCode;
 
   // Automatically set language based on IP country (ID -> Bahasa Indonesia, Other IP -> English)
-  // unless the user explicitly clicked the manual language toggle button in this session
+  // unless the user explicitly clicked the manual language toggle button in this session.
+  // Prices always remain fixed in IDR (Rp) and are never mutated by Geo-IP.
   if (!sessionState.manualLangOverride) {
     const autoLang = countryCode === "ID" ? "id" : "en";
     sessionState.lang = autoLang;
     document.documentElement.lang = autoLang;
-    if (countryCode !== "ID" && storeState?.settings) {
-      storeState.settings.currency = "USD";
-    }
+  }
+  if (storeState?.settings) {
+    storeState.settings.currency = "IDR";
   }
   saveSessionState();
   renderAll();
@@ -463,6 +465,34 @@ function persistLocalStoreSnapshot(stateObj) {
   idbSetStore(stateObj);
 }
 
+function normalizeStorePricingAndDiscounts(stateObj) {
+  if (!stateObj || typeof stateObj !== "object") return stateObj;
+  if (!stateObj.settings) stateObj.settings = {};
+  const rate = Number(stateObj.settings.idrRate || 16000);
+  // Lock currency to IDR and disable automatic role-based price mutations
+  stateObj.settings.currency = "IDR";
+  stateObj.settings.tradeDiscountPercent = 0;
+
+  if (Array.isArray(stateObj.products)) {
+    stateObj.products.forEach((p) => {
+      if (!p) return;
+      const rawPrice = Number(p.priceIdr || p.price || 0);
+      let exactIdr = rawPrice > 0 && rawPrice < 1000 ? Math.round(rawPrice * rate) : Math.round(rawPrice);
+      const nearestThousand = Math.round(exactIdr / 1000) * 1000;
+      if (exactIdr > 1000 && (Math.abs(exactIdr - nearestThousand) === 80 || Math.abs(exactIdr - nearestThousand) === 40)) {
+        exactIdr = nearestThousand;
+      }
+      p.priceIdr = exactIdr;
+      p.price = exactIdr;
+      // Only honor explicit discountPercent set by Admin (0 = no discount, no strikethrough price)
+      const disc = Math.max(0, Math.min(90, Math.round(Number(p.discountPercent || 0))));
+      p.discountPercent = disc;
+      p.compareAtPrice = disc > 0 ? exactIdr : null;
+    });
+  }
+  return stateObj;
+}
+
 async function initApp() {
   loadStateFromStorage();
   // Also check IndexedDB in case large Base64 images exceeded localStorage 5MB quota
@@ -474,8 +504,10 @@ async function initApp() {
       storeState = idbData;
     }
   }
+  normalizeStorePricingAndDiscounts(storeState);
   renderAll();
   await syncFromServerIfAvailable();
+  normalizeStorePricingAndDiscounts(storeState);
   renderAll();
   await detectLanguageByIp();
 }
@@ -488,6 +520,7 @@ function loadStateFromStorage() {
     } else {
       storeState = JSON.parse(JSON.stringify(window.INITIAL_STORE_DATA));
     }
+    normalizeStorePricingAndDiscounts(storeState);
 
     const rawSession = localStorage.getItem(SESSION_KEY);
     if (rawSession) {
@@ -497,11 +530,17 @@ function loadStateFromStorage() {
   } catch (err) {
     console.warn("Fallback to in-memory seed data:", err);
     storeState = JSON.parse(JSON.stringify(window.INITIAL_STORE_DATA));
+    normalizeStorePricingAndDiscounts(storeState);
   }
+}
+
+function isCurrentUserAdmin() {
+  return Boolean(sessionState.currentUser && sessionState.currentUser.role === "admin");
 }
 
 function saveStoreState() {
   if (!storeState) return;
+  normalizeStorePricingAndDiscounts(storeState);
   storeState.lastUpdated = Date.now();
   persistLocalStoreSnapshot(storeState);
 
@@ -509,7 +548,10 @@ function saveStoreState() {
   if (window.location.protocol.startsWith("http")) {
     fetch("/api/state", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-Admin-Role": isCurrentUserAdmin() ? "admin" : "public"
+      },
       body: JSON.stringify(storeState)
     }).catch((err) => {
       console.warn("Failed to sync state to server:", err);
@@ -544,17 +586,22 @@ async function syncFromServerIfAvailable() {
     if (res.ok) {
       const serverData = await res.json();
       if (serverData && serverData.products && serverData.products.length > 0) {
+        normalizeStorePricingAndDiscounts(serverData);
         const localTs = Number(storeState?.lastUpdated || localStorage.getItem(STORAGE_KEY + "_ts") || 0);
         const serverTs = Number(serverData.lastUpdated || 0);
 
-        if (localTs > serverTs) {
-          // Local browser has newer Admin edits than the server snapshot; push local state to server!
+        if (isCurrentUserAdmin() && localTs > serverTs) {
+          // Only when logged in as Admin can newer local Admin edits be pushed to the server
           fetch("/api/state", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              "X-Admin-Role": "admin"
+            },
             body: JSON.stringify(storeState)
           }).catch(() => {});
         } else {
+          // Public visitors always receive the authoritative prices & discounts from the server
           storeState = serverData;
           persistLocalStoreSnapshot(storeState);
         }
@@ -566,37 +613,52 @@ async function syncFromServerIfAvailable() {
 }
 
 // ============================================================================
-// CURRENCY & PRICE HELPERS
+// CURRENCY & PRICE HELPERS (FIXED IN IDR — ADMIN-ONLY PRICE & DISCOUNT CONTROL)
 // ============================================================================
-function formatPrice(usdAmount) {
-  const currency = storeState?.settings?.currency || "USD";
+function toIdrNominal(amount) {
+  const num = Number(amount || 0);
+  if (num <= 0) return 0;
   const rate = Number(storeState?.settings?.idrRate || 16000);
-  if (currency === "IDR") {
-    const idr = Math.round(Number(usdAmount) * rate);
-    return "Rp " + idr.toLocaleString("id-ID");
+  return num < 1000 ? Math.round(num * rate) : Math.round(num);
+}
+
+function getBaseUnitPriceIdr(product) {
+  if (!product) return 0;
+  if (Number(product.priceIdr) >= 1000) {
+    return Math.round(Number(product.priceIdr));
   }
-  return "$" + Number(usdAmount).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  return toIdrNominal(product.price);
+}
+
+function getProductDiscountPercent(product) {
+  if (!product) return 0;
+  const disc = Number(product.discountPercent || 0);
+  return disc > 0 && disc <= 90 ? Math.round(disc) : 0;
+}
+
+function formatPrice(amount) {
+  const idr = toIdrNominal(amount);
+  return "Rp " + idr.toLocaleString("id-ID");
 }
 
 function getEffectiveUnitPrice(product) {
-  const base = Number(product.price);
-  if (isTradeOrAdminUser()) {
-    const disc = Number(storeState.settings.tradeDiscountPercent || 20);
-    return Math.round(base * (1 - disc / 100));
+  const baseIdr = getBaseUnitPriceIdr(product);
+  const disc = getProductDiscountPercent(product);
+  if (disc > 0) {
+    return Math.round(baseIdr * (1 - disc / 100));
   }
-  return base;
+  return baseIdr;
 }
 
 function isTradeOrAdminUser() {
-  const role = sessionState.currentUser?.role;
-  return role === "trade" || role === "admin";
+  return false;
 }
 
-function changeCurrency(newCurrency) {
-  storeState.settings.currency = newCurrency;
-  saveStoreState();
+function changeCurrency() {
+  if (storeState?.settings) {
+    storeState.settings.currency = "IDR";
+  }
   renderAll();
-  showToast(`Currency switched to ${newCurrency}`);
 }
 
 // ============================================================================
@@ -733,8 +795,8 @@ function renderBrandSettings() {
         : `Login sebagai <strong>Admin (${escapeHtml(user.email)})</strong> · <button class="underlined-link" onclick="openAdminOrLogin()">Buka Admin Dashboard</button>`;
     } else if (user.role === "trade") {
       banner.innerHTML = isEn
-        ? `✦ <strong>Active School Partner Account:</strong> Automatic ${storeState.settings.tradeDiscountPercent}% discount applied across catalog.`
-        : `✦ <strong>Akun Mitra Sekolah / PAUD Aktif:</strong> Diskon otomatis ${storeState.settings.tradeDiscountPercent}% diterapkan pada seluruh katalog.`;
+        ? `✦ <strong>Active School Partner Account:</strong> ${escapeHtml(user.name)} · <button class="underlined-link" onclick="handleAccountButtonClick()">My Orders</button>`
+        : `✦ <strong>Akun Mitra Sekolah / PAUD:</strong> ${escapeHtml(user.name)} · <button class="underlined-link" onclick="handleAccountButtonClick()">Pesanan Saya</button>`;
     } else {
       banner.innerHTML = isEn
         ? `Hello, <strong>${escapeHtml(user.name)}</strong> · <button class="underlined-link" onclick="handleAccountButtonClick()">My Orders</button>`
@@ -743,8 +805,8 @@ function renderBrandSettings() {
   } else {
     topBtn.textContent = t("login_admin");
     banner.innerHTML = isEn
-      ? `School Educator or Parent? <button class="underlined-link" onclick="openAuthModal('login')">Sign In / School Partner (-20%)</button>`
-      : `Pengelola Sekolah / PAUD atau Orang Tua? <button class="underlined-link" onclick="openAuthModal('login')">Login Akun / Mitra (-20%)</button>`;
+      ? `School Educator or Parent? <button class="underlined-link" onclick="openAuthModal('login')">Sign In to Your Account</button>`
+      : `Pengelola Sekolah / PAUD atau Orang Tua? <button class="underlined-link" onclick="openAuthModal('login')">Login Akun</button>`;
   }
 }
 
@@ -960,10 +1022,8 @@ function renderShopCatalog() {
             <div class="product-price-row">
               <span>${formatPrice(effectivePrice)}</span>
               ${
-                isTradeOrAdminUser()
-                  ? `<span class="compare-price">${formatPrice(p.price)}</span><span class="trade-tag">${isEn ? "Partner" : "Mitra"} -${storeState.settings.tradeDiscountPercent}%</span>`
-                  : p.compareAtPrice
-                  ? `<span class="compare-price">${formatPrice(p.compareAtPrice)}</span>`
+                getProductDiscountPercent(p) > 0
+                  ? `<span class="compare-price">${formatPrice(getBaseUnitPriceIdr(p))}</span><span class="trade-tag">${isEn ? "Discount" : "Diskon"} -${getProductDiscountPercent(p)}%</span>`
                   : ""
               }
             </div>
@@ -1390,7 +1450,7 @@ function updateConsultationRecommendationPreview(ageGroup) {
   } else if (ageGroup === "5-8") {
     recText = "★ <strong>Kit Eksplorasi Sains &amp; Alam Montessori</strong> + <strong>Balok Kayu Konstruksi &amp; Geometri Natural</strong> + <strong>Kelas Eksperimen Akhir Pekan</strong>";
   } else if (ageGroup === "sekolah") {
-    recText = "★ <strong>Paket Pojok Eksplorasi &amp; Pojok Baca PAUD / Sekolah</strong> (Termasuk Diskon Mitra 20% dengan kode <code>MITRA20</code>)";
+    recText = "★ <strong>Paket Pojok Eksplorasi &amp; Pojok Baca PAUD / Sekolah</strong> (Kurasi Alat Peraga Edukatif Kurikulum Merdeka)";
   }
   box.innerHTML = `
     <span class="micro-label" style="color: var(--text-bronze-dark);">REKOMENDASI INSTAN KURATOR KAMI:</span>
@@ -1406,7 +1466,7 @@ function submitConsultationForm(e) {
   const focusGoal = fd.get("focusGoal");
 
   closeAllOverlays();
-  showToast(`Terima kasih ${parentName}! Rekomendasi Kit (${focusGoal}) telah disiapkan. Gunakan kode KUTAKKATIK10 untuk diskon 10%!`);
+  showToast(`Terima kasih ${parentName}! Rekomendasi Kit (${focusGoal}) telah disiapkan di katalog di bawah ini.`);
 
   if (ageGroup === "sekolah") {
     setShopCategory("Paket Sekolah");
@@ -1607,7 +1667,7 @@ function updatePageSeoForProduct(p) {
 
   const jsonLdEl = document.getElementById("seoJsonLd");
   if (jsonLdEl) {
-    const idrPrice = Math.round(Number(p.price || 18) * Number(storeState?.settings?.idrRate || 16000));
+    const idrPrice = getEffectiveUnitPrice(p);
     jsonLdEl.textContent = JSON.stringify({
       "@context": "https://schema.org",
       "@type": "Product",
@@ -1729,10 +1789,8 @@ function renderProductDetailModalContent() {
         <div style="display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;">
           <span style="font-size: 1.35rem; font-weight: 600;">${formatPrice(effectivePrice)}</span>
           ${
-            isTradeOrAdminUser()
-              ? `<span class="compare-price">${formatPrice(p.price)}</span><span class="trade-tag">Harga Mitra Sekolah</span>`
-              : p.compareAtPrice
-              ? `<span class="compare-price">${formatPrice(p.compareAtPrice)}</span>`
+            getProductDiscountPercent(p) > 0
+              ? `<span class="compare-price">${formatPrice(getBaseUnitPriceIdr(p))}</span><span class="trade-tag">Diskon -${getProductDiscountPercent(p)}%</span>`
               : ""
           }
           <span style="font-size: 0.72rem; color: var(--text-bronze-dark); font-weight: 600;">
@@ -2024,8 +2082,9 @@ function calculateCartTotals() {
   }
 
   const afterDiscount = Math.max(0, subtotal - discount);
-  const freeThreshold = Number(storeState.settings.freeShippingThreshold || 1200);
-  const shippingCost = afterDiscount === 0 || afterDiscount >= freeThreshold ? 0 : 45;
+  const freeThreshold = toIdrNominal(storeState.settings.freeShippingThreshold || 400000);
+  const defaultShippingIdr = 25000;
+  const shippingCost = afterDiscount === 0 || afterDiscount >= freeThreshold ? 0 : defaultShippingIdr;
   const total = afterDiscount + shippingCost;
 
   return {
@@ -2407,8 +2466,7 @@ function crc16Ccitt(str) {
 function buildQrisPayload(order) {
   const s = storeState.settings;
   const isDynamic = (s.qrisMode || "dynamic") === "dynamic";
-  const rate = Number(s.idrRate || 16000);
-  const amountIdr = String(Math.round(Number(order.total || 0) * rate));
+  const amountIdr = String(toIdrNominal(order.total || 0));
   const merchantName = (s.qrisMerchantName || "KUTAK KATIK STUDIO").slice(0, 25);
   const merchantCity = (s.qrisMerchantCity || "JAKARTA").slice(0, 15);
   const nmid = s.qrisNmid || "ID1026000889901";
@@ -2517,7 +2575,7 @@ function renderOrderPaymentAndProofView(orderId) {
   const s = storeState.settings;
   const isDynamic = (s.qrisMode || "dynamic") === "dynamic";
   const qrisPayload = buildQrisPayload(order);
-  const amountIdr = Math.round(Number(order.total || 0) * Number(s.idrRate || 16000));
+  const amountIdr = toIdrNominal(order.total || 0);
   const body = document.getElementById("checkoutModalBody");
 
   body.innerHTML = `
@@ -2850,53 +2908,53 @@ function openAuthModal(mode = "login", highlightAdmin = false) {
   if (mode === "register" || mode === "register-trade") {
     const isTrade = mode === "register-trade";
     body.innerHTML = `
-      <span class="micro-label">${isTrade ? "TRADE & ARCHITECT APPLICATION" : "CLIENT REGISTRATION"}</span>
+      <span class="micro-label">${isTrade ? "PENDAFTARAN AKUN MITRA SEKOLAH" : "PENDAFTARAN AKUN PELANGGAN"}</span>
       <h2 class="serif-heading" style="font-size: 1.9rem; color: var(--text-dark); margin: 6px 0 18px;">
-        ${isTrade ? "Apply for a Trade Account" : "Create Your Studio Account"}
+        ${isTrade ? "Daftar Akun Mitra Sekolah / PAUD" : "Buat Akun Pelanggan KutakKatik.id"}
       </h2>
       <form onsubmit="handleRegisterSubmit(event)">
-        <input type="hidden" name="role" value="${isTrade ? "trade" : "customer"}" />
+        <input type="hidden" name="role" value="customer" />
         <div class="form-group">
-          <label>Full Name *</label>
-          <input type="text" name="name" required placeholder="Your full name" />
+          <label>Nama Lengkap *</label>
+          <input type="text" name="name" required placeholder="Nama lengkap Anda" />
         </div>
         <div class="form-group">
-          <label>Email Address *</label>
-          <input type="email" name="email" required placeholder="name@studio.com" />
+          <label>Alamat Email *</label>
+          <input type="email" name="email" required placeholder="nama@email.com" />
         </div>
         <div class="form-group">
-          <label>Architecture / Design Practice ${isTrade ? "*" : "(Optional)"}</label>
-          <input type="text" name="company" ${isTrade ? "required" : ""} placeholder="Studio or Practice Name" />
+          <label>Sekolah / Instansi (Opsional)</label>
+          <input type="text" name="company" placeholder="Nama Sekolah / Keluarga" />
         </div>
         <div class="form-group">
           <label>Password *</label>
-          <input type="password" name="password" required placeholder="Create password" />
+          <input type="password" name="password" required placeholder="Buat password" />
         </div>
         <button type="submit" class="btn-primary" style="width: 100%; margin-top: 8px;">
-          ${isTrade ? "Activate Trade Specifier Account (-20%)" : "Create Account"}
+          Daftar Akun
         </button>
       </form>
       <div style="margin-top: 18px; text-align: center; font-size: 0.78rem;">
-        Already have an account? <button class="underlined-link" onclick="openAuthModal('login')">Sign In</button>
+        Sudah punya akun? <button class="underlined-link" onclick="openAuthModal('login')">Login di sini</button>
       </div>
     `;
   } else {
     body.innerHTML = `
-      <span class="micro-label">STUDIO ACCESS PORTAL</span>
+      <span class="micro-label">PORTAL AKSES AKUN &amp; ADMIN</span>
       <h2 class="serif-heading" style="font-size: 1.95rem; color: var(--text-dark); margin: 6px 0 14px;">
-        Sign In to ${escapeHtml(storeState.settings.brandName)}®
+        Masuk ke ${escapeHtml(storeState.settings.brandName)}®
       </h2>
 
       <form onsubmit="handleLoginSubmit(event)">
         <div class="form-group">
-          <label>Email or Username *</label>
+          <label>Email atau Username *</label>
           <input
             type="text"
             id="loginIdentifier"
             name="identifier"
             required
-            value="${highlightAdmin ? "admin@kutakkatik.com" : ""}"
-            placeholder="admin@kutakkatik.com or admin"
+            value=""
+            placeholder="Masukkan email atau username"
           />
         </div>
         <div class="form-group">
@@ -2906,41 +2964,18 @@ function openAuthModal(mode = "login", highlightAdmin = false) {
             id="loginPassword"
             name="password"
             required
-            value="${highlightAdmin ? "admin123" : ""}"
+            value=""
             placeholder="••••••••"
           />
         </div>
         <button type="submit" class="btn-primary" style="width: 100%; margin-top: 6px;">
-          Sign In
+          Masuk / Login
         </button>
       </form>
 
-      <!-- 1-Click Demo Credentials Box for Instant Testing -->
-      <div class="demo-credentials-card">
-        <div class="micro-label" style="color: var(--text-dark); margin-bottom: 4px;">
-          INSTANT DEMO ACCOUNTS (1-CLICK LOGIN)
-        </div>
-        <div style="font-size: 0.73rem; color: var(--text-muted);">
-          • <strong>Admin:</strong> <code>admin@kutakkatik.com</code> / <code>admin123</code><br/>
-          • <strong>Trade Architect (-20%):</strong> <code>trade@kutakkatik.com</code> / <code>trade123</code><br/>
-          • <strong>Customer:</strong> <code>customer@kutakkatik.com</code> / <code>user123</code>
-        </div>
-        <div class="demo-quick-btns">
-          <button type="button" onclick="quickDemoLogin('admin@kutakkatik.com', 'admin123')">
-            ★ Login as Admin
-          </button>
-          <button type="button" onclick="quickDemoLogin('trade@kutakkatik.com', 'trade123')">
-            Login as Trade
-          </button>
-          <button type="button" onclick="quickDemoLogin('customer@kutakkatik.com', 'user123')">
-            Login as Customer
-          </button>
-        </div>
-      </div>
-
-      <div style="display: flex; justify-content: space-between; margin-top: 14px; font-size: 0.76rem;">
-        <button class="underlined-link" onclick="openAuthModal('register')">Create Client Account</button>
-        <button class="underlined-link" onclick="openAuthModal('register-trade')">Apply for Trade Account</button>
+      <div style="display: flex; justify-content: space-between; margin-top: 16px; font-size: 0.76rem;">
+        <button class="underlined-link" onclick="openAuthModal('register')">Buat Akun Pelanggan Baru</button>
+        <button class="underlined-link" onclick="openConsultationModal()">Konsultasi Mitra Sekolah</button>
       </div>
     `;
   }
@@ -3267,14 +3302,14 @@ function renderAdminProducts(container) {
   const editingProd = sessionState.editingProductId
     ? storeState.products.find((p) => p.id === sessionState.editingProductId)
     : null;
-  const rate = Number(storeState?.settings?.idrRate || 16000);
-  const currentIdrPrice = editingProd ? Math.round(Number(editingProd.price) * rate) : 288000;
+  const currentIdrPrice = editingProd ? getBaseUnitPriceIdr(editingProd) : 288000;
+  const currentDiscountPercent = editingProd ? getProductDiscountPercent(editingProd) : 0;
 
   container.innerHTML = `
     <div class="admin-header-bar">
       <div>
-        <span class="micro-label">MANAJEMEN KATALOG, GAMBAR, EDUKASI &amp; KEAMANAN PRODUK</span>
-        <h1 class="serif-heading" style="font-size: 2.1rem; color: var(--text-dark);">Kelola Produk &amp; Upload Gambar</h1>
+        <span class="micro-label">MANAJEMEN KATALOG, HARGA TETAP (IDR), DISKON ADMIN, GAMBAR &amp; KEAMANAN PRODUK</span>
+        <h1 class="serif-heading" style="font-size: 2.1rem; color: var(--text-dark);">Kelola Produk, Harga &amp; Diskon (Khusus Admin)</h1>
       </div>
     </div>
 
@@ -3302,15 +3337,27 @@ function renderAdminProducts(container) {
             </select>
           </div>
           <div class="form-group">
-            <label>Harga Produk dalam Rupiah (IDR) *</label>
+            <label>Harga Normal Produk (Rp / IDR — Tetap &amp; Hanya Admin) *</label>
             <input
               type="number"
               name="priceIdr"
               required
               min="1000"
-              step="1000"
+              step="500"
               value="${currentIdrPrice}"
               placeholder="288000"
+            />
+          </div>
+          <div class="form-group">
+            <label>Diskon Produk (%) — Hanya Admin (0 = Tanpa Diskon) *</label>
+            <input
+              type="number"
+              name="discountPercent"
+              required
+              min="0"
+              max="90"
+              value="${currentDiscountPercent}"
+              placeholder="0"
             />
           </div>
           <div class="form-group">
@@ -3525,7 +3572,14 @@ function renderAdminProducts(container) {
                 }
               </td>
               <td>${escapeHtml(p.category)}<br/><small style="color:var(--text-bronze-dark);">${escapeHtml(p.recommendedAge || "")}</small></td>
-              <td>${formatPrice(p.price)}</td>
+              <td>
+                <strong>${formatPrice(getEffectiveUnitPrice(p))}</strong>
+                ${
+                  getProductDiscountPercent(p) > 0
+                    ? `<br/><small style="text-decoration:line-through; color:var(--text-muted);">${formatPrice(getBaseUnitPriceIdr(p))}</small> <span class="trade-tag">-${getProductDiscountPercent(p)}%</span>`
+                    : `<br/><small style="color:var(--text-muted);">Harga Normal (0% Diskon)</small>`
+                }
+              </td>
               <td>
                 ${
                   p.isPreOrder
@@ -3576,9 +3630,8 @@ function saveAdminProduct(e) {
   const fd = new FormData(e.target);
   const id = fd.get("id") || "prod-" + Date.now();
   const slotVal = fd.get("featuredSlot") ? Number(fd.get("featuredSlot")) : null;
-  const rate = Number(storeState?.settings?.idrRate || 16000);
-  const priceIdr = Number(fd.get("priceIdr") || 288000);
-  const priceUsd = Math.max(1, Math.round((priceIdr / rate) * 100) / 100);
+  const priceIdr = Math.max(1000, Math.round(Number(fd.get("priceIdr") || 288000)));
+  const discountPercent = Math.max(0, Math.min(90, Math.round(Number(fd.get("discountPercent") || 0))));
 
   // If assigning a featuredSlot (1, 2, or 3), clear that slot from other products first
   if (slotVal) {
@@ -3605,8 +3658,10 @@ function saveAdminProduct(e) {
     name: nameClean,
     slug: nameClean.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
     category: fd.get("category"),
-    price: priceUsd,
-    compareAtPrice: null,
+    price: priceIdr,
+    priceIdr,
+    discountPercent,
+    compareAtPrice: discountPercent > 0 ? priceIdr : null,
     stock: Number(fd.get("stock")),
     isPreOrder,
     preOrderEta,
@@ -4602,32 +4657,127 @@ function updateAdminOrderStatus(orderId, newStatus) {
   showToast(`Order ${orderId} status updated to ${newStatus}.`);
 }
 
-// 4. ADMIN VOUCHERS & PROMOS
+// 4. ADMIN VOUCHERS, PRODUCT PRICES & DISCOUNTS (ADMIN-ONLY)
 function renderAdminVouchers(container) {
   container.innerHTML = `
     <div class="admin-header-bar">
       <div>
-        <span class="micro-label">PRIVILEGE CODES</span>
-        <h1 class="serif-heading" style="font-size: 2.1rem; color: var(--text-dark);">Vouchers &amp; Promotions</h1>
+        <span class="micro-label">KONTROL PENUH HARGA, DISKON PRODUK &amp; KODE VOUCHER (KHUSUS ADMIN)</span>
+        <h1 class="serif-heading" style="font-size: 2.1rem; color: var(--text-dark);">Pengaturan Harga, Diskon Produk &amp; Voucher</h1>
+      </div>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button class="btn-outline" onclick="resetAllProductDiscountsToZero()">Hapus Semua Diskon Produk (Set 0%)</button>
+        <button class="btn-primary" onclick="closeAdminDashboard()">Lihat Harga di Website</button>
       </div>
     </div>
 
+    <!-- BAGIAN 1: PENGATURAN CEPAT HARGA NORMAL & DISKON PER PRODUK (HANYA ADMIN) -->
     <div style="background: #fff; border: 1px solid var(--border-subtle); padding: 24px; margin-bottom: 28px;">
-      <h3 class="serif-heading" style="font-size: 1.4rem; margin-bottom: 14px;">Create Promo Code</h3>
+      <h3 class="serif-heading" style="font-size: 1.45rem; color: var(--text-dark); margin-bottom: 6px;">
+        1. Pengaturan Harga Tetap (Rp) &amp; Diskon per Produk (Hanya Admin)
+      </h3>
+      <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 16px;">
+        Harga pada website <strong>KutakKatik.id</strong> dikunci penuh sesuai nominal Rupiah di bawah ini dan tidak akan pernah berubah otomatis. Hanya Anda (Admin) yang dapat mengubah Harga Normal maupun memberikan Diskon (%) pada setiap produk.
+      </p>
+
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Produk</th>
+              <th>Harga Normal (Rp / IDR)</th>
+              <th>Diskon Admin (%)</th>
+              <th>Harga Tayang di Website</th>
+              <th>Simpan</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${storeState.products
+              .map((p, idx) => {
+                const baseIdr = getBaseUnitPriceIdr(p);
+                const disc = getProductDiscountPercent(p);
+                const finalIdr = getEffectiveUnitPrice(p);
+                return `
+              <tr>
+                <td>
+                  <div style="display: flex; gap: 10px; align-items: center;">
+                    <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" style="width: 42px; height: 48px; object-fit: cover; border: 1px solid var(--border-subtle);" />
+                    <div>
+                      <strong>${escapeHtml(p.name)}</strong><br/>
+                      <small style="color: var(--text-muted);">${escapeHtml(p.category)}</small>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    id="quickPriceIdr_${idx}"
+                    min="1000"
+                    step="500"
+                    value="${baseIdr}"
+                    style="width: 150px; padding: 7px 10px; font-size: 0.78rem; border: 1px solid var(--border-subtle); font-weight: 600;"
+                  />
+                </td>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <input
+                      type="number"
+                      id="quickDiscPct_${idx}"
+                      min="0"
+                      max="90"
+                      value="${disc}"
+                      style="width: 78px; padding: 7px 10px; font-size: 0.78rem; border: 1px solid var(--border-subtle); font-weight: 600;"
+                    />
+                    <span style="font-size: 0.78rem; color: var(--text-muted);">%</span>
+                  </div>
+                </td>
+                <td>
+                  <strong style="font-size: 0.9rem; color: var(--text-dark);">${formatPrice(finalIdr)}</strong>
+                  ${
+                    disc > 0
+                      ? `<br/><small style="text-decoration: line-through; color: var(--text-muted);">${formatPrice(baseIdr)}</small> <span class="trade-tag">Diskon -${disc}%</span>`
+                      : `<br/><small style="color: var(--text-muted);">Harga Normal Tetap</small>`
+                  }
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    class="btn-primary"
+                    style="padding: 7px 12px; font-size: 0.62rem;"
+                    onclick="saveQuickAdminProductPriceDiscount('${p.id}', ${idx})"
+                  >
+                    💾 Simpan Harga
+                  </button>
+                </td>
+              </tr>
+            `;
+              })
+              .join("")}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- BAGIAN 2: KODE VOUCHER PROMO CHECKOUT -->
+    <div style="background: #fff; border: 1px solid var(--border-subtle); padding: 24px; margin-bottom: 28px;">
+      <h3 class="serif-heading" style="font-size: 1.4rem; margin-bottom: 6px;">2. Buat Kode Voucher Promo Checkout (Khusus Admin)</h3>
+      <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 14px;">
+        Kelola kode voucher diskon yang hanya aktif apabila diizinkan oleh Admin.
+      </p>
       <form onsubmit="createAdminVoucher(event)" style="display: grid; grid-template-columns: 1fr 1fr 2fr auto; gap: 12px; align-items: end;">
         <div class="form-group" style="margin:0;">
-          <label>Code *</label>
-          <input type="text" name="code" required placeholder="STUDIO25" style="text-transform: uppercase;" />
+          <label>Kode Voucher *</label>
+          <input type="text" name="code" required placeholder="KUTAKKATIK10" style="text-transform: uppercase;" />
         </div>
         <div class="form-group" style="margin:0;">
-          <label>Discount (%) *</label>
-          <input type="number" name="discountPercent" required min="1" max="90" value="15" />
+          <label>Diskon (%) *</label>
+          <input type="number" name="discountPercent" required min="1" max="90" value="10" />
         </div>
         <div class="form-group" style="margin:0;">
-          <label>Description *</label>
-          <input type="text" name="description" required placeholder="Seasonal specification privilege" />
+          <label>Deskripsi Voucher *</label>
+          <input type="text" name="description" required placeholder="Diskon khusus promo Admin" />
         </div>
-        <button type="submit" class="btn-primary" style="height: 42px;">+ Add Code</button>
+        <button type="submit" class="btn-primary" style="height: 42px;">+ Tambah Voucher</button>
       </form>
     </div>
 
@@ -4635,11 +4785,11 @@ function renderAdminVouchers(container) {
       <table class="admin-table">
         <thead>
           <tr>
-            <th>Code</th>
-            <th>Discount</th>
-            <th>Description</th>
+            <th>Kode Voucher</th>
+            <th>Potongan Diskon</th>
+            <th>Deskripsi</th>
             <th>Status</th>
-            <th>Actions</th>
+            <th>Aksi</th>
           </tr>
         </thead>
         <tbody>
@@ -4650,12 +4800,12 @@ function renderAdminVouchers(container) {
               <td><strong>${escapeHtml(v.code)}</strong></td>
               <td>${v.discountPercent}% OFF</td>
               <td>${escapeHtml(v.description)}</td>
-              <td><span class="status-pill ${v.active ? "Completed" : "Cancelled"}">${v.active ? "Active" : "Disabled"}</span></td>
+              <td><span class="status-pill ${v.active ? "Completed" : "Cancelled"}">${v.active ? "Aktif" : "Nonaktif"}</span></td>
               <td>
                 <button class="underlined-link" style="margin-right: 12px;" onclick="toggleAdminVoucher(${idx})">
-                  ${v.active ? "Disable" : "Enable"}
+                  ${v.active ? "Nonaktifkan" : "Aktifkan"}
                 </button>
-                <button class="underlined-link" style="color:var(--accent-terracotta);" onclick="deleteAdminVoucher(${idx})">Delete</button>
+                <button class="underlined-link" style="color:var(--accent-terracotta);" onclick="deleteAdminVoucher(${idx})">Hapus</button>
               </td>
             </tr>
           `
@@ -4665,6 +4815,41 @@ function renderAdminVouchers(container) {
       </table>
     </div>
   `;
+}
+
+function saveQuickAdminProductPriceDiscount(productId, idx) {
+  const prod = storeState.products.find((p) => p.id === productId);
+  if (!prod) return;
+  const priceInput = document.getElementById(`quickPriceIdr_${idx}`);
+  const discInput = document.getElementById(`quickDiscPct_${idx}`);
+  const newPriceIdr = Math.max(1000, Math.round(Number(priceInput?.value || getBaseUnitPriceIdr(prod))));
+  const newDiscPct = Math.max(0, Math.min(90, Math.round(Number(discInput?.value || 0))));
+
+  prod.priceIdr = newPriceIdr;
+  prod.price = newPriceIdr;
+  prod.discountPercent = newDiscPct;
+  prod.compareAtPrice = newDiscPct > 0 ? newPriceIdr : null;
+
+  saveStoreState();
+  renderAll();
+  showToast(
+    newDiscPct > 0
+      ? `Harga "${prod.name}" disimpan: ${formatPrice(getEffectiveUnitPrice(prod))} (Diskon Admin -${newDiscPct}%)`
+      : `Harga "${prod.name}" disimpan tetap: ${formatPrice(newPriceIdr)} (Tanpa Diskon)`
+  );
+}
+
+function resetAllProductDiscountsToZero() {
+  storeState.products.forEach((p) => {
+    const baseIdr = getBaseUnitPriceIdr(p);
+    p.priceIdr = baseIdr;
+    p.price = baseIdr;
+    p.discountPercent = 0;
+    p.compareAtPrice = null;
+  });
+  saveStoreState();
+  renderAll();
+  showToast("Seluruh diskon produk berhasil direset ke 0% (Harga Normal Tetap).");
 }
 
 function createAdminVoucher(e) {
@@ -4729,7 +4914,7 @@ function renderAdminUsers(container) {
               <td>
                 <select class="shop-select" onchange="changeUserRole('${u.id}', this.value)">
                   <option value="customer" ${u.role === "customer" ? "selected" : ""}>Customer</option>
-                  <option value="trade" ${u.role === "trade" ? "selected" : ""}>Trade Specifier (-20%)</option>
+                  <option value="trade" ${u.role === "trade" ? "selected" : ""}>Mitra Sekolah / PAUD</option>
                   <option value="admin" ${u.role === "admin" ? "selected" : ""}>Administrator</option>
                 </select>
               </td>
@@ -4807,15 +4992,14 @@ async function renderAdminSettings(container) {
               <input type="text" name="brandName" required value="${escapeHtml(s.brandName)}" />
             </div>
             <div class="form-group">
-              <label>Default Store Currency</label>
+              <label>Mata Uang Toko (Dikunci IDR / Rupiah)</label>
               <select name="currency">
-                <option value="USD" ${s.currency === "USD" ? "selected" : ""}>USD ($)</option>
-                <option value="IDR" ${s.currency === "IDR" ? "selected" : ""}>IDR (Rp)</option>
+                <option value="IDR" selected>IDR (Rp — Harga Tetap)</option>
               </select>
             </div>
             <div class="form-group">
-              <label>Trade Specifier Discount (%)</label>
-              <input type="number" name="tradeDiscountPercent" min="0" max="60" value="${s.tradeDiscountPercent}" />
+              <label>Diskon Otomatis Akun (Dikunci 0% — Diskon Hanya via Admin)</label>
+              <input type="number" name="tradeDiscountPercent" min="0" max="0" value="0" readonly />
             </div>
             <div class="form-group">
               <label>Instagram Handle</label>
@@ -4977,8 +5161,8 @@ function saveAdminSettings(e) {
   e.preventDefault();
   const fd = new FormData(e.target);
   storeState.settings.brandName = fd.get("brandName").trim();
-  storeState.settings.currency = fd.get("currency");
-  storeState.settings.tradeDiscountPercent = Number(fd.get("tradeDiscountPercent"));
+  storeState.settings.currency = "IDR";
+  storeState.settings.tradeDiscountPercent = 0;
   storeState.settings.instagramHandle = fd.get("instagramHandle").trim();
   storeState.settings.qrisMode = fd.get("qrisMode");
   storeState.settings.qrisMerchantName = fd.get("qrisMerchantName").trim();

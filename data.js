@@ -10,10 +10,10 @@ window.INITIAL_STORE_DATA = {
     heroStatement:
       "Solusi Kreatif & Edukatif Tanpa Gadget: Temukan Ratusan Ide Mainan, Kelas, & Kit Eksplorasi untuk Tumbuh Kembang Anak.",
     instagramHandle: "@KUTAKKATIK.ID",
-    currency: "IDR", // Can be switched between "IDR" and "USD" in navbar or Admin
+    currency: "IDR", // Fixed in IDR (Rp); only Admin can change prices & discounts
     idrRate: 16000,
-    tradeDiscountPercent: 20,
-    freeShippingThreshold: 25,
+    tradeDiscountPercent: 0,
+    freeShippingThreshold: 400000,
     qrisMerchantName: "KUTAKKATIK.ID EDUKASI",
     qrisMerchantCity: "JAKARTA",
     qrisNmid: "ID1026000889901",
@@ -34,8 +34,10 @@ window.INITIAL_STORE_DATA = {
         "Jual Kit Eksplorasi Montessori 3-Part Cards & Baki Kayu usia 3–5 tahun. Mainan edukasi anak & mainan motorik balita berbahan kayu solid non-toxic untuk melatih fokus, kognitif, dan logika STEM tanpa gadget.",
       seoKeywords:
         "Mainan Edukasi Anak, Mainan Motorik Balita, Kit Eksplorasi Usia 3-5 Tahun, Mainan Montessori Kayu, Montessori 3-Part Cards, Mainan Kayu Non-Toxic",
-      price: 18, // Rp 288.000
-      compareAtPrice: 22,
+      price: 288000,
+      priceIdr: 288000,
+      discountPercent: 0,
+      compareAtPrice: null,
       stock: 25,
       featured: true,
       featuredSlot: 1, // Left card in 3-column staggered showcase
@@ -74,8 +76,10 @@ window.INITIAL_STORE_DATA = {
         "Kotak Kutak-Katik Sensory Play & Mainan Motorik Balita lengkap berbahan kayu pinus non-toxic dan komponen sensorik food-grade untuk melatih fokus, 7 indra, serta problem-solving anak.",
       seoKeywords:
         "Mainan Motorik Balita, Sensory Play Anak, Mainan Edukasi Anak, Mainan Sensorik Kayu, Kotak Eksplorasi Anak",
-      price: 28, // Rp 448.000
-      compareAtPrice: 34,
+      price: 448000,
+      priceIdr: 448000,
+      discountPercent: 0,
+      compareAtPrice: null,
       stock: 16,
       featured: true,
       featuredSlot: 2, // Center tall card in 3-column staggered showcase
@@ -114,7 +118,9 @@ window.INITIAL_STORE_DATA = {
         "Set Balok Kayu Konstruksi & Geometri Natural bersertifikat SNI dengan finishing beeswax & water-based non-toxic. Mainan edukasi anak untuk melatih logika dasar STEM, spasial, dan motorik halus.",
       seoKeywords:
         "Mainan Edukasi Anak, Balok Kayu Edukatif SNI, Mainan Motorik Balita, Mainan STEM Anak, Balok Geometri Montessori",
-      price: 15, // Rp 240.000
+      price: 240000,
+      priceIdr: 240000,
+      discountPercent: 0,
       compareAtPrice: null,
       stock: 30,
       featured: true,
@@ -154,8 +160,10 @@ window.INITIAL_STORE_DATA = {
         "Pengadaan Paket Pojok Eksplorasi & Alat Peraga Edukatif PAUD/TK sesuai Kurikulum Merdeka. Terdiri dari 12 kit mainan edukasi anak & mainan motorik berbahan kayu solid non-toxic.",
       seoKeywords:
         "Alat Peraga Edukatif PAUD TK, Mainan Edukasi Anak Sekolah, Pojok Baca Montessori, Pengadaan Mainan Kayu SNI",
-      price: 120, // Rp 1.920.000
-      compareAtPrice: 145,
+      price: 1920000,
+      priceIdr: 1920000,
+      discountPercent: 0,
+      compareAtPrice: null,
       stock: 8,
       isPreOrder: true,
       preOrderEta: "Batch Kurasi Sekolah — Estimasi Kirim 5–7 Hari Kerja",
@@ -198,8 +206,10 @@ window.INITIAL_STORE_DATA = {
         "Kelas eksperimen sains & kriya anak akhir pekan bersama fasilitator tumbuh kembang. Termasuk kit mainan edukasi anak & bahan eksperimen food-grade aman untuk usia 3–9 tahun.",
       seoKeywords:
         "Kelas Eksperimen Anak, Workshop Sains Anak, Mainan Edukasi Anak, Aktivitas Anak Tanpa Gadget",
-      price: 12, // Rp 192.000
-      compareAtPrice: 15,
+      price: 192000,
+      priceIdr: 192000,
+      discountPercent: 0,
+      compareAtPrice: null,
       stock: 20,
       featured: false,
       featuredSlot: null,
@@ -238,7 +248,9 @@ window.INITIAL_STORE_DATA = {
         "Kit Meronce manik kayu water-based non-toxic & bingkai tenun anak untuk melatih otot jari (pincer grasp), fokus, dan persiapan menulis. Mainan motorik balita & anak usia 3+ tahun.",
       seoKeywords:
         "Mainan Motorik Balita, Kit Meronce Kayu, Mainan Persiapan Menulis Anak, Mainan Edukasi Anak 3 Tahun",
-      price: 11, // Rp 176.000
+      price: 176000,
+      priceIdr: 176000,
+      discountPercent: 0,
       compareAtPrice: null,
       stock: 28,
       featured: false,
@@ -278,8 +290,10 @@ window.INITIAL_STORE_DATA = {
         "Papan Aktivitas Busy Board Montessori berbahan kayu birch non-toxic dengan 18 aktivitas roda gigi & kunci logika. Mainan motorik balita & mainan edukasi anak rekomendasi terapis.",
       seoKeywords:
         "Busy Board Montessori, Mainan Motorik Balita, Mainan Edukasi Anak, Papan Aktivitas Kayu Anak",
-      price: 24, // Rp 384.000
-      compareAtPrice: 28,
+      price: 384000,
+      priceIdr: 384000,
+      discountPercent: 0,
+      compareAtPrice: null,
       stock: 11,
       featured: false,
       featuredSlot: null,
@@ -318,7 +332,9 @@ window.INITIAL_STORE_DATA = {
         "Kit Kriya Tanah Liat Alami (Air-Dry Clay Non-Toxic) & Eksplorasi Botani untuk melatih kekuatan otot tangan, sensorik taktil, dan kreativitas 3D anak usia 3+ tahun.",
       seoKeywords:
         "Mainan Sensorik Anak, Air Dry Clay Anak Aman, Mainan Motorik Balita, Mainan Edukasi Anak",
-      price: 14, // Rp 224.000
+      price: 224000,
+      priceIdr: 224000,
+      discountPercent: 0,
       compareAtPrice: null,
       stock: 19,
       featured: false,
