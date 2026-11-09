@@ -12,6 +12,8 @@ const { Pool } = require("pg");
 const ROOT_DIR = __dirname;
 const DATA_DIR = path.join(ROOT_DIR, "data");
 const STORE_FILE = path.join(DATA_DIR, "store.json");
+const DATA_JS_FILE = path.join(ROOT_DIR, "data.js");
+const UPLOADS_DIR = path.join(ROOT_DIR, "uploads");
 const DB_CONFIG_FILE = path.join(DATA_DIR, "db-config.json");
 const ENV_FILE = path.join(ROOT_DIR, ".env");
 const SCHEMA_FILE = path.join(ROOT_DIR, "schema.sql");
@@ -22,6 +24,59 @@ if (!fs.existsSync(DATA_DIR)) {
   } catch (_) {
     // Ignore on read-only serverless filesystems (e.g., Vercel)
   }
+}
+
+if (!fs.existsSync(UPLOADS_DIR)) {
+  try {
+    fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+  } catch (_) {}
+}
+
+// Convert large embedded Base64 Data URLs into static /uploads/ files when running on a writable filesystem
+function externalizeBase64ToUploadsIfWritable(dataUrl, baseName) {
+  if (!dataUrl || typeof dataUrl !== "string" || !dataUrl.startsWith("data:image/")) {
+    return dataUrl;
+  }
+  const m = dataUrl.match(/^data:image\/([a-zA-Z0-9+]+);base64,(.+)$/);
+  if (!m) return dataUrl;
+  const ext = m[1] === "jpeg" ? "jpg" : m[1];
+  const safeBase = String(baseName || "img-" + Date.now()).replace(/[^a-zA-Z0-9_-]/g, "");
+  const fileName = `${safeBase}.${ext}`;
+  const filePath = path.join(UPLOADS_DIR, fileName);
+  try {
+    fs.writeFileSync(filePath, Buffer.from(m[2], "base64"));
+    return `/uploads/${fileName}`;
+  } catch (_) {
+    // On Vercel serverless (read-only disk), keep the compressed Data URL in PostgreSQL
+    return dataUrl;
+  }
+}
+
+function optimizeStoreImagesForLocalFiles(storeObj) {
+  if (!storeObj || typeof storeObj !== "object") return storeObj;
+  // Only externalize to /uploads/ when NOT running in read-only Vercel serverless environment
+  if (process.env.VERCEL) return storeObj;
+
+  if (Array.isArray(storeObj.products)) {
+    storeObj.products.forEach((p) => {
+      if (!p) return;
+      if (p.image && p.image.startsWith("data:image/")) {
+        p.image = externalizeBase64ToUploadsIfWritable(p.image, `${p.id}-main`);
+      }
+      if (p.hoverImage && p.hoverImage.startsWith("data:image/")) {
+        p.hoverImage = externalizeBase64ToUploadsIfWritable(p.hoverImage, `${p.id}-hover`);
+      }
+    });
+  }
+  if (storeObj.settings && typeof storeObj.settings === "object") {
+    const s = storeObj.settings;
+    ["heroImage", "aboutMainImage", "aboutSecondImage", "bannerStripImage", "tradeMainImage", "qrisCustomImage"].forEach((k) => {
+      if (s[k] && String(s[k]).startsWith("data:image/")) {
+        s[k] = externalizeBase64ToUploadsIfWritable(s[k], `cms-${k}`);
+      }
+    });
+  }
+  return storeObj;
 }
 
 // Simple .env loader (no external dotenv dependency needed)
@@ -497,12 +552,21 @@ async function writeStore(data, options = {}) {
   }
 
   normalizeStorePricingServer(data);
+  if (isAdmin) {
+    optimizeStoreImagesForLocalFiles(data);
+  }
   data.lastUpdated = Number(data.lastUpdated) || Date.now();
   memoryStoreCache = data;
 
-  // Keep local backup in data/store.json when running locally
+  // Keep local backup in data/store.json & data.js when running locally so Git commits always include new products
   try {
     fs.writeFileSync(STORE_FILE, JSON.stringify(data, null, 2), "utf8");
+    const dataJsHeader =
+      "// ============================================================================\n" +
+      "// KUTAKKATIK.ID® — INITIAL STORE, PROGRAM, KELAS & KIT EKSPLORASI ANAK DATA\n" +
+      "// ============================================================================\n\n" +
+      "window.INITIAL_STORE_DATA = ";
+    fs.writeFileSync(DATA_JS_FILE, dataJsHeader + JSON.stringify(data, null, 2) + ";\n", "utf8");
   } catch (_) {
     // Ignore on read-only serverless environment (Vercel)
   }

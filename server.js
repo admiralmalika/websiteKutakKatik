@@ -87,6 +87,42 @@ const requestHandler = async (req, res) => {
     }
   }
 
+  // 1B. API: POST /api/admin-product (Incremental Single Product Save / Delete — prevents 413 Payload Too Large)
+  if (pathname === "/api/admin-product" && req.method === "POST") {
+    try {
+      const { action, product, productId } = await readJsonBody(req);
+      const currentStore = (await db.readStore()) || {};
+      if (!Array.isArray(currentStore.products)) currentStore.products = [];
+
+      if (action === "delete" && productId) {
+        currentStore.products = currentStore.products.filter((p) => p.id !== productId);
+      } else if (product && product.id) {
+        if (product.featuredSlot) {
+          currentStore.products.forEach((p) => {
+            if (p.featuredSlot === product.featuredSlot && p.id !== product.id) {
+              p.featuredSlot = null;
+            }
+          });
+        }
+        const idx = currentStore.products.findIndex((p) => p.id === product.id);
+        if (idx >= 0) {
+          currentStore.products[idx] = { ...currentStore.products[idx], ...product };
+        } else {
+          currentStore.products.unshift(product);
+        }
+      }
+      currentStore.lastUpdated = Date.now();
+      await db.writeStore(currentStore, { isAdmin: true });
+      return sendJson(res, 200, {
+        ok: true,
+        productsCount: currentStore.products.length,
+        dbStatus: db.getDbStatus()
+      });
+    } catch (e) {
+      return sendJson(res, 400, { error: e.message || "Failed to save product" });
+    }
+  }
+
   // 2. API: GET /api/db-status (PostgreSQL Connection Status)
   if (pathname === "/api/db-status" && req.method === "GET") {
     await db.ensurePostgresConnected();
@@ -178,11 +214,14 @@ const requestHandler = async (req, res) => {
         const safePrefix = String(prefix || "img").replace(/[^a-zA-Z0-9_-]/g, "");
         const fileName = `${safePrefix}-${Date.now()}.${ext}`;
         const filePath = path.join(UPLOADS_DIR, fileName);
-        try {
-          fs.writeFileSync(filePath, buffer);
-        } catch (_) {}
+        if (!process.env.VERCEL) {
+          try {
+            fs.writeFileSync(filePath, buffer);
+            return sendJson(res, 200, { ok: true, imageUrl: `/uploads/${fileName}` });
+          } catch (_) {}
+        }
       }
-      // Return Data URL so it persists seamlessly in both local store.json and Vercel/Supabase PostgreSQL
+      // On Vercel Serverless (read-only disk), return compressed Data URL to persist in Supabase PostgreSQL
       return sendJson(res, 200, { ok: true, imageUrl: imageDataUrl });
     } catch (err) {
       return sendJson(res, 500, { error: err.message });

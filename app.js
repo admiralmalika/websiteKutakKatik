@@ -553,10 +553,49 @@ function saveStoreState() {
         "X-Admin-Role": isCurrentUserAdmin() ? "admin" : "public"
       },
       body: JSON.stringify(storeState)
-    }).catch((err) => {
-      console.warn("Failed to sync state to server:", err);
-    });
+    })
+      .then((res) => {
+        if (!res.ok && isCurrentUserAdmin()) {
+          showToast("⚠ Peringatan: Ukuran data terlalu besar untuk disinkronkan sekaligus. Gunakan tombol Sinkronkan Produk.");
+        }
+      })
+      .catch((err) => {
+        console.warn("Failed to sync state to server:", err);
+      });
   }
+}
+
+async function syncSingleProductToServer(action, product, productId) {
+  if (!window.location.protocol.startsWith("http")) return false;
+  try {
+    const res = await fetch("/api/admin-product", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Admin-Role": "admin"
+      },
+      body: JSON.stringify({ action, product, productId })
+    });
+    return res.ok;
+  } catch (err) {
+    console.warn("Failed incremental product sync:", err);
+    return false;
+  }
+}
+
+async function forceSyncAllBrowserProductsToServer() {
+  if (!storeState || !Array.isArray(storeState.products)) return;
+  showToast("⏳ Menyinkronkan seluruh produk dari browser ke Server, store.json & Supabase...");
+  let syncedCount = 0;
+  // Push products one by one in reverse order so final order matches
+  const reversed = [...storeState.products].reverse();
+  for (const prod of reversed) {
+    const ok = await syncSingleProductToServer("upsert", prod, prod.id);
+    if (ok) syncedCount++;
+  }
+  await syncFromServerIfAvailable();
+  renderAll();
+  showToast(`✓ Berhasil menyinkronkan ${syncedCount} produk ke Server, data/store.json, data.js & Supabase!`);
 }
 
 function saveSessionState() {
@@ -590,16 +629,33 @@ async function syncFromServerIfAvailable() {
         const localTs = Number(storeState?.lastUpdated || localStorage.getItem(STORAGE_KEY + "_ts") || 0);
         const serverTs = Number(serverData.lastUpdated || 0);
 
+        // Check if browser has any local products not yet present on the server
+        const serverProdIds = new Set((serverData.products || []).map((p) => p.id));
+        const unsyncedLocalProds = (storeState?.products || []).filter((p) => p && p.id && !serverProdIds.has(p.id));
+
+        if (unsyncedLocalProds.length > 0 && (isCurrentUserAdmin() || window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) {
+          // Automatically rescue & sync any products that were stuck in browser storage
+          for (const prod of [...unsyncedLocalProds].reverse()) {
+            await syncSingleProductToServer("upsert", prod, prod.id);
+          }
+          const refreshed = await fetch("/api/state", { cache: "no-store" });
+          if (refreshed.ok) {
+            const refreshedData = await refreshed.json();
+            if (refreshedData && refreshedData.products) {
+              normalizeStorePricingAndDiscounts(refreshedData);
+              storeState = refreshedData;
+              persistLocalStoreSnapshot(storeState);
+              showToast(`✓ ${unsyncedLocalProds.length} produk yang nyangkut di browser berhasil disinkronkan ke Server & Supabase!`);
+              return;
+            }
+          }
+        }
+
         if (isCurrentUserAdmin() && localTs > serverTs) {
-          // Only when logged in as Admin can newer local Admin edits be pushed to the server
-          fetch("/api/state", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-Admin-Role": "admin"
-            },
-            body: JSON.stringify(storeState)
-          }).catch(() => {});
+          // Push local Admin edits incrementally
+          for (const prod of [...(storeState.products || [])].reverse()) {
+            await syncSingleProductToServer("upsert", prod, prod.id);
+          }
         } else {
           // Public visitors always receive the authoritative prices & discounts from the server
           storeState = serverData;
@@ -3186,7 +3242,7 @@ async function handleAdminImageFileUpload(event, targetInputId, previewImgId, pr
   if (!file) return;
   try {
     showToast("Memproses & mengunggah gambar...");
-    const dataUrl = await compressImageFileToDataUrl(file, 1100, 0.84);
+    const dataUrl = await compressImageFileToDataUrl(file, 780, 0.76);
     let finalUrl = dataUrl;
     if (window.location.protocol.startsWith("http")) {
       try {
@@ -3310,6 +3366,11 @@ function renderAdminProducts(container) {
       <div>
         <span class="micro-label">MANAJEMEN KATALOG, HARGA TETAP (IDR), DISKON ADMIN, GAMBAR &amp; KEAMANAN PRODUK</span>
         <h1 class="serif-heading" style="font-size: 2.1rem; color: var(--text-dark);">Kelola Produk, Harga &amp; Diskon (Khusus Admin)</h1>
+      </div>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button type="button" class="btn-outline" onclick="forceSyncAllBrowserProductsToServer()">
+          🔄 Sinkronkan Paksa Produk Browser → Server &amp; Supabase
+        </button>
       </div>
     </div>
 
@@ -3693,19 +3754,25 @@ function saveAdminProduct(e) {
   };
 
   const existingIdx = storeState.products.findIndex((p) => p.id === id);
+  let savedProd = productData;
   if (existingIdx >= 0) {
-    storeState.products[existingIdx] = {
+    savedProd = {
       ...storeState.products[existingIdx],
       ...productData
     };
+    storeState.products[existingIdx] = savedProd;
     showToast(`Produk "${productData.name}" berhasil diperbarui!`);
   } else {
-    storeState.products.unshift(productData);
+    storeState.products.unshift(savedProd);
     showToast(`Produk "${productData.name}" berhasil ditambahkan ke katalog!`);
   }
 
   sessionState.editingProductId = null;
-  saveStoreState();
+  storeState.lastUpdated = Date.now();
+  persistLocalStoreSnapshot(storeState);
+  syncSingleProductToServer("upsert", savedProd, savedProd.id).then((ok) => {
+    if (!ok) saveStoreState();
+  });
   renderAll();
 }
 
@@ -3713,7 +3780,11 @@ function deleteAdminProduct(productId) {
   const prod = storeState.products.find((p) => p.id === productId);
   if (!prod) return;
   storeState.products = storeState.products.filter((p) => p.id !== productId);
-  saveStoreState();
+  storeState.lastUpdated = Date.now();
+  persistLocalStoreSnapshot(storeState);
+  syncSingleProductToServer("delete", null, productId).then((ok) => {
+    if (!ok) saveStoreState();
+  });
   renderAll();
   showToast(`Produk "${prod.name}" telah dihapus.`);
 }
@@ -3730,7 +3801,11 @@ function toggleProductPreOrderQuick(productId) {
   } else {
     prod.leadTime = "Ready Stock — Dikirim dalam 1–2 hari kerja · Kemasan Aman Berlapis · Garansi 100% Tukar Baru / Refund Jika Cacat";
   }
-  saveStoreState();
+  storeState.lastUpdated = Date.now();
+  persistLocalStoreSnapshot(storeState);
+  syncSingleProductToServer("upsert", prod, prod.id).then((ok) => {
+    if (!ok) saveStoreState();
+  });
   renderAll();
   showToast(
     prod.isPreOrder
@@ -4830,7 +4905,11 @@ function saveQuickAdminProductPriceDiscount(productId, idx) {
   prod.discountPercent = newDiscPct;
   prod.compareAtPrice = newDiscPct > 0 ? newPriceIdr : null;
 
-  saveStoreState();
+  storeState.lastUpdated = Date.now();
+  persistLocalStoreSnapshot(storeState);
+  syncSingleProductToServer("upsert", prod, prod.id).then((ok) => {
+    if (!ok) saveStoreState();
+  });
   renderAll();
   showToast(
     newDiscPct > 0
