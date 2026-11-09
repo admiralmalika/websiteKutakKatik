@@ -418,11 +418,30 @@ function openStoreIdb() {
 async function idbGetStore() {
   try {
     const db = await openStoreIdb();
-    return await new Promise((resolve, reject) => {
+    const res = await new Promise((resolve, reject) => {
       const tx = db.transaction(IDB_STORE, "readonly");
       const req = tx.objectStore(IDB_STORE).get(STORAGE_KEY);
       req.onsuccess = () => resolve(req.result || null);
       req.onerror = () => reject(req.error);
+    });
+    if (res) return res;
+    // Also check all keys in IndexedDB in case products were saved under an older version key
+    return await new Promise((resolve) => {
+      const tx = db.transaction(IDB_STORE, "readonly");
+      const req = tx.objectStore(IDB_STORE).getAll();
+      req.onsuccess = () => {
+        const all = req.result || [];
+        let best = null;
+        for (const item of all) {
+          if (item && Array.isArray(item.products)) {
+            if (!best || item.products.length > best.products.length || Number(item.lastUpdated || 0) > Number(best.lastUpdated || 0)) {
+              best = item;
+            }
+          }
+        }
+        resolve(best);
+      };
+      req.onerror = () => resolve(null);
     });
   } catch (_) {
     return null;
@@ -500,8 +519,21 @@ async function initApp() {
   if (idbData && idbData.products && idbData.products.length > 0) {
     const localTs = Number(storeState?.lastUpdated || 0);
     const idbTs = Number(idbData.lastUpdated || 0);
-    if (idbTs >= localTs) {
-      storeState = idbData;
+    const idbHasMoreProducts = idbData.products.length > (storeState?.products?.length || 0);
+    if (idbTs >= localTs || idbHasMoreProducts) {
+      // Merge any unique products from both snapshots so no product is ever lost
+      const mergedMap = new Map();
+      (idbData.products || []).forEach((p) => {
+        if (p && p.id) mergedMap.set(p.id, p);
+      });
+      (storeState?.products || []).forEach((p) => {
+        if (p && p.id && !mergedMap.has(p.id)) mergedMap.set(p.id, p);
+      });
+      storeState = {
+        ...storeState,
+        ...idbData,
+        products: Array.from(mergedMap.values())
+      };
     }
   }
   normalizeStorePricingAndDiscounts(storeState);
@@ -584,6 +616,18 @@ async function syncSingleProductToServer(action, product, productId) {
 }
 
 async function forceSyncAllBrowserProductsToServer() {
+  // First check if IndexedDB has any extra products not currently in memory
+  const idbData = await idbGetStore();
+  if (idbData && Array.isArray(idbData.products)) {
+    const map = new Map();
+    (storeState?.products || []).forEach((p) => {
+      if (p && p.id) map.set(p.id, p);
+    });
+    idbData.products.forEach((p) => {
+      if (p && p.id && !map.has(p.id)) map.set(p.id, p);
+    });
+    if (storeState) storeState.products = Array.from(map.values());
+  }
   if (!storeState || !Array.isArray(storeState.products)) return;
   showToast("⏳ Menyinkronkan seluruh produk dari browser ke Server, store.json & Supabase...");
   let syncedCount = 0;
@@ -3618,18 +3662,18 @@ function renderAdminProducts(container) {
             .map(
               (p) => `
             <tr>
-              <td>
-                <div style="display: flex; gap: 4px;">
-                  <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" style="width: 44px; height: 52px; object-fit: cover; border: 1px solid var(--border-subtle);" />
-                  <img src="${escapeHtml(p.hoverImage || p.image)}" alt="${escapeHtml(p.name)} 2" style="width: 44px; height: 52px; object-fit: cover; border: 1px solid var(--border-subtle);" />
+              <td style="width: 108px; min-width: 108px; vertical-align: middle;">
+                <div style="display: flex; gap: 6px; align-items: center;">
+                  <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" style="width: 44px; height: 52px; min-width: 44px; flex-shrink: 0; object-fit: cover; border: 1px solid var(--border-subtle); border-radius: 3px;" />
+                  <img src="${escapeHtml(p.hoverImage || p.image)}" alt="${escapeHtml(p.name)} 2" style="width: 44px; height: 52px; min-width: 44px; flex-shrink: 0; object-fit: cover; border: 1px solid var(--border-subtle); border-radius: 3px;" />
                 </div>
               </td>
-              <td>
-                <strong>${escapeHtml(p.name)}</strong>
+              <td style="max-width: 280px; vertical-align: middle;">
+                <strong style="font-size: 0.78rem; line-height: 1.35; display: block; color: var(--text-dark); word-break: break-word;">${escapeHtml(p.name)}</strong>
                 ${
                   p.isPreOrder
-                    ? `<br/><span style="display:inline-block; background:#fff8eb; color:#7a4b12; border:1px solid #f0d8a8; padding:2px 6px; font-size:0.62rem; margin-top:3px;">⏳ PRE-ORDER · ${escapeHtml(p.preOrderEta || "5–7 Hari Kerja")}</span>`
-                    : `<br/><small style="color:var(--text-muted);">${escapeHtml(p.badge || "Ready Stock")}</small>`
+                    ? `<span style="display:inline-block; background:#fff8eb; color:#7a4b12; border:1px solid #f0d8a8; padding:2px 6px; font-size:0.6rem; margin-top:4px;">⏳ PRE-ORDER · ${escapeHtml(p.preOrderEta || "5–7 Hari Kerja")}</span>`
+                    : `<small style="color:var(--text-muted); font-size:0.68rem; display:inline-block; margin-top:2px;">${escapeHtml(p.badge || "Ready Stock")}</small>`
                 }
               </td>
               <td>${escapeHtml(p.category)}<br/><small style="color:var(--text-bronze-dark);">${escapeHtml(p.recommendedAge || "")}</small></td>
@@ -3892,12 +3936,12 @@ function renderAdminPreOrders(container) {
               .map(
                 (p, idx) => `
               <tr>
-                <td>
+                <td style="min-width: 240px; max-width: 320px;">
                   <div style="display: flex; gap: 10px; align-items: center;">
-                    <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" style="width: 42px; height: 48px; object-fit: cover; border: 1px solid var(--border-subtle);" />
-                    <div>
-                      <strong>${escapeHtml(p.name)}</strong><br/>
-                      <small style="color: var(--text-muted);">${escapeHtml(p.category)} · ${formatPrice(p.price)}</small>
+                    <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" style="width: 42px; height: 48px; min-width: 42px; flex-shrink: 0; object-fit: cover; border: 1px solid var(--border-subtle); border-radius: 3px;" />
+                    <div style="min-width: 0;">
+                      <strong style="font-size: 0.78rem; line-height: 1.35; display: block; word-break: break-word;">${escapeHtml(p.name)}</strong>
+                      <small style="color: var(--text-muted); font-size: 0.68rem;">${escapeHtml(p.category)} · ${formatPrice(p.price)}</small>
                     </div>
                   </div>
                 </td>
@@ -4774,12 +4818,12 @@ function renderAdminVouchers(container) {
                 const finalIdr = getEffectiveUnitPrice(p);
                 return `
               <tr>
-                <td>
+                <td style="min-width: 240px; max-width: 320px;">
                   <div style="display: flex; gap: 10px; align-items: center;">
-                    <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" style="width: 42px; height: 48px; object-fit: cover; border: 1px solid var(--border-subtle);" />
-                    <div>
-                      <strong>${escapeHtml(p.name)}</strong><br/>
-                      <small style="color: var(--text-muted);">${escapeHtml(p.category)}</small>
+                    <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" style="width: 42px; height: 48px; min-width: 42px; flex-shrink: 0; object-fit: cover; border: 1px solid var(--border-subtle); border-radius: 3px;" />
+                    <div style="min-width: 0;">
+                      <strong style="font-size: 0.78rem; line-height: 1.35; display: block; word-break: break-word;">${escapeHtml(p.name)}</strong>
+                      <small style="color: var(--text-muted); font-size: 0.68rem;">${escapeHtml(p.category)}</small>
                     </div>
                   </div>
                 </td>

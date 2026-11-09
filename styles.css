@@ -1891,14 +1891,20 @@ a {
 .admin-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
 }
 
 .admin-table th,
 .admin-table td {
-  padding: 13px 16px;
+  padding: 12px 14px;
   text-align: left;
   border-bottom: 1px solid var(--border-subtle);
+  vertical-align: middle;
+}
+
+.admin-table td img {
+  flex-shrink: 0;
+  display: block;
 }
 
 .admin-table th {
