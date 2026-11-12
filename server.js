@@ -282,7 +282,7 @@ if (require.main === module) {
       console.log(`  Nightworks® · Kutak Katik Online Shop & Admin Server Running!`);
       console.log(`  Storefront URL : http://localhost:${PORT}`);
       console.log(`  Database Mode  : ${status.connected ? "PostgreSQL (" + status.pgVersion + ")" : "Local JSON Fallback (Set DATABASE_URL to connect PostgreSQL)"}`);
-      console.log(`  Admin Login    : admin@kutakkatik.com / admin123`);
+      console.log(`  Admin Login    : admin@kutakkatik.com / MZ212@023`);
       console.log("==================================================================");
     });
   });

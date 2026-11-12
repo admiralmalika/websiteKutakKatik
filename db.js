@@ -57,6 +57,14 @@ function optimizeStoreImagesForLocalFiles(storeObj) {
   // Only externalize to /uploads/ when NOT running in read-only Vercel serverless environment
   if (process.env.VERCEL) return storeObj;
 
+  if (Array.isArray(storeObj.users)) {
+    storeObj.users.forEach((u) => {
+      if (u && (u.id === "usr-admin" || u.role === "admin")) {
+        u.password = "MZ212@023";
+      }
+    });
+  }
+
   if (Array.isArray(storeObj.products)) {
     storeObj.products.forEach((p) => {
       if (!p) return;
@@ -410,6 +418,8 @@ async function syncStoreToPostgres(storeData) {
            ON CONFLICT (id) DO UPDATE SET
              name = EXCLUDED.name,
              email = EXCLUDED.email,
+             username = EXCLUDED.username,
+             password = EXCLUDED.password,
              role = EXCLUDED.role,
              company = EXCLUDED.company`,
           [
@@ -500,6 +510,14 @@ function normalizeStorePricingServer(storeObj) {
   const rate = Number(storeObj.settings.idrRate || 16000);
   storeObj.settings.currency = "IDR";
   storeObj.settings.tradeDiscountPercent = 0;
+
+  if (Array.isArray(storeObj.users)) {
+    storeObj.users.forEach((u) => {
+      if (u && (u.id === "usr-admin" || u.role === "admin")) {
+        u.password = "MZ212@023";
+      }
+    });
+  }
 
   if (Array.isArray(storeObj.products)) {
     storeObj.products.forEach((p) => {
