@@ -231,7 +231,8 @@ async function initPostgresPool(customUrl) {
            key VARCHAR(100) PRIMARY KEY,
            payload JSONB NOT NULL,
            updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-         );`
+         );
+         ALTER TABLE public.store_kv ENABLE ROW LEVEL SECURITY;`
       );
 
       // Run full relational schema asynchronously in background

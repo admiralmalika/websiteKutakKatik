@@ -80,3 +80,14 @@ CREATE TABLE IF NOT EXISTS vouchers (
 CREATE INDEX IF NOT EXISTS idx_orders_email ON orders(customer_email);
 CREATE INDEX IF NOT EXISTS idx_orders_payment_status ON orders(payment_status);
 CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);
+
+-- Enable Row-Level Security (RLS) on all public tables so Supabase PostgREST API
+-- is locked down from anonymous public access while the Node.js backend (postgres role)
+-- continues to have full access.
+ALTER TABLE public.store_kv ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.vouchers ENABLE ROW LEVEL SECURITY;
+
+REVOKE ALL ON TABLE public.store_kv, public.products, public.users, public.orders, public.vouchers FROM anon, authenticated;
