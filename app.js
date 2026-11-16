@@ -494,10 +494,11 @@ function normalizeStorePricingAndDiscounts(stateObj) {
   if (
     !stateObj.settings.bankAccounts ||
     stateObj.settings.bankAccounts.includes("8820-9910-22") ||
-    stateObj.settings.bankAccounts.includes("124-00-9988776-5")
+    stateObj.settings.bankAccounts.includes("124-00-9988776-5") ||
+    !stateObj.settings.bankAccounts.includes("mannazentrum")
   ) {
     stateObj.settings.bankAccounts =
-      "No rekening BCA (a.n. Hary Kristianto) : 4971250334 | No rekening Permata Bank (a.n. Hary Kristianto) : 9834085515";
+      "No rekening BCA (a.n. Hary Kristianto) : 4971250334 | No rekening Permata Bank (a.n. Hary Kristianto) : 9834085515 | PayPal : @mannazentrum or paypal.me/mannazentrum";
   }
 
   if (Array.isArray(stateObj.users)) {
@@ -2456,6 +2457,7 @@ function openCheckoutModal() {
           <select name="paymentMethod" required>
             <option value="QRIS (Statis / Dinamis)">QRIS (Scan QRIS Statis / Dinamis — GoPay, OVO, BCA, Permata Bank)</option>
             <option value="Bank Transfer / Virtual Account">Bank Transfer Manual — No rekening BCA (a.n. Hary Kristianto) : 4971250334 | No rekening Permata Bank (a.n. Hary Kristianto) : 9834085515</option>
+            <option value="PayPal (@mannazentrum / paypal.me/mannazentrum)">PayPal — @mannazentrum or paypal.me/mannazentrum</option>
           </select>
         </div>
       </div>
@@ -2748,9 +2750,12 @@ function renderOrderPaymentAndProofView(orderId) {
       <!-- Right: Rekening Bank + Form Upload Bukti Transfer -->
       <div class="proof-upload-card">
         <div style="background: var(--bg-cream); border: 1px solid var(--border-subtle); padding: 12px 14px; margin-bottom: 16px; font-size: 0.78rem;">
-          <div class="micro-label" style="margin-bottom: 4px;">REKENING TRANSFER BANK / VIRTUAL ACCOUNT</div>
+          <div class="micro-label" style="margin-bottom: 4px;">REKENING TRANSFER BANK / PAYPAL</div>
           <div style="font-weight: 600; color: var(--text-dark); line-height: 1.5;">
-            ${escapeHtml(s.bankAccounts || "No rekening BCA (a.n. Hary Kristianto) : 4971250334 | No rekening Permata Bank (a.n. Hary Kristianto) : 9834085515").replace(/\s*\|\s*/g, "<br/>")}
+            ${escapeHtml(s.bankAccounts || "No rekening BCA (a.n. Hary Kristianto) : 4971250334 | No rekening Permata Bank (a.n. Hary Kristianto) : 9834085515 | PayPal : @mannazentrum or paypal.me/mannazentrum").replace(/\s*\|\s*/g, "<br/>")}
+          </div>
+          <div style="margin-top: 6px; font-size: 0.75rem;">
+            PayPal Link: <a href="https://paypal.me/mannazentrum" target="_blank" rel="noopener noreferrer" style="color: var(--text-bronze-dark); text-decoration: underline; font-weight: 600;">paypal.me/mannazentrum (@mannazentrum)</a>
           </div>
         </div>
 
@@ -2786,13 +2791,13 @@ function renderOrderPaymentAndProofView(orderId) {
               />
             </div>
             <div class="form-group">
-              <label>Bank / Aplikasi QRIS *</label>
+              <label>Bank / PayPal / Aplikasi QRIS *</label>
               <input
                 type="text"
                 name="senderBank"
                 required
-                value="${escapeHtml(order.paymentSenderBank || "BCA / Permata Bank / QRIS")}"
-                placeholder="BCA / Permata Bank / GoPay / OVO"
+                value="${escapeHtml(order.paymentSenderBank || "BCA / Permata Bank / PayPal / QRIS")}"
+                placeholder="BCA / Permata Bank / PayPal / GoPay / OVO"
               />
             </div>
             <div class="form-group full">
@@ -5167,12 +5172,12 @@ async function renderAdminSettings(container) {
               <input type="file" accept="image/*" onchange="handleAdminStaticQrisUpload(event)" />
             </div>
             <div class="form-group full">
-              <label>Daftar Rekening Bank Transfer *</label>
+              <label>Daftar Rekening Bank Transfer &amp; PayPal *</label>
               <input
                 type="text"
                 name="bankAccounts"
                 required
-                value="${escapeHtml(s.bankAccounts || "No rekening BCA (a.n. Hary Kristianto) : 4971250334 | No rekening Permata Bank (a.n. Hary Kristianto) : 9834085515")}"
+                value="${escapeHtml(s.bankAccounts || "No rekening BCA (a.n. Hary Kristianto) : 4971250334 | No rekening Permata Bank (a.n. Hary Kristianto) : 9834085515 | PayPal : @mannazentrum or paypal.me/mannazentrum")}"
               />
             </div>
             <div class="form-group full">
