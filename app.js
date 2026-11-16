@@ -2456,7 +2456,8 @@ function openCheckoutModal() {
           <label>Payment Method *</label>
           <select name="paymentMethod" required>
             <option value="QRIS (Statis / Dinamis)">QRIS (Scan QRIS Statis / Dinamis — GoPay, OVO, BCA, Permata Bank)</option>
-            <option value="Bank Transfer / Virtual Account">Bank Transfer Manual — No rekening BCA (a.n. Hary Kristianto) : 4971250334 | No rekening Permata Bank (a.n. Hary Kristianto) : 9834085515</option>
+            <option value="Bank Transfer Manual — BCA (4971250334 a.n. Hary Kristianto)">Bank Transfer Manual — No rekening BCA (a.n. Hary Kristianto) : 4971250334</option>
+            <option value="Bank Transfer Manual — Permata Bank (9834085515 a.n. Hary Kristianto)">Bank Transfer Manual — No rekening Permata Bank (a.n. Hary Kristianto) : 9834085515</option>
             <option value="PayPal (@mannazentrum / paypal.me/mannazentrum)">PayPal — @mannazentrum or paypal.me/mannazentrum</option>
           </select>
         </div>
