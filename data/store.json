@@ -33,6 +33,42 @@
   ],
   "orders": [
     {
+      "id": "NW-2026-9624",
+      "items": [
+        {
+          "name": "UNSTOPPABLE: Kuasa Menakjubkan Tindakan Iman",
+          "image": "/uploads/prod-1793351981856-main.jpg",
+          "price": 68000,
+          "finish": "UNSTOPPABLE: Kuasa Menakjubkan Tindakan Iman",
+          "quantity": 1,
+          "productId": "prod-1793351981856",
+          "isPreOrder": false,
+          "preOrderEta": "Estimasi Kirim 5–7 Hari Kerja"
+        }
+      ],
+      "total": 93000,
+      "status": "Pending",
+      "discount": 0,
+      "subtotal": 68000,
+      "createdAt": "2026-11-16T03:55:17.624Z",
+      "isPreOrder": false,
+      "preOrderEta": null,
+      "voucherCode": null,
+      "customerName": "Admin KutakKatik.id",
+      "paymentNotes": "",
+      "shippingCost": 25000,
+      "customerEmail": "admin@kutakkatik.com",
+      "customerPhone": "087878384807",
+      "paymentMethod": "Bank Transfer / Virtual Account",
+      "paymentStatus": "Unpaid",
+      "preOrderStatus": null,
+      "shippingMethod": "Standard Insured Courier",
+      "paymentProofUrl": null,
+      "shippingAddress": "Perumahan Persada Sayang. JL Pandu No 10. Rt/Rw: 010/009\nRawa Buaya, Cengkareng",
+      "paymentSenderBank": "",
+      "paymentSenderName": "Admin KutakKatik.id"
+    },
+    {
       "id": "PO-2026-8403",
       "items": [
         {
@@ -1191,7 +1227,7 @@
     "aboutTitle": "VISI KAMI: MENGHADIRKAN MASA KECIL YANG KAYA EKSPLORASI NYATA, AMAN, DAN BERMAKNA TANPA KETERGANTUNGAN GADGET.",
     "tradePara1": "Program kemitraan kami dikhususkan bagi sekolah, TK/PAUD, daycare, komunitas parenting, dan terapis tumbuh kembang anak. Sebagai Mitra KutakKatik.id, Anda mendapatkan potongan harga otomatis 20% serta kurasi kurikulum kit eksplorasi untuk kelas Anda.",
     "tradeTitle": "MITRA SEKOLAH, PAUD & TERAPIS TUMBUH KEMBANG",
-    "bankAccounts": "BCA 8820-9910-22 a/n KutakKatik.id | Mandiri 124-00-9988776-5 a/n KutakKatik.id",
+    "bankAccounts": "No rekening BCA (a.n. Hary Kristianto) : 4971250334 | No rekening Permata Bank (a.n. Hary Kristianto) : 9834085515",
     "heroWordmark": "Education Camp",
     "brandSubtitle": "Bermain Aman & EKSPLORASI",
     "heroStatement": "Solusi Kreatif & Edukatif Tanpa Gadget: Temukan Ratusan Ide Mainan, Kelas, & Kit Eksplorasi untuk Tumbuh Kembang Anak.",
@@ -1227,7 +1263,7 @@
       "discountPercent": 10
     }
   ],
-  "lastUpdated": 1794463350396,
+  "lastUpdated": 1794807872893,
   "journalPosts": [
     {
       "id": "journal-1",

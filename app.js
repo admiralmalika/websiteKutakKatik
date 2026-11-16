@@ -491,6 +491,14 @@ function normalizeStorePricingAndDiscounts(stateObj) {
   // Lock currency to IDR and disable automatic role-based price mutations
   stateObj.settings.currency = "IDR";
   stateObj.settings.tradeDiscountPercent = 0;
+  if (
+    !stateObj.settings.bankAccounts ||
+    stateObj.settings.bankAccounts.includes("8820-9910-22") ||
+    stateObj.settings.bankAccounts.includes("124-00-9988776-5")
+  ) {
+    stateObj.settings.bankAccounts =
+      "No rekening BCA (a.n. Hary Kristianto) : 4971250334 | No rekening Permata Bank (a.n. Hary Kristianto) : 9834085515";
+  }
 
   if (Array.isArray(stateObj.users)) {
     stateObj.users.forEach((u) => {
@@ -2446,10 +2454,8 @@ function openCheckoutModal() {
         <div class="form-group">
           <label>Payment Method *</label>
           <select name="paymentMethod" required>
-            <option value="QRIS (Statis / Dinamis)">QRIS (Scan QRIS Statis / Dinamis — GoPay, OVO, BCA, Mandiri)</option>
-            <option value="Bank Transfer / Virtual Account">Bank Transfer Manual (BCA / Mandiri + Upload Bukti)</option>
-            <option value="Credit Card (Visa / Mastercard / Amex)">Credit Card (Visa / Mastercard / Amex)</option>
-            <option value="Trade Specifier Net-30 Invoice">Trade Specifier Net-30 Proforma Invoice</option>
+            <option value="QRIS (Statis / Dinamis)">QRIS (Scan QRIS Statis / Dinamis — GoPay, OVO, BCA, Permata Bank)</option>
+            <option value="Bank Transfer / Virtual Account">Bank Transfer Manual — No rekening BCA (a.n. Hary Kristianto) : 4971250334 | No rekening Permata Bank (a.n. Hary Kristianto) : 9834085515</option>
           </select>
         </div>
       </div>
@@ -2743,8 +2749,8 @@ function renderOrderPaymentAndProofView(orderId) {
       <div class="proof-upload-card">
         <div style="background: var(--bg-cream); border: 1px solid var(--border-subtle); padding: 12px 14px; margin-bottom: 16px; font-size: 0.78rem;">
           <div class="micro-label" style="margin-bottom: 4px;">REKENING TRANSFER BANK / VIRTUAL ACCOUNT</div>
-          <div style="font-weight: 600; color: var(--text-dark);">
-            ${escapeHtml(s.bankAccounts || "BCA 8820-9910-22 a/n Kutak Katik Studio")}
+          <div style="font-weight: 600; color: var(--text-dark); line-height: 1.5;">
+            ${escapeHtml(s.bankAccounts || "No rekening BCA (a.n. Hary Kristianto) : 4971250334 | No rekening Permata Bank (a.n. Hary Kristianto) : 9834085515").replace(/\s*\|\s*/g, "<br/>")}
           </div>
         </div>
 
@@ -2785,8 +2791,8 @@ function renderOrderPaymentAndProofView(orderId) {
                 type="text"
                 name="senderBank"
                 required
-                value="${escapeHtml(order.paymentSenderBank || "BCA / QRIS GoPay")}"
-                placeholder="BCA / Mandiri / GoPay / OVO"
+                value="${escapeHtml(order.paymentSenderBank || "BCA / Permata Bank / QRIS")}"
+                placeholder="BCA / Permata Bank / GoPay / OVO"
               />
             </div>
             <div class="form-group full">
@@ -5166,7 +5172,7 @@ async function renderAdminSettings(container) {
                 type="text"
                 name="bankAccounts"
                 required
-                value="${escapeHtml(s.bankAccounts || "BCA 8820-9910-22 a/n Kutak Katik Studio")}"
+                value="${escapeHtml(s.bankAccounts || "No rekening BCA (a.n. Hary Kristianto) : 4971250334 | No rekening Permata Bank (a.n. Hary Kristianto) : 9834085515")}"
               />
             </div>
             <div class="form-group full">
