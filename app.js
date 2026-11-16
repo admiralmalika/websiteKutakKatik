@@ -495,10 +495,11 @@ function normalizeStorePricingAndDiscounts(stateObj) {
     !stateObj.settings.bankAccounts ||
     stateObj.settings.bankAccounts.includes("8820-9910-22") ||
     stateObj.settings.bankAccounts.includes("124-00-9988776-5") ||
+    stateObj.settings.bankAccounts.includes("No rekening") ||
     !stateObj.settings.bankAccounts.includes("mannazentrum")
   ) {
     stateObj.settings.bankAccounts =
-      "No rekening BCA (a.n. Hary Kristianto) : 4971250334 | No rekening Permata Bank (a.n. Hary Kristianto) : 9834085515 | PayPal : @mannazentrum or paypal.me/mannazentrum";
+      "BCA (a.n. Hary Kristianto) : 4971250334 | Permata Bank (a.n. Hary Kristianto) : 9834085515 | @mannazentrum or paypal.me/mannazentrum";
   }
 
   if (Array.isArray(stateObj.users)) {
@@ -2455,10 +2456,10 @@ function openCheckoutModal() {
         <div class="form-group">
           <label>Payment Method *</label>
           <select name="paymentMethod" required>
+            <option value="BCA (a.n. Hary Kristianto) : 4971250334">BCA (a.n. Hary Kristianto) : 4971250334</option>
+            <option value="Permata Bank (a.n. Hary Kristianto) : 9834085515">Permata Bank (a.n. Hary Kristianto) : 9834085515</option>
+            <option value="PayPal : @mannazentrum or paypal.me/mannazentrum">@mannazentrum or paypal.me/mannazentrum</option>
             <option value="QRIS (Statis / Dinamis)">QRIS (Scan QRIS Statis / Dinamis — GoPay, OVO, BCA, Permata Bank)</option>
-            <option value="Bank Transfer Manual — BCA (4971250334 a.n. Hary Kristianto)">Bank Transfer Manual — No rekening BCA (a.n. Hary Kristianto) : 4971250334</option>
-            <option value="Bank Transfer Manual — Permata Bank (9834085515 a.n. Hary Kristianto)">Bank Transfer Manual — No rekening Permata Bank (a.n. Hary Kristianto) : 9834085515</option>
-            <option value="PayPal (@mannazentrum / paypal.me/mannazentrum)">PayPal — @mannazentrum or paypal.me/mannazentrum</option>
           </select>
         </div>
       </div>
@@ -2751,9 +2752,9 @@ function renderOrderPaymentAndProofView(orderId) {
       <!-- Right: Rekening Bank + Form Upload Bukti Transfer -->
       <div class="proof-upload-card">
         <div style="background: var(--bg-cream); border: 1px solid var(--border-subtle); padding: 12px 14px; margin-bottom: 16px; font-size: 0.78rem;">
-          <div class="micro-label" style="margin-bottom: 4px;">REKENING TRANSFER BANK / PAYPAL</div>
-          <div style="font-weight: 600; color: var(--text-dark); line-height: 1.5;">
-            ${escapeHtml(s.bankAccounts || "No rekening BCA (a.n. Hary Kristianto) : 4971250334 | No rekening Permata Bank (a.n. Hary Kristianto) : 9834085515 | PayPal : @mannazentrum or paypal.me/mannazentrum").replace(/\s*\|\s*/g, "<br/>")}
+          <div class="micro-label" style="margin-bottom: 6px;">REKENING PEMBAYARAN / PAYPAL</div>
+          <div style="font-weight: 600; color: var(--text-dark); line-height: 1.65;">
+            ${escapeHtml(s.bankAccounts || "BCA (a.n. Hary Kristianto) : 4971250334 | Permata Bank (a.n. Hary Kristianto) : 9834085515 | @mannazentrum or paypal.me/mannazentrum").replace(/\s*\|\s*/g, "<br/>")}
           </div>
           <div style="margin-top: 6px; font-size: 0.75rem;">
             PayPal Link: <a href="https://paypal.me/mannazentrum" target="_blank" rel="noopener noreferrer" style="color: var(--text-bronze-dark); text-decoration: underline; font-weight: 600;">paypal.me/mannazentrum (@mannazentrum)</a>
@@ -5178,7 +5179,7 @@ async function renderAdminSettings(container) {
                 type="text"
                 name="bankAccounts"
                 required
-                value="${escapeHtml(s.bankAccounts || "No rekening BCA (a.n. Hary Kristianto) : 4971250334 | No rekening Permata Bank (a.n. Hary Kristianto) : 9834085515 | PayPal : @mannazentrum or paypal.me/mannazentrum")}"
+                value="${escapeHtml(s.bankAccounts || "BCA (a.n. Hary Kristianto) : 4971250334 | Permata Bank (a.n. Hary Kristianto) : 9834085515 | @mannazentrum or paypal.me/mannazentrum")}"
               />
             </div>
             <div class="form-group full">

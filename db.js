@@ -514,10 +514,11 @@ function normalizeStorePricingServer(storeObj) {
     !storeObj.settings.bankAccounts ||
     storeObj.settings.bankAccounts.includes("8820-9910-22") ||
     storeObj.settings.bankAccounts.includes("124-00-9988776-5") ||
+    storeObj.settings.bankAccounts.includes("No rekening") ||
     !storeObj.settings.bankAccounts.includes("mannazentrum")
   ) {
     storeObj.settings.bankAccounts =
-      "No rekening BCA (a.n. Hary Kristianto) : 4971250334 | No rekening Permata Bank (a.n. Hary Kristianto) : 9834085515 | PayPal : @mannazentrum or paypal.me/mannazentrum";
+      "BCA (a.n. Hary Kristianto) : 4971250334 | Permata Bank (a.n. Hary Kristianto) : 9834085515 | @mannazentrum or paypal.me/mannazentrum";
   }
 
   if (Array.isArray(storeObj.users)) {
